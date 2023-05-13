@@ -52,9 +52,9 @@ class KeranjangController extends Controller
         $exist = $keranjangs->firstWhere('barang_id', $request->barang);
 
         if ($exist) {
-            $keranjangs->detach([$request->barang]);
-            $keranjangs->attach($request->barang, [
-                'sub_total' => $request->harga * $request->jumlah,
+            $newSubTotal = (($exist->pivot->jumlah + $request->jumlah) * $request->harga);
+            $keranjangs->updateExistingPivot($request->barang, [
+                'sub_total' => $newSubTotal,
                 'jumlah' => $exist->pivot->jumlah + $request->jumlah
             ]);
         } else {

@@ -6,7 +6,7 @@
         @foreach ($kategoris as $kategori)
           <div class="col p-0">
             <a href="{{ route('user.kategori.show', $kategori->id) }}"
-              class="card m-0 bg-primary card-primary-hover text-decoration-none m-1 m-md-2">
+              class="card bg-primary card-primary-hover text-decoration-none m-1 m-md-2">
               <div class="card-body d-flex justify-content-center align-items-center" style="height: 6rem">
                 <h6 class="text-title text-white mb-0 text-center">
                   {{ $kategori->nama }}

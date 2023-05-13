@@ -55,13 +55,11 @@ class CheckoutController extends Controller
 
     /**
      * TODO:
-     * 1. Kurangi stok barang
-     * 2. Hapus barang di keranjang yang di checkout
-     * 3. Potong saldo kalau bayar pakai saldo
+     * 1. Hapus barang di keranjang yang di checkout
+     * 2. Potong saldo kalau bayar pakai saldo
      */
     public function checkout(Request $request)
     {
-        // dd($request->all());
         $user = Auth::user();
         $ekspedisis = $request->ekspedisis;
         $ongkirs = $request->ongkirs;
@@ -86,7 +84,6 @@ class CheckoutController extends Controller
 
         try {
             foreach ($keranjangs as $toko => $barangs) {
-                // dd($ekspedisis[$toko]);
                 $total = $barangs->sum(function ($b) {
                     return $b->pivot->sub_total;
                 });
@@ -106,6 +103,7 @@ class CheckoutController extends Controller
                         'total_harga' => $total,
                         'ongkos_pengiriman' => $ongkir,
                         'jenis_pembayaran' => $pembayaran,
+                        'status' => $pembayaran == 'saldo' ? 'diproses' : 'pending'
                     ]);
                 $transaksiDetails = [];
 
@@ -115,15 +113,34 @@ class CheckoutController extends Controller
                         'sub_total' => $barang->pivot->sub_total,
                         'jumlah' => $barang->pivot->jumlah
                     ];
+
+                    if ($pembayaran == 'saldo') {
+                        $barang->update([
+                            'stok' => $barang->stok - $barang->pivot->jumlah
+                        ]);
+                    }
                 }
 
                 $transaksi->transaksiDetails()->createMany($transaksiDetails);
+
+                if ($pembayaran == 'saldo') {
+                    $user->update([
+                        'saldo' => $user->saldo - $total
+                    ]);
+                }
+
                 $transaksis[] = (int) $transaksi->id;
+
+                $user->keranjangs()->detach();
             }
 
             DB::commit();
 
-            return Redirect::route('user.checkout.pembayaran', compact('transaksis'));
+            if ($pembayaran == 'saldo') {
+                return Redirect::route('user.transaksi.index');
+            } else {
+                return Redirect::route('user.checkout.pembayaran', compact('transaksis'));
+            }
         } catch (Throwable $e) {
             DB::rollBack();
 

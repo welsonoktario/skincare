@@ -21,10 +21,8 @@
 
   <div class="card">
     <div class="card-body">
-      <x-user.home.grid-produk title="Produk Terbaru" :produks="$barangs" />
-      <x-user.home.grid-produk title="Produk Terlaris" :produks="$barangs" />
-      <x-user.home.grid-produk title="Produk Terlaris" :produks="$barangs" />
-      <x-user.home.grid-produk title="Produk Terlaris" :produks="$barangs" />
+      <x-user.home.grid-produk title="Produk Terbaru" :produks="$terbaru" />
+      <x-user.home.grid-produk title="Produk Terlaris" :produks="$terlaris" />
     </div>
   </div>
 @endsection

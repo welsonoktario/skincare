@@ -16,9 +16,9 @@ class CreateTopupsTable extends Migration
         Schema::create('topups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->integer('nominal')->default(10000);
-            $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
-            $table->string('bukti_pembayaran');
+            $table->integer('nominal')->default(0);
+            $table->enum('status', ['meununggu pembayaran', 'pending', 'diterima', 'ditolak'])->default('meununggu pembayaran');
+            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
         });
     }

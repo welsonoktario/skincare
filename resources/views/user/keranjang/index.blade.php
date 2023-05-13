@@ -9,89 +9,90 @@
   </nav>
   <h4>Keranjang</h4>
   <div class="mt-4">
-    <table class="table rounded shadow-sm bg-white">
-      <thead>
-        <tr>
-          <th scope="col">Produk</th>
-          <th scope="col">Harga Satuan</th>
-          <th scope="col">Jumlah</th>
-          <th scope="col">Sub Total</th>
-          <th scope="col">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse ($keranjangs as $toko => $barangs)
+    @if (count($keranjangs))
+      <table class="table rounded shadow-sm bg-white">
+        <thead>
           <tr>
-            <td colspan="5">
-              <h6 class="m-0">{{ $toko }}</h6>
-            </td>
+            <th scope="col">Produk</th>
+            <th scope="col">Harga Satuan</th>
+            <th scope="col">Jumlah</th>
+            <th scope="col">Sub Total</th>
+            <th scope="col">Aksi</th>
           </tr>
-          @foreach ($barangs as $barang)
+        </thead>
+        <tbody>
+          @foreach ($keranjangs as $toko => $barangs)
             <tr>
-              <td class="py-4">
-                <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
-                <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
+              <td colspan="5">
+                <h6 class="m-0">{{ $toko }}</h6>
               </td>
-              <td class="text-right">
-                @rupiah($barang->harga)
-              </td>
+            </tr>
+            @foreach ($barangs as $barang)
+              <tr>
+                <td class="py-4">
+                  <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
+                  <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
+                </td>
+                <td class="text-right">
+                  @rupiah($barang->harga)
+                </td>
+                <td>
+                  <div class="input-group" style="width: 8rem;">
+                    <button data-id="{{ $barang->id }}" data-opr="min"
+                      class="btn btn-change btn-outline-primary">-</button>
+                    <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}" data-id="{{ $barang->id }}"
+                      type="number" placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
+                      max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
+                    <button data-id="{{ $barang->id }}" data-opr="plus"
+                      class="btn btn-change btn-outline-primary">+</button>
+                  </div>
+                </td>
+                <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
+                  @rupiah($barang->pivot->sub_total)
+                </td>
+                <td>
+                  <div>
+                    <a class="link-danger" href="{{ route('user.keranjang.destroy', $barang->id) }}" role="button">
+                      <i class="far fa-trash-alt"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+            <tr>
+              <td colspan="2"></td>
+              <td>Total Harga</td>
+              <td id="totalHarga">@rupiah(
+                  $barangs->sum(function ($barang) {
+                      return $barang->pivot->sub_total;
+                  })
+              )</td>
               <td>
-                <div class="input-group" style="width: 8rem;">
-                  <button data-id="{{ $barang->id }}" data-opr="min"
-                    class="btn btn-change btn-outline-primary">-</button>
-                  <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}" data-id="{{ $barang->id }}"
-                    type="number" placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
-                    max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
-                  <button data-id="{{ $barang->id }}" data-opr="plus"
-                    class="btn btn-change btn-outline-primary">+</button>
-                </div>
-              </td>
-              <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
-                @rupiah($barang->pivot->sub_total)
-              </td>
-              <td>
-                <div>
-                  <a class="link-danger" href="{{ route('user.keranjang.destroy', $barang->id) }}" role="button">
-                    <i class="far fa-trash-alt"></i>
-                  </a>
-                </div>
+                <a href="{{ route('user.checkout.index', ['toko' => $barangs[0]->toko_id]) }}"
+                  class="btn btn-primary w-100" role="button">Checkout</a>
               </td>
             </tr>
           @endforeach
-          <tr>
-            <td colspan="2"></td>
-            <td>Total Harga</td>
-            <td>@rupiah(
-                $barangs->sum(function ($barang) {
-                    return $barang->pivot->sub_total;
-                })
-            )</td>
-            <td>
-              <a href="{{ route('user.checkout.index', ['toko' => $barangs[0]->toko_id]) }}"
-                class="btn btn-primary w-100" role="button">Checkout</a>
-            </td>
-          </tr>
-        @empty
-          <div class="text-center">
-            <h1>Keranjang anda kosong</h1>
-            <a href="{{ route('user.home') }}" class="btn btn-primary mt-5">
-              Kembali Belanja
-            </a>
-          </div>
-        @endforelse
-      </tbody>
-    </table>
-
-    <div class="rounded shadow-sm bg-white p-4 sticky-bottom">
-      <h6>Checkout</h6>
-      <div class="d-flex flex-row w-100 justify-content-between align-items-center">
-        <p class="fw-semibold m-0">Total Harga</p>
-        <h6 id="total" class="m-0">@rupiah($total)</h6>
+        </tbody>
+      </table>
+      <div class="rounded shadow-sm bg-white p-4 sticky-bottom">
+        <h6>Checkout</h6>
+        <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+          <p class="fw-semibold m-0">Total Harga</p>
+          <h6 id="total" class="m-0">@rupiah($total)</h6>
+        </div>
+        <a href="{{ route('user.checkout.index') }}" class="btn btn-primary w-100 mt-4" role="button">
+          Checkout Semua Barang
+        </a>
       </div>
-      <a href="{{ route('user.checkout.index') }}" class="btn btn-primary w-100 mt-4" role="button">
-        Checkout Semua Barang
-      </a>
-    </div>
+    @else
+      <div class="text-center">
+        <h1>Keranjang anda kosong</h1>
+        <a href="{{ route('user.home') }}" class="btn btn-primary mt-5">
+          Kembali Belanja
+        </a>
+      </div>
+    @endif
   </div>
 @endsection
 
@@ -143,6 +144,11 @@
 
         input.val(jumlah);
         subtotalText.text(subtotal.toLocaleString('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          maximumFractionDigits: 0
+        }));
+        $('#totalHarga').text(Number(res.data.total).toLocaleString('id-ID', {
           style: 'currency',
           currency: 'IDR',
           maximumFractionDigits: 0
