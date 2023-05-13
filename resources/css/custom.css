@@ -1,0 +1,48 @@
+/**
+ *
+ * You can write your CSS code here, DO NOT touch the default JavaScript file
+ * because it will make it harder for you to update.
+ *
+ */
+
+/*# sourceMappingURL=custom.css.map */
+
+.card-primary-hover:hover {
+    background-color: #5d6bd7 !important;
+    color: white !important;
+}
+
+.card-hover:hover {
+    box-shadow: 0 0.5rem 1rem rgba(93, 107, 215, 0.25);
+    transform: scale(1.01);
+}
+
+.zoom-in {
+    transform: scale(1.5);
+}
+
+.sticky-wrapper {
+    position: sticky;
+    top: 14%;
+    align-self: flex-start;
+}
+
+@media screen and (max-width: 720px) {
+    .keranjang-wrapper {
+        position: sticky;
+        bottom: 0;
+        align-self: flex-start;
+    }
+}
+
+.btn-outline-light:hover {
+    color: #000 !important;
+}
+
+.list-transaksi > .card:last-child {
+    margin-bottom: 0;
+}
+
+.link-primary {
+    color: #6777ef !important;
+}
