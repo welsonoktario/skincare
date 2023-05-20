@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\TopupController as AdminTopupController;
 use App\Http\Controllers\toko\BarangController as TokoBarangController;
 use App\Http\Controllers\toko\HomeController as TokoHomeController;
+use App\Http\Controllers\user\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +52,7 @@ Route::group(['as' => 'user.'], function () {
 
         Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('user.alamat.setUtama');
 
-        Route::prefix('profil')->group(function() {
+        Route::prefix('profil')->group(function () {
             Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
         });
 
@@ -59,12 +60,13 @@ Route::group(['as' => 'user.'], function () {
             'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
             'profil' => ProfilController::class,
-            'transaksi' => TransaksiController::class
+            'transaksi' => TransaksiController::class,
+            'wishlist' => WishlistController::class
         ]);
     });
 });
 
-Route::group(['prefix' => 'toko', 'as' => 'toko.'], function() {
+Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
     Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
     Route::resource('barang', TokoBarangController::class);
     Route::resource('akun', TokoAkunController::class);

@@ -9,7 +9,7 @@
   </div>
 
   <div class="mt-4">
-    @foreach ($alamats as $alamat)
+    @forelse ($alamats as $alamat)
       <div class="card {{ $alamat->is_utama ? 'bg-primary' : '' }}" data-alamat="{{ $alamat }}"
         style="border: 1px solid var(--primary);">
         <div class="card-body">
@@ -46,7 +46,20 @@
           @endif
         </div>
       </div>
-    @endforeach
+    @empty
+      <div class="empty-state text-center" data-height="400" style="height: 400px;">
+        <div class="empty-state-icon">
+          <i class="fas fa-question"></i>
+        </div>
+        <h2>Belum ada alamat</h2>
+        <p class="lead">
+          Anda belum memiliki data alamat
+        </p>
+        <button class="btn btn-modal btn-primary float-end" data-action="add">
+          Tambah Alamat Baru
+        </button>
+      </div>
+    @endforelse
   </div>
 
   <div id="modalAlamat" class="modal fade" tabindex="-1" aria-hidden="true">

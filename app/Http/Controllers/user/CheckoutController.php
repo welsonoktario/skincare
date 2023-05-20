@@ -53,11 +53,6 @@ class CheckoutController extends Controller
         ));
     }
 
-    /**
-     * TODO:
-     * 1. Hapus barang di keranjang yang di checkout
-     * 2. Potong saldo kalau bayar pakai saldo
-     */
     public function checkout(Request $request)
     {
         $user = Auth::user();

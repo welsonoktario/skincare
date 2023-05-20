@@ -1,10 +1,21 @@
 @extends('layouts.app')
 @section('content')
-  <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Topup</h1>
-      <button id="btnTambahTopUp" class="d-sm-block btn btn-sm btn-primary shadow-sm">Tambah Saldo</button>
-    </div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item">Daftar Topup</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex w-100 justify-content-between align-items-center">
+    <h4>Daftar Topup</h4>
+
+    <button id="btnTambahTopUp" class="btn btn-sm btn-primary">
+      Tambah Saldo
+    </button>
+  </div>
+
+  <div class="mt-4">
     <div class="card shadow mb-3">
       <div class="card-body">
         <div class="table-responsive">

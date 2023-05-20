@@ -18,6 +18,7 @@ mix
       "resources/js/app.js",
       "resources/js/scripts.js",
       "resources/js/stisla.js",
+      "resources/js/custom.js",
     ],
     "public/js"
   )

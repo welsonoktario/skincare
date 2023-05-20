@@ -12,8 +12,8 @@
     <ul class="navbar-nav d-flex flex-row align-items-center my-auto" style="column-gap: 0.5rem">
       @auth
         <li class="nav-item">
-          <a href="#" role="button" class="nav-link">
-            <i class="fas fa-bell"></i>
+          <a href="{{ route('user.wishlist.index') }}" role="button" class="nav-link">
+            <i class="fas fa-heart"></i>
           </a>
         </li>
         <li class="nav-item">
@@ -43,12 +43,6 @@
               <a href="{{ route('user.profil.index') }}"
                 class="dropdown-item has-icon d-flex flex-row align-items-center">
                 <i class="fas fa-receipt"></i>Pesanan
-              </a>
-            </li>
-            <li>
-              <a href="{{ route('user.profil.index') }}"
-                class="dropdown-item has-icon d-flex flex-row align-items-center">
-                <i class="fas fa-heart"></i>Wishlist
               </a>
             </li>
             <li>

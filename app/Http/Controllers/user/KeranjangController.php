@@ -64,7 +64,9 @@ class KeranjangController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()
+            ->back()
+            ->with('success', 'Barang berhasil ditambahkan ke keranjang');
     }
 
     /**

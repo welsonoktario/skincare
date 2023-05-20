@@ -1447,12 +1447,10 @@ h6 .badge {
       font-size: 18px; }
 
 /* 3.14 Breadcrumb */
-.breadcrumb {
-  background-color: #f9f9f9; }
-  .breadcrumb .breadcrumb-item {
-    line-height: 1; }
-    .breadcrumb .breadcrumb-item i {
-      margin-right: 5px; }
+.breadcrumb .breadcrumb-item {
+line-height: 1; }
+  .breadcrumb .breadcrumb-item i {
+    margin-right: 5px; }
 
 /* 3.15 Accordion */
 .accordion {

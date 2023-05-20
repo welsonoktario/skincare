@@ -11,16 +11,25 @@
         <h4>Alamat Pengiriman</h4>
         <div class="row">
           <div class="col-12">
-            <input type="hidden" name="alamat" value="{{ $alamat->id }}">
-            <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button" data-bs-toggle="modal"
-              data-bs-target="#modalAlamats">
-              <div class="card-body">
-                <h6 class="mb-0 alamat-nama">{{ $alamat->nama }}</h6>
-                <p class="alamat-alamat">{{ $alamat->alamat }}, {{ $alamat->kota->nama }}, {{ $alamat->provinsi->nama }}
-                </p>
-                <p class="mb-0 alamat-kontak">{{ $alamat->penerima }} ({{ $alamat->kontak }})</p>
-              </div>
-            </a>
+            @if ($alamat)
+              <input type="hidden" name="alamat" value="{{ $alamat->id }}">
+              <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button"
+                data-bs-toggle="modal" data-bs-target="#modalAlamats">
+                <div class="card-body">
+                  <h6 class="mb-0 alamat-nama">{{ $alamat->nama }}</h6>
+                  <p class="alamat-alamat">{{ $alamat->alamat }}, {{ $alamat->kota->nama }}, {{ $alamat->provinsi->nama }}
+                  </p>
+                  <p class="mb-0 alamat-kontak">{{ $alamat->penerima }} ({{ $alamat->kontak }})</p>
+                </div>
+              </a>
+            @else
+              <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button"
+                data-bs-toggle="modal" data-bs-target="#modalAlamats">
+                <div class="card-body">
+                  <h6 class="mb-0 alamat-nama">Belum ada alamat</h6>
+                </div>
+              </a>
+            @endif
           </div>
         </div>
 
@@ -64,8 +73,7 @@
                   Opsi Pengiriman
                 </td>
                 <td>
-                  <select name="{{ "ekspedisis[{$toko}]" }}"
-                    class="form-select select-ekspedisi text-uppercase"
+                  <select name="{{ "ekspedisis[{$toko}]" }}" class="form-select select-ekspedisi text-uppercase"
                     data-origin="{{ $keranjang['barangs'][0]->toko->kota->id }}"
                     data-id="{{ $keranjang['barangs'][0]->toko_id }}" aria-label="Opsi pengiriman">
                     <option value="0" disabled selected>Pilih ekspedisi</option>
@@ -73,8 +81,7 @@
                       <option value="{{ $ekspedisi->nama }}">{{ $ekspedisi->nama }}</option>
                     @endforeach
                   </select>
-                  <select hidden class="form-select select-jenis text-uppercase mt-2"
-                    name="{{ "ongkirs[{$toko}]" }}"
+                  <select hidden class="form-select select-jenis text-uppercase mt-2" name="{{ "ongkirs[{$toko}]" }}"
                     data-origin="{{ $keranjang['barangs'][0]->toko->kota->id }}"
                     data-id="{{ $keranjang['barangs'][0]->toko_id }}" aria-label="Jenis pengiriman">
                     <option selected>Pilih jenis pengiriman</option>

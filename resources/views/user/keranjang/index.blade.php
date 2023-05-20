@@ -7,7 +7,9 @@
       <li class="breadcrumb-item">Keranjang</li>
     </ol>
   </nav>
+
   <h4>Keranjang</h4>
+
   <div class="mt-4">
     @if (count($keranjangs))
       <table class="table rounded shadow-sm bg-white">
@@ -86,11 +88,19 @@
         </a>
       </div>
     @else
-      <div class="text-center">
-        <h1>Keranjang anda kosong</h1>
-        <a href="{{ route('user.home') }}" class="btn btn-primary mt-5">
-          Kembali Belanja
-        </a>
+      <div class="card">
+        <div class="card-body">
+          <div class="empty-state text-center" data-height="400" style="height: 400px;">
+            <div class="empty-state-icon">
+              <i class="fas fa-question"></i>
+            </div>
+            <h2>Keranjang Kosong</h2>
+            <p class="lead">
+              Anda belum memiliki barang di keranjang anda
+            </p>
+            <a href="{{ route('user.home') }}" class="btn btn-primary mt-4">Eksplor Barang</a>
+          </div>
+        </div>
       </div>
     @endif
   </div>
