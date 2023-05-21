@@ -5,6 +5,7 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class WishlistController extends Controller
 {
@@ -40,7 +41,10 @@ class WishlistController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $wishlists = Auth::user()->wishlists();
+        $wishlists->attach([$request->barang]);
+
+        return Redirect::back()->with('msg', 'Barang berhasil ditambahkan ke wishlist');
     }
 
     /**
@@ -85,6 +89,9 @@ class WishlistController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $wishlists = Auth::user()->wishlists();
+        $wishlists->detach($id);
+
+        return Redirect::back()->with('msg', 'Barang berhasil dihapus dari wishlist');
     }
 }

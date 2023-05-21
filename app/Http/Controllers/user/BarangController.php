@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Ulasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -16,7 +17,13 @@ class BarangController extends Controller
             'etalase',
             'kategori',
             'fotos',
-            'ulasans'
+            'ulasans',
+            'users' => function ($q) use ($produk) {
+                return $q->firstWhere([
+                    ['barang_id', $produk->id],
+                    ['user_id', Auth::id()]
+                ]);
+            }
         ]);
 
         return view('user.produk.show', compact('produk'));

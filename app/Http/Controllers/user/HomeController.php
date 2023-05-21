@@ -21,11 +21,11 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $kategoris = Kategori::all();
-        $query =  Barang::query()
+        $query =  Barang::query();
             // kalo user login dan punya toko, hanya tampilkan barang yang bukan punya toko dari user
-            ->when($user && $user->toko->id, function ($q) use ($user) {
+            /* ->when($user && $user->toko->id, function ($q) use ($user) {
                 return $q->where('toko_id', '!=', $user->toko->id);
-            });
+            }); */
 
         // barang terlaris
         $terlaris = $query->withCount('transaksiDetails')

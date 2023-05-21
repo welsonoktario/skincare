@@ -1,5 +1,5 @@
 const mix = require("laravel-mix");
-require("laravel-mix-purgecss");
+require('laravel-mix-purgecss');
 
 /*
  |--------------------------------------------------------------------------
@@ -28,7 +28,8 @@ mix
   .css("resources/css/components.css", "public/css")
   .css("resources/css/custom.css", "public/css")
   .copyDirectory("resources/img", "public/img")
-  .disableSuccessNotifications();
+  .purgeCss()
+  .disableNotifications();
 
 mix.options({
   postCss: [require("postcss-custom-properties")],

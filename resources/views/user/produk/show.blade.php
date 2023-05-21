@@ -43,7 +43,7 @@
             <img id="fotoProduk" src="{{ $produk->placeholder }}" alt="{{ $produk->nama }}"
               class="d-block w-100 rounded" />
           </div>
-          <div class="d-flex flex-row overflow-scroll mt-2">
+          <div class="d-flex flex-row overflow-auto mt-2">
             @foreach ($produk->fotos as $foto)
               @if ($loop->iteration === 1)
                 <img src="{{ $foto->path }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
@@ -177,6 +177,32 @@
                 <span>Keranjang</span>
               </button>
             </form>
+
+            @if (count($produk->users))
+              <form class="text-center" action="{{ route('user.wishlist.destroy', ['wishlist' => $produk->id]) }}"
+                method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="barang" value="{{ $produk->id }}">
+
+                <button class="btn btn-icon text-danger w-100 d-flex align-items-center justify-content-center mt-2"
+                  style="column-gap: 0.5rem">
+                  <i class="fas fa-heart"></i>
+                  <span>Hapus dari Wishlist</span>
+                </button>
+              </form>
+            @else
+              <form class="text-center" action="{{ route('user.wishlist.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="barang" value="{{ $produk->id }}">
+
+                <button class="btn btn-icon text-primary w-100 d-flex align-items-center justify-content-center mt-2"
+                  style="column-gap: 0.5rem">
+                  <i class="fas fa-heart"></i>
+                  <span>Tambah ke Wishlist</span>
+                </button>
+              </form>
+            @endif
           @endauth
         </div>
       </div>
@@ -187,64 +213,63 @@
 @push('scripts')
   <script>
     $(function() {
-      let produk = @json($produk);
-      let qty = $('#inputQty');
-      let subtotal = $('#subtotal');
-      let foto = $('#fotoProduk');
+          let produk = @json($produk);
+          let qty = $('#inputQty');
+          let subtotal = $('#subtotal');
+          let foto = $('#fotoProduk');
 
-      // pas input quantity berubah
-      qty.change(function() {
-        let val = $(this).val()
+          // pas input quantity berubah
+          qty.change(function() {
+            let val = $(this).val()
 
-        updateSubtotal(val);
-      });
-
-      // pas tombol min atau plus ditekan
-      $('.btn-change').click(function() {
-        let opr = $(this).data('opr');
-
-        if (opr === 'plus') {
-          if (qty.val() < produk.stok) qty.val(Number(qty.val()) + 1);
-        } else if (opr === 'min') {
-          if (qty.val() > 1) qty.val(Number(qty.val()) - 1);
-        }
-
-        updateSubtotal(qty.val());
-      });
-
-      // zoom foto pas posisi mouse di foto
-      foto.hover(function() {
-        foto.addClass('zoom-in');
-      }, function() {
-        foto.removeClass('zoom-in');
-      });
-
-      // gerakin zoom foto ngikut arah mouse
-      foto.on("mousemove", function(e) {
-        $(this)
-          .css({
-            "transform-origin": ((e.pageX - $(this).offset().left) / $(this).width()) * 100 +
-              "% " +
-              ((e.pageY - $(this).offset().top) / $(this).height()) * 100 +
-              "%"
+            updateSubtotal(val);
           });
-      });
 
-      // ganti foto pas arahin mouse ke foto2 kecil
-      $('.thumbnail').hover(function() {
-        let src = $(this).prop('src');
-        foto.prop('src', src);
-      });
+          // pas tombol min atau plus ditekan
+          $('.btn-change').click(function() {
+            let opr = $(this).data('opr');
 
-      // ubah nilai subtotal
-      function updateSubtotal(val) {
-        subtotal.text(Number(val * produk.harga).toLocaleString('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          maximumFractionDigits: 0
-        }));
-        $('#inputJumlah').val(val);
-      }
-    })
+            if (opr === 'plus') {
+              if (qty.val() < produk.stok) qty.val(Number(qty.val()) + 1);
+            } else if (opr === 'min') {
+              if (qty.val() > 1) qty.val(Number(qty.val()) - 1);
+            }
+
+            updateSubtotal(qty.val());
+          });
+
+          // zoom foto pas posisi mouse di foto
+          foto.hover(function() {
+            foto.addClass('zoom-in');
+          }, function() {
+            foto.removeClass('zoom-in');
+          });
+
+          // gerakin zoom foto ngikut arah mouse
+          foto.on("mousemove", function(e) {
+            $(this)
+              .css({
+                "transform-origin": ((e.pageX - $(this).offset().left) / $(this).width()) * 100 +
+                  "% " +
+                  ((e.pageY - $(this).offset().top) / $(this).height()) * 100 +
+                  "%"
+              });
+          });
+
+          // ganti foto pas arahin mouse ke foto2 kecil
+          $('.thumbnail').hover(function() {
+            let src = $(this).prop('src');
+            foto.prop('src', src);
+          });
+
+          // ubah nilai subtotal
+          function updateSubtotal(val) {
+            subtotal.text(Number(val * produk.harga).toLocaleString('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              maximumFractionDigits: 0
+            }));
+            $('#inputJumlah').val(val);
+          }
   </script>
 @endpush

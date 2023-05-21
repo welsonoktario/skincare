@@ -77,6 +77,6 @@ class User extends Authenticatable
 
     public function wishlists()
     {
-        return $this->belongsToMany(Barang::class, 'wishlists', 'user_id', 'barang_id');
+        return $this->belongsToMany(Barang::class, 'wishlists', 'user_id', 'barang_id')->withTimestamps();
     }
 }

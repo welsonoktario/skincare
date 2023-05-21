@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Barang extends Model
 {
@@ -44,7 +45,13 @@ class Barang extends Model
         return $this->morphMany(Foto::class, 'fotoable');
     }
 
-    public function getPlaceholderAttribute()  {
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
+    }
+
+    public function getPlaceholderAttribute()
+    {
         return count($this->fotos)
             ? $this->fotos[0]->path
             : '/img/placeholder.jpeg';
