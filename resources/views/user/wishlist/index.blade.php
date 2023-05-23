@@ -10,12 +10,13 @@
   <h4>Wishlist</h4>
 
   <div class="mt-4">
-    @forelse ($wishlists as $wishlist)
-      <div class="card shadow mb-3">
-        <div class="card-body">
-        </div>
+    @if (count($wishlists))
+      <div class="row row-cols-md-4 row-cols-2">
+        @foreach ($wishlists as $wishlist)
+          <x-shared.card-produk :produk="$wishlist" />
+        @endforeach
       </div>
-    @empty
+    @else
       <div class="card">
         <div class="card-body">
           <div class="empty-state text-center" data-height="400" style="height: 400px;">
@@ -30,7 +31,7 @@
           </div>
         </div>
       </div>
-    @endforelse
+    @endif
   </div>
 @endsection
 @push('scripts')

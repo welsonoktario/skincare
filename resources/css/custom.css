@@ -7,6 +7,12 @@
 
 /*# sourceMappingURL=custom.css.map */
 
+.card-hover {
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    -o-transition: all 0.5s;
+}
+
 .card-primary-hover:hover {
     background-color: #5d6bd7 !important;
     color: white !important;

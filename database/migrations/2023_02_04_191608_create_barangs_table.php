@@ -18,6 +18,7 @@ class CreateBarangsTable extends Migration
             $table->foreignId('toko_id')->constrained();
             $table->foreignId('etalase_id')->nullable()->constrained();
             $table->foreignId('kategori_id')->constrained();
+            $table->foreignId('kandungan_id')->nullable()->constrained();
             $table->string('nama');
             $table->text('deskripsi');
             $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');

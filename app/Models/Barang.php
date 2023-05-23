@@ -40,6 +40,11 @@ class Barang extends Model
         return $this->belongsTo(Kategori::class);
     }
 
+    public function kandungan()
+    {
+        return $this->belongsTo(Kandungan::class);
+    }
+
     public function fotos()
     {
         return $this->morphMany(Foto::class, 'fotoable');

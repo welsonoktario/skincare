@@ -19,6 +19,7 @@ class WishlistController extends Controller
         $wishlists = Auth::user()
             ->wishlists()
             ->get();
+        // dd($wishlists);
 
         return view('user.wishlist.index', compact('wishlists'));
     }
