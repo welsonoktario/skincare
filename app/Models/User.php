@@ -60,14 +60,8 @@ class User extends Authenticatable
     public function keranjangs()
     {
         return $this->belongsToMany(Barang::class, 'keranjangs', 'user_id', 'barang_id')
-            ->withPivot(['sub_total', 'jumlah']);
-    }
-
-    public function keranjangsWithToko()
-    {
-        return $this->belongsToMany(Barang::class, 'keranjangs', 'user_id', 'barang_id')
             ->withPivot(['sub_total', 'jumlah'])
-            ->with('toko');
+            ->with(['toko', 'kandungan']);
     }
 
     public function keranjangsWithTokoEskpedisi()

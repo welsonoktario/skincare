@@ -13,14 +13,19 @@ class KeranjangController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
-        $keranjangs = Auth::user()
-            ->keranjangsWithToko()
-            ->get()
-            ->groupBy('toko.nama');
+        $interaksis = [];
+        $query = Auth::user()
+            ->keranjangs()
+            ->get();
+
+        self::cekInteraksi($query);
+
+        $keranjangs = $query->groupBy('toko.nama');
+
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
                 return $barang->pivot->sub_total;
@@ -28,16 +33,6 @@ class KeranjangController extends Controller
         });
 
         return view('user.keranjang.index', compact('keranjangs', 'total'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -131,5 +126,18 @@ class KeranjangController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function cekInteraksi($keranjangs)
+    {
+        $pasangan = [];
+
+        foreach ($keranjangs as $i => $barang) {
+            foreach ($keranjangs as $j => $barang2) {
+                $pasangan[] = [$barang->id, $barang2->id];
+            }
+        }
+
+        dd($pasangan);
     }
 }
