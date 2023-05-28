@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\toko;
+namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
-use App\Models\Etalase;
-use App\Models\Kategori;
-use Illuminate\Http\Request;
+use App\Models\Transaksi;
 use Auth;
+use Illuminate\Http\Request;
 
-class BarangController extends Controller
+class PesananMasukController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +16,8 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.index', compact('barangs'));
+        $pesananmasuk = Transaksi::where('status','pending')->where('toko_id', Auth::user()->toko->id)->get();
+        return view('toko.pesananmasuk.index',compact('pesananmasuk'));
     }
 
     /**
@@ -30,10 +27,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $kategoris = Kategori::all();
-        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.create', compact('etalases', 'kategoris'));
+        //
     }
 
     /**
@@ -44,20 +38,8 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $barang = Barang::create([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'kategori_id' => $request->kategoris,
-            'etalase_id' => $request->etalases,
-            'toko_id' => Auth::user()->toko->id
-        ]);
-        // Alert::success('Sukses');
-        return redirect()->route('toko.barang.index')->with('toast_success', 'Barang telah ditambah');
+        //
     }
-
 
     /**
      * Display the specified resource.
@@ -90,7 +72,15 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $pesananmasuk = Transaksi::find($id);
+        $pesananmasuk->update(['status' => $request->aksi]);
+
+
+        if ($request->aksi == 'diproses') {
+            return redirect()->route('toko.pesananmasuk.index')->with('success', 'Pesanan Telah Diterima');
+        } else if ($request->aksi == 'batal') {
+            return redirect()->route('admin.pesananmasuk.index')->with('success', 'Pesanan Telah Ditolak');
+        }
     }
 
     /**

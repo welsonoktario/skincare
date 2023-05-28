@@ -10,35 +10,31 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="nama_barang">Nama barang :</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="nama_barang" placeholder="Tulis nama_barang barang" name="nama_barang">
+                <input type="text" class="form-control" id="nama" placeholder="Tulis nama_barang barang" name="nama">
             </div>
         </div>
         <br>
-        {{-- <div class="form-group">
-            <label class="control-label col-sm-2" for="kategori">Kategori :</label>
-            <div class="col-sm-10">
-                <select name="kategori" class="form-control" id="kategori">
-                    @foreach ($kategoris as $ak)
-                        <option value="{{ $ak->id }}"> {{ $ak->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <br>
-        </div> --}}
         <div class="form-group">
             <label class="control-label col-sm-2" for="stok">Stok barang :</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="stok" placeholder="Tulis stok barang" name="stok">
+                <input type="number" class="form-control" id="stok" placeholder="Tulis stok barang" name="stok">
             </div>
         </div>
         <br>
         <div class="form-group">
             <label class="control-label col-sm-2" for="harga">Harga Barang :</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="harga" placeholder="Tulis harga barang per hari"
+                <input type="number" class="form-control" id="harga" placeholder="Tulis harga barang per hari"
                     name="harga">
             </div>
         </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="berat">Berat :</label>
+          <div class="col-sm-10">
+              <input type="number" class="form-control" id="berat" placeholder="Tulis berat barang per hari"
+                  name="berat">
+          </div>
+      </div>
         <br>
         <div class="form-group">
             <label class="control-label col-sm-2" for="deskripsi">Deskripsi Barang:</label>
@@ -47,10 +43,29 @@
                     name="deskripsi">
             </div>
         </div>
-        <br>
-
-        <br>
         <div class="form-group">
+          <label class="control-label col-sm-2" for="kategoris">kategoris :</label>
+          <div class="col-sm-10">
+              <select name="kategoris" class="form-control" id="kategoris">
+                  @foreach ($kategoris as $ak)
+                      <option value="{{ $ak->id }}"> {{ $ak->nama }}</option>
+                  @endforeach
+              </select>
+          </div>
+          <br>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="etalases">Etalase :</label>
+        <div class="col-sm-10">
+            <select name="etalases" class="form-control" id="etalases">
+                @foreach ($etalases as $et)
+                    <option value="{{ $et->id }}"> {{ $et->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+        <br>
+    </div>
+        {{-- <div class="form-group">
             <b>Foto 1 (jpg)</b><br />
             <input type="file" placeholder="t" name="file">
         </div>
@@ -65,7 +80,7 @@
         <div class="form-group">
             <b>Foto 4 (jpg)</b><br />
             <input type="file" placeholder="t" name="file">
-        </div>
+        </div> --}}
 
 
     </div>

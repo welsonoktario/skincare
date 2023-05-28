@@ -1,4 +1,4 @@
-@extends('toko.app')
+@extends('layouts.toko')
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
@@ -18,16 +18,18 @@
                 <th>Harga</th>
                 <th>Stok</th>
                 <th>Deskripsi</th>
+                <th>Status</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @foreach ($barangs as $b)
                 <tr class="listBarang">
-                  <td> {{ $b->nama_barang }}</td>
+                  <td> {{ $b->nama }}</td>
                   <td> {{ $b->harga }}</td>
                   <td> {{ $b->stok }}</td>
                   <td> {{ $b->deskripsi }}</td>
+                  <td>{{$b->status}}</td>
                   <td>
                     <button>Edit</button>
                     <button>Delete</button>

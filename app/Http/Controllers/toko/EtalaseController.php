@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\toko;
+namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
 use App\Models\Etalase;
-use App\Models\Kategori;
-use Illuminate\Http\Request;
+use App\Models\Toko;
 use Auth;
+use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
-class BarangController extends Controller
+class EtalaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.index', compact('barangs'));
+        $etalases = Etalase::Where('toko_id',Auth::user()->toko->id)->get();
+        // dd($etalase);
+        return view('toko.etalase.index',compact('etalases'));
     }
 
     /**
@@ -30,10 +30,8 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $kategoris = Kategori::all();
-        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.create', compact('etalases', 'kategoris'));
+        $etalases= Etalase::where('toko_id',Auth::user()->toko->id)->get();
+        return view('toko.etalase.create',compact('etalases'));
     }
 
     /**
@@ -44,20 +42,16 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $barang = Barang::create([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'kategori_id' => $request->kategoris,
-            'etalase_id' => $request->etalases,
-            'toko_id' => Auth::user()->toko->id
+        // $etalases = Auth::user()->toko->etalase::create([
+
+        // ])
+        $etalases = Etalase::create([
+            'nama' => $request->nama_etalase,
+            'toko_id' => Auth::user()->toko->id,
         ]);
         // Alert::success('Sukses');
-        return redirect()->route('toko.barang.index')->with('toast_success', 'Barang telah ditambah');
+        return redirect()->route('toko.etalase.index')->with('toast_success', 'Barang telah ditambah');
     }
-
 
     /**
      * Display the specified resource.
@@ -78,7 +72,8 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        //
+        $etalases= Etalase::where('toko_id',Auth::user()->toko->id)->get();
+        return view('toko.etalase.edit',compact('etalases'));
     }
 
     /**
@@ -101,6 +96,10 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $etalases = Etalase::whereId($id)->firstOrFail();
+        $namaEtalases = $etalases->nama;
+        $etalases->delete();
+
+        return redirect()->route('toko.etalase.index')->with('success', 'Barang dengan nama ' . $namaEtalases . ' telah dihapus');
     }
 }

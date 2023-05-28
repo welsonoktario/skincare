@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\toko;
+namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
-use App\Models\Etalase;
-use App\Models\Kategori;
-use Illuminate\Http\Request;
+use App\Models\Transaksi;
 use Auth;
+use Illuminate\Http\Request;
 
-class BarangController extends Controller
+class RiwayatTransaksiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +16,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
+        $riwayattransaksi = Transaksi::where('status','selesai')->where('toko_id', Auth::user()->toko->id)->get();
+        return view('toko.riwayattransaksi.index',compact('riwayattransaksi'));
 
-        return view('toko.barang.index', compact('barangs'));
     }
 
     /**
@@ -30,10 +28,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $kategoris = Kategori::all();
-        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.create', compact('etalases', 'kategoris'));
+        //
     }
 
     /**
@@ -44,20 +39,8 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $barang = Barang::create([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'kategori_id' => $request->kategoris,
-            'etalase_id' => $request->etalases,
-            'toko_id' => Auth::user()->toko->id
-        ]);
-        // Alert::success('Sukses');
-        return redirect()->route('toko.barang.index')->with('toast_success', 'Barang telah ditambah');
+        //
     }
-
 
     /**
      * Display the specified resource.
@@ -67,7 +50,9 @@ class BarangController extends Controller
      */
     public function show($id)
     {
-        //
+        $riwayattransaksi = Transaksi::find($id);
+
+        return view('toko.riwayattransaksi.show', compact('riwayattransaksi'));
     }
 
     /**

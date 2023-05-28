@@ -44,11 +44,11 @@
     </li>
     <li class="dropdown">
       <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-        <div class="d-sm-none d-lg-inline-block">Hi, <p>{{ Auth::user()->toko->nama_toko }}</p></div>
+        <div class="d-sm-none d-lg-inline-block">Hi, <p>{{ Auth::user()->toko->nama }}</p></div>
       </a>
       <div class="dropdown-menu dropdown-menu-end">
-        <a href="features-profile.html" class="dropdown-item has-icon">
-          <i class="far fa-user"></i> Profile
+        <a href="{{route('user.home')}}" class="dropdown-item has-icon">
+          <i class="far fa-user"></i> BACK TO USER
         </a>
         <div class="dropdown-divider"></div>
         <a href="{{ route('logout') }}"

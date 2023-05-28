@@ -5,6 +5,7 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Throwable;
 
@@ -130,14 +131,33 @@ class KeranjangController extends Controller
 
     private function cekInteraksi($keranjangs)
     {
-        $pasangan = [];
+        // dd($keranjangs);
+        $pasangan = collect([]);
 
         foreach ($keranjangs as $i => $barang) {
+            if (!$barang->kandungan_id) continue;
+
             foreach ($keranjangs as $j => $barang2) {
-                $pasangan[] = [$barang->id, $barang2->id];
+                if (!$barang2->kandungan_id) continue;
+
+                if ($barang->kandungan_id !== $barang2->kandungan_id) {
+                    $tmp = collect([$barang->kandungan_id, $barang2->kandungan_id])->sort();
+
+                    if (!in_array($tmp->values()->toArray(), $pasangan->values()->toArray())) {
+                        $pasangan->add($tmp);
+                    }
+                }
             }
         }
 
-        dd($pasangan);
+        $pasangan = $pasangan->values()->all();
+
+        foreach($pasangan as $p) {
+            $hasilInteraksi = DB::table('interaksi_kandungans')
+                ->whereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$p[0], $p[1]])
+                ->orWhereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$p[1], $p[0]])
+                ->get();
+            dump($hasilInteraksi);
+        }
     }
 }

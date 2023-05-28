@@ -21,6 +21,12 @@
           <span>Barang</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('toko.etalase.index') }}">
+          <i class="fas fa-address-card"></i>
+          <span>Etalase</span>
+        </a>
+      </li>
       {{-- <li class="nab-item">
         <a class="nav-link" href="{{route('user.toko.index')}}">
             <i class="fas fa-address-card"></i>
