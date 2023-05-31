@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFotosTable extends Migration
+class CreateFotoPengembaliansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateFotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('fotos', function (Blueprint $table) {
+        Schema::create('foto_pengembalians', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->morphs('fotoable');
+            $table->string('ext');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateFotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fotos');
+        Schema::dropIfExists('foto_pengembalians');
     }
 }
