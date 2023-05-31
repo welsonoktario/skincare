@@ -80,7 +80,7 @@
       <div class="rounded shadow-sm bg-white p-4 sticky-bottom">
         <h6>Checkout</h6>
         <div class="d-flex flex-row w-100 justify-content-between align-items-center">
-          <p class="fw-semibold m-0">Total Harga</p>
+          <p class="fw-semibold m-0">Total Harga Keseluruhan</p>
           <h6 id="total" class="m-0">@rupiah($total)</h6>
         </div>
         <a href="{{ route('user.checkout.index') }}" class="btn btn-primary w-100 mt-4" role="button">

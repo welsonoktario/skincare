@@ -15,6 +15,7 @@ class CreateFotoBarangsTable extends Migration
     {
         Schema::create('foto_barangs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('barang_id')->constrained();
             $table->string('path');
             $table->string('ext');
             $table->timestamps();
