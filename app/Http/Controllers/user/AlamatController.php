@@ -109,6 +109,8 @@ class AlamatController extends Controller
                 'kontak' => $request->kontak,
                 'is_utama' => $request->has('isUtama') ? true : false
             ]);
+
+        return redirect()->back();
     }
 
     /**

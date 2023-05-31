@@ -149,10 +149,10 @@
       let modalDelete = $('#modalDelete');
       let selectProvinsi = $('select[name="provinsi"]');
       let selectKota = $('select[name="kota"]');
-      let formAlamat = $('#formAlamat');
       let formDelete = $('#formDelete');
 
       $('.btn-modal').click(function() {
+        let formAlamat = $('#formAlamat');
         let action = $(this).data('action');
 
         if (action == 'add') {
@@ -172,7 +172,7 @@
           $('#modalAlamatTitle').text('Edit Alamat');
           loadAlamat($(this));
 
-          if (!$('input[name="_method"]').length) {
+          if (!$('#formAlamat input[name="_method"]').length) {
             formAlamat.prepend('<input type="hidden" name="_method" value="PUT">');
           }
         }
@@ -213,6 +213,7 @@
       });
 
       function loadAlamat(el) {
+        let formAlamat = $('#formAlamat');
         let alamat = el.closest('.card').data('alamat');
 
         formAlamat.prop('action', route('user.profil.alamat.update', alamat.id));
@@ -221,6 +222,7 @@
         $('input[name="penerima"]').val(alamat.penerima);
         $('input[name="kontak"]').val(alamat.kontak);
         $('select[name="provinsi"]').val(alamat.provinsi_id);
+        $('input[name="isUtama"]').prop('checked', alamat.is_utama);
 
         fetch(route('user.checkout.loadKota', {
             provinsi: alamat.provinsi_id

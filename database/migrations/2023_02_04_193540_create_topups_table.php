@@ -17,7 +17,7 @@ class CreateTopupsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->integer('nominal')->default(0);
-            $table->enum('status', ['meununggu pembayaran', 'pending', 'diterima', 'ditolak'])->default('meununggu pembayaran');
+            $table->enum('status', ['menunggu pembayaran', 'pending', 'diterima', 'ditolak'])->default('menunggu pembayaran');
             $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
         });

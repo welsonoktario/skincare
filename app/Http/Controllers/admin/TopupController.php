@@ -17,7 +17,7 @@ class TopupController extends Controller
     public function index()
     {
         $topups = Topup::query()
-            ->whereStatus('menunggu pembayaran')
+            ->where('status', 'pending')
             ->get();
 
         return view('admin.topup.index', compact('topups'));

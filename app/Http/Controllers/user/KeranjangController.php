@@ -4,6 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
@@ -19,13 +20,17 @@ class KeranjangController extends Controller
     public function index()
     {
         $interaksis = [];
-        $query = Auth::user()
+        $keranjangs = Auth::user()
             ->keranjangs()
             ->get();
 
-        self::cekInteraksi($query);
+        foreach ($keranjangs as $barang) {
+            $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok;
+        }
 
-        $keranjangs = $query->groupBy('toko.nama');
+        self::cekInteraksi($keranjangs);
+
+        $keranjangs = $keranjangs->groupBy('toko.nama');
 
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
@@ -51,12 +56,15 @@ class KeranjangController extends Controller
             $newSubTotal = (($exist->pivot->jumlah + $request->jumlah) * $request->harga);
             $keranjangs->updateExistingPivot($request->barang, [
                 'sub_total' => $newSubTotal,
-                'jumlah' => $exist->pivot->jumlah + $request->jumlah
+                'jumlah' => $exist->pivot->jumlah + $request->jumlah,
+                'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
             ]);
         } else {
             $keranjangs->attach($request->barang, [
                 'sub_total' => $request->harga * $request->jumlah,
-                'jumlah' => $request->jumlah
+                'jumlah' => $request->jumlah,
+                'created_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
             ]);
         }
 
@@ -126,7 +134,9 @@ class KeranjangController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Auth::user()->keranjangs()->detach([$id]);
+
+        return redirect()->back();
     }
 
     private function cekInteraksi($keranjangs)
@@ -135,10 +145,14 @@ class KeranjangController extends Controller
         $pasangan = collect([]);
 
         foreach ($keranjangs as $barang) {
-            if (!$barang->kandungan_id) continue;
+            if (!$barang->kandungan_id) {
+                continue;
+            }
 
             foreach ($keranjangs as $barang2) {
-                if (!$barang2->kandungan_id) continue;
+                if (!$barang2->kandungan_id) {
+                    continue;
+                }
 
                 if ($barang->kandungan_id !== $barang2->kandungan_id) {
                     $tmp = collect([$barang->kandungan_id, $barang2->kandungan_id])->sort();

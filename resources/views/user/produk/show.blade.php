@@ -150,6 +150,7 @@
               max="{{ $produk->stok }}" class="form-control text-center" aria-label="Jumlah">
             <button data-opr="plus" class="btn btn-change btn-outline-primary">+</button>
           </div>
+          <p class="text-center text-warning text-small mt-1">Tersisa {{ $produk->stok }} produk tersedia</p>
           <div class="d-flex flex-row w-100 justify-content-between align-items-center">
             <p class="fw-semibold m-0">Subtotal</p>
             <h6 id="subtotal" class="m-0">@rupiah($produk->harga)</h6>
@@ -213,63 +214,69 @@
 @push('scripts')
   <script>
     $(function() {
-          let produk = @json($produk);
-          let qty = $('#inputQty');
-          let subtotal = $('#subtotal');
-          let foto = $('#fotoProduk');
+      let produk = @json($produk);
+      let qty = $('#inputQty');
+      let subtotal = $('#subtotal');
+      let foto = $('#fotoProduk');
 
-          // pas input quantity berubah
-          qty.change(function() {
-            let val = $(this).val()
+      // pas input quantity berubah
+      qty.change(function() {
+        let val = $(this).val()
 
-            updateSubtotal(val);
+        if (val < 1) {
+          $(this).val(1);
+          val = 1;
+        }
+
+        updateSubtotal(val);
+      });
+
+      // pas tombol min atau plus ditekan
+      $('.btn-change').click(function() {
+        let opr = $(this).data('opr');
+
+        if (opr === 'plus') {
+          if (qty.val() < produk.stok) qty.val(Number(qty.val()) + 1);
+        } else if (opr === 'min') {
+          if (qty.val() > 1) qty.val(Number(qty.val()) - 1);
+        }
+
+        updateSubtotal(qty.val());
+      });
+
+      // zoom foto pas posisi mouse di foto
+      foto.hover(function() {
+        foto.addClass('zoom-in');
+      }, function() {
+        foto.removeClass('zoom-in');
+      });
+
+      // gerakin zoom foto ngikut arah mouse
+      foto.on("mousemove", function(e) {
+        $(this)
+          .css({
+            "transform-origin": ((e.pageX - $(this).offset().left) / $(this).width()) * 100 +
+              "% " +
+              ((e.pageY - $(this).offset().top) / $(this).height()) * 100 +
+              "%"
           });
+      });
 
-          // pas tombol min atau plus ditekan
-          $('.btn-change').click(function() {
-            let opr = $(this).data('opr');
+      // ganti foto pas arahin mouse ke foto2 kecil
+      $('.thumbnail').hover(function() {
+        let src = $(this).prop('src');
+        foto.prop('src', src);
+      });
 
-            if (opr === 'plus') {
-              if (qty.val() < produk.stok) qty.val(Number(qty.val()) + 1);
-            } else if (opr === 'min') {
-              if (qty.val() > 1) qty.val(Number(qty.val()) - 1);
-            }
-
-            updateSubtotal(qty.val());
-          });
-
-          // zoom foto pas posisi mouse di foto
-          foto.hover(function() {
-            foto.addClass('zoom-in');
-          }, function() {
-            foto.removeClass('zoom-in');
-          });
-
-          // gerakin zoom foto ngikut arah mouse
-          foto.on("mousemove", function(e) {
-            $(this)
-              .css({
-                "transform-origin": ((e.pageX - $(this).offset().left) / $(this).width()) * 100 +
-                  "% " +
-                  ((e.pageY - $(this).offset().top) / $(this).height()) * 100 +
-                  "%"
-              });
-          });
-
-          // ganti foto pas arahin mouse ke foto2 kecil
-          $('.thumbnail').hover(function() {
-            let src = $(this).prop('src');
-            foto.prop('src', src);
-          });
-
-          // ubah nilai subtotal
-          function updateSubtotal(val) {
-            subtotal.text(Number(val * produk.harga).toLocaleString('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 0
-            }));
-            $('#inputJumlah').val(val);
-          }
+      // ubah nilai subtotal
+      function updateSubtotal(val) {
+        subtotal.text(Number(val * produk.harga).toLocaleString('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          maximumFractionDigits: 0
+        }));
+        $('#inputJumlah').val(val);
+      }
+    });
   </script>
 @endpush

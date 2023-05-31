@@ -38,40 +38,60 @@
                 <td class="text-right">
                   @rupiah($barang->harga)
                 </td>
-                <td>
-                  <div class="input-group" style="width: 8rem;">
+                <td class="text-center">
+                  <div class="input-group mx-auto" style="width: 8rem;">
                     <button data-id="{{ $barang->id }}" data-opr="min"
                       class="btn btn-change btn-outline-primary">-</button>
                     <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}" data-id="{{ $barang->id }}"
-                      type="number" placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
-                      max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
+                      data-toko="{{ $barang->toko_id }}" type="number" placeholder="Jumlah"
+                      value="{{ $barang->pivot->jumlah }}" min="1" max="{{ $barang->stok }}"
+                      class="input-qty form-control text-center" aria-label="Jumlah">
                     <button data-id="{{ $barang->id }}" data-opr="plus"
                       class="btn btn-change btn-outline-primary">+</button>
                   </div>
+                  <p class="text-stok text-small mt-2 @if ($barang->stok == 0 || !$barang->checkoutable) text-danger @else text-warning @endif"
+                    data-id="{{ $barang->id }}">
+                    @if (!$barang->checkoutable && $barang->stok > 0)
+                      Jumlah produk di keranjang melebihi stok produk
+                    @elseif ($barang->stok == 0)
+                      Stok produk habis
+                    @else
+                      Tersisa {{ $barang->stok }} produk tersedia
+                    @endif
+                  </p>
                 </td>
                 <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
                   @rupiah($barang->pivot->sub_total)
                 </td>
                 <td>
-                  <div>
-                    <a class="link-danger" href="{{ route('user.keranjang.destroy', $barang->id) }}" role="button">
+                  <form action="{{ route('user.keranjang.destroy', ['keranjang' => $barang->id]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-icon link-danger" role="button">
                       <i class="far fa-trash-alt"></i>
-                    </a>
-                  </div>
+                    </button>
+                  </form>
                 </td>
               </tr>
             @endforeach
             <tr>
               <td colspan="2"></td>
               <td>Total Harga</td>
-              <td id="totalHarga">@rupiah(
-                  $barangs->sum(function ($barang) {
-                      return $barang->pivot->sub_total;
-                  })
-              )</td>
+              <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(fn($barang) => $barang->pivot->sub_total))</td>
               <td>
+                @php
+                  $checkoutable = true;
+
+                  foreach ($barangs as $barang) {
+                      if (!$barang->checkoutable) {
+                          $checkoutable = false;
+                          break;
+                      }
+                  }
+                @endphp
                 <a href="{{ route('user.checkout.index', ['toko' => $barangs[0]->toko_id]) }}"
-                  class="btn btn-primary w-100" role="button">Checkout</a>
+                  class="btn btn-checkout btn-primary w-100 @if (!$checkoutable) disabled @endif"
+                  role="button" data-id="{{ $barangs[0]->toko_id }}">Checkout</a>
               </td>
             </tr>
           @endforeach
@@ -83,7 +103,26 @@
           <p class="fw-semibold m-0">Total Harga Keseluruhan</p>
           <h6 id="total" class="m-0">@rupiah($total)</h6>
         </div>
-        <a href="{{ route('user.checkout.index') }}" class="btn btn-primary w-100 mt-4" role="button">
+
+        @php
+          $checkoutable = true;
+
+          foreach ($keranjangs as $toko => $barangs) {
+              if (!$checkoutable) {
+                  break;
+              }
+
+              foreach ($barangs as $barang) {
+                  if (!$barang->checkoutable) {
+                      $checkoutable = false;
+                      break;
+                  }
+              }
+          }
+        @endphp
+
+        <a href="{{ route('user.checkout.index') }}"
+          class="btn btn-primary w-100 mt-4 @if (!$checkoutable) disabled @endif" role="button">
           Checkout Semua Barang
         </a>
       </div>
@@ -113,9 +152,24 @@
       $('.input-qty').change(function() {
         let {
           id,
-          harga
+          harga,
+          stok,
+          toko
         } = $(this).data();
         let jumlah = $(this).val();
+
+        if (jumlah < 1) {
+          $(this).val(1);
+          jumlah = 1;
+        }
+
+        if (stok > 0) {
+          if (jumlah <= stok) {
+            $(`.btn-checkout[data-id="${toko}"]`).removeClass('disabled');
+            $(`.text-stok[data-id="${id}"]`).text(`Tersisa ${stok} produk tersedia`);
+            $(`.text-stok[data-id="${id}"]`).removeClass('text-danger').addClass('text-warning');
+          }
+        }
 
         updateSubtotal(id, harga, jumlah);
       });
@@ -129,8 +183,10 @@
         let input = $(`.input-qty[data-id="${id}"]`);
         let jumlah = Number(input.val());
         let {
+          id: idBarang,
           harga,
-          stok
+          stok,
+          toko
         } = input.data();
 
         if (opr === 'plus') {
@@ -142,6 +198,15 @@
             jumlah--;
           }
         }
+
+        if (stok > 0) {
+          if (jumlah <= stok) {
+            $(`.btn-checkout[data-id="${toko}"]`).removeClass('disabled');
+            $(`.text-stok[data-id="${idBarang}"]`).text(`Tersisa ${stok} produk tersedia`);
+            $(`.text-stok[data-id="${idBarang}"]`).removeClass('text-danger').addClass('text-warning');
+          }
+        }
+
         updateSubtotal(id, harga, jumlah);
       });
 
@@ -158,7 +223,7 @@
           currency: 'IDR',
           maximumFractionDigits: 0
         }));
-        $('#totalHarga').text(Number(res.data.total).toLocaleString('id-ID', {
+        $(`.total-harga[data-id="${barang}"]`).text(subtotal.toLocaleString('id-ID', {
           style: 'currency',
           currency: 'IDR',
           maximumFractionDigits: 0
