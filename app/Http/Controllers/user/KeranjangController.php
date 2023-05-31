@@ -134,10 +134,10 @@ class KeranjangController extends Controller
         // dd($keranjangs);
         $pasangan = collect([]);
 
-        foreach ($keranjangs as $i => $barang) {
+        foreach ($keranjangs as $barang) {
             if (!$barang->kandungan_id) continue;
 
-            foreach ($keranjangs as $j => $barang2) {
+            foreach ($keranjangs as $barang2) {
                 if (!$barang2->kandungan_id) continue;
 
                 if ($barang->kandungan_id !== $barang2->kandungan_id) {

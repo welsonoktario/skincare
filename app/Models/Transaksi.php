@@ -32,4 +32,9 @@ class Transaksi extends Model
     {
         return $this->hasMany(TransaksiDetail::class);
     }
+
+    public function pengembalian()
+    {
+        return $this->hasOne(Pengembalian::class);
+    }
 }

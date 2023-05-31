@@ -47,7 +47,7 @@ class Barang extends Model
 
     public function fotos()
     {
-        return $this->morphMany(Foto::class, 'fotoable');
+        return $this->hasMany(FotoBarang::class);
     }
 
     public function users()
