@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('nama');
             $table->string('no_hp')->unique();
             $table->string('email')->unique();
-            $table->enum('role', ['customer', 'toko', 'admin'])->default('customer');
+            $table->enum('role', ['user', 'admin'])->default('user');
             $table->integer('saldo')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

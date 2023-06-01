@@ -24,11 +24,11 @@ class KeranjangController extends Controller
             ->keranjangs()
             ->get();
 
+        $kandungans = self::cekInteraksi($keranjangs);
+
         foreach ($keranjangs as $barang) {
             $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok;
         }
-
-        self::cekInteraksi($keranjangs);
 
         $keranjangs = $keranjangs->groupBy('toko.nama');
 
@@ -38,7 +38,7 @@ class KeranjangController extends Controller
             });
         });
 
-        return view('user.keranjang.index', compact('keranjangs', 'total'));
+        return view('user.keranjang.index', compact('keranjangs', 'total', 'kandungans'));
     }
 
     /**
@@ -141,9 +141,11 @@ class KeranjangController extends Controller
 
     private function cekInteraksi($keranjangs)
     {
-        // dd($keranjangs);
+        $hasilInteraksis = collect([]);
+        // ""
         $pasangan = collect([]);
 
+        // bikin pasangan kandungan yang tidak berulang-ulang
         foreach ($keranjangs as $barang) {
             if (!$barang->kandungan_id) {
                 continue;
@@ -154,24 +156,47 @@ class KeranjangController extends Controller
                     continue;
                 }
 
-                if ($barang->kandungan_id !== $barang2->kandungan_id) {
-                    $tmp = collect([$barang->kandungan_id, $barang2->kandungan_id])->sort();
+                if ($barang->kandungan_id != $barang2->kandungan_id) {
+                    $tmp = collect([
+                        [
+                            'barang' => $barang->nama,
+                            'kandungan' => $barang->kandungan_id
+                        ],
+                        [
+                            'barang' => $barang2->nama,
+                            'kandungan' => $barang2->kandungan_id
+                        ]
+                    ])->sortBy('kandungan');
 
-                    if (!in_array($tmp->values()->toArray(), $pasangan->values()->toArray())) {
+                    $tmp = collect(["k1", "k2"])->combine($tmp);
+
+                    if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
                         $pasangan->add($tmp);
                     }
                 }
             }
         }
 
-        $pasangan = $pasangan->values()->all();
+        // dd($pasangan);
 
+        // ambil hasil interaksi dari tiap pasangan kandungan
         foreach($pasangan as $p) {
-            $hasilInteraksi = DB::table('interaksi_kandungans')
-                ->whereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$p[0], $p[1]])
-                ->orWhereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$p[1], $p[0]])
-                ->get();
-            dump($hasilInteraksi);
+            $hasilInteraksi = DB::table('interaksi_kandungans', 'ik')
+                ->selectRaw('ik.jenis_interaksi jenis_interaksi, ik.deskripsi_interaksi deskripsi_interaksi, ik.sumber sumber, k1.nama kandungan_satu, k2.nama as kandungan_dua')
+                ->join('kandungans as k1', 'k1.id', '=', 'ik.kandungan_satu_id')
+                ->join('kandungans as k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+                ->whereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k1']['kandungan'], $p['k2']['kandungan']])
+                ->orWhereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k2']['kandungan'], $p['k1']['kandungan']])
+                ->first();
+
+            if ($hasilInteraksi) {
+                $hasilInteraksi->barang_satu = $p['k1']['barang'];
+                $hasilInteraksi->barang_dua = $p['k2']['barang'];
+                $hasilInteraksis->add($hasilInteraksi);
+            }
         }
+        // dd($hasilInteraksis);
+
+        return $hasilInteraksis;
     }
 }

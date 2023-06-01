@@ -15,7 +15,7 @@ class CreatePenarikansTable extends Migration
     {
         Schema::create('penarikans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('toko_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->integer('nominal')->default(10000);
             $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
             $table->timestamps();

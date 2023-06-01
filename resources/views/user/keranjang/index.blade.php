@@ -12,75 +12,107 @@
 
   <div class="mt-4">
     @if (count($keranjangs))
-      <table class="table rounded shadow-sm bg-white">
-        <thead>
-          <tr>
-            <th scope="col">Produk</th>
-            <th scope="col">Harga Satuan</th>
-            <th scope="col">Jumlah</th>
-            <th scope="col">Sub Total</th>
-            <th scope="col">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($keranjangs as $toko => $barangs)
-            <tr>
-              <td colspan="5">
-                <h6 class="m-0">{{ $toko }}</h6>
-              </td>
-            </tr>
-            @foreach ($barangs as $barang)
+      <div class="row row-cols-12">
+        <div class="col-8">
+          <table class="table rounded shadow-sm bg-white">
+            <thead>
               <tr>
-                <td class="py-4">
-                  <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
-                  <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
-                </td>
-                <td class="text-right">
-                  @rupiah($barang->harga)
-                </td>
-                <td class="text-center">
-                  <div class="input-group mx-auto" style="width: 8rem;">
-                    <button data-id="{{ $barang->id }}" data-opr="min"
-                      class="btn btn-change btn-outline-primary">-</button>
-                    <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}" data-id="{{ $barang->id }}"
-                      data-toko="{{ $barang->toko_id }}" type="number" placeholder="Jumlah"
-                      value="{{ $barang->pivot->jumlah }}" min="1" max="{{ $barang->stok }}"
-                      class="input-qty form-control text-center" aria-label="Jumlah">
-                    <button data-id="{{ $barang->id }}" data-opr="plus"
-                      class="btn btn-change btn-outline-primary">+</button>
-                  </div>
-                  <p class="text-stok text-small mt-2 @if ($barang->stok == 0 || !$barang->checkoutable) text-danger @else text-warning @endif"
-                    data-id="{{ $barang->id }}">
-                    @if (!$barang->checkoutable && $barang->stok > 0)
-                      Jumlah produk di keranjang melebihi stok produk
-                    @elseif ($barang->stok == 0)
-                      Stok produk habis
-                    @else
-                      Tersisa {{ $barang->stok }} produk tersedia
-                    @endif
-                  </p>
-                </td>
-                <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
-                  @rupiah($barang->pivot->sub_total)
-                </td>
-                <td>
-                  <form action="{{ route('user.keranjang.destroy', ['keranjang' => $barang->id]) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-icon link-danger" role="button">
-                      <i class="far fa-trash-alt"></i>
-                    </button>
-                  </form>
-                </td>
+                <th scope="col">Produk</th>
+                <th scope="col">Harga Satuan</th>
+                <th scope="col">Jumlah</th>
+                <th scope="col">Sub Total</th>
+                <th scope="col">Aksi</th>
               </tr>
-            @endforeach
-            <tr>
-              <td colspan="2"></td>
-              <td>Total Harga</td>
-              <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(fn($barang) => $barang->pivot->sub_total))</td>
-              <td>
-                @php
-                  $checkoutable = true;
+            </thead>
+            <tbody>
+              @foreach ($keranjangs as $toko => $barangs)
+                <tr>
+                  <td colspan="5">
+                    <h6 class="m-0">{{ $toko }}</h6>
+                  </td>
+                </tr>
+                @foreach ($barangs as $barang)
+                  <tr>
+                    <td class="py-4">
+                      <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
+                      <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
+                    </td>
+                    <td class="text-right">
+                      @rupiah($barang->harga)
+                    </td>
+                    <td class="text-center">
+                      <div class="input-group mx-auto" style="width: 8rem;">
+                        <button data-id="{{ $barang->id }}" data-opr="min"
+                          class="btn btn-change btn-outline-primary">-</button>
+                        <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}"
+                          data-id="{{ $barang->id }}" data-toko="{{ $barang->toko_id }}" type="number"
+                          placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
+                          max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
+                        <button data-id="{{ $barang->id }}" data-opr="plus"
+                          class="btn btn-change btn-outline-primary">+</button>
+                      </div>
+                      <p class="text-stok text-small mt-2 @if ($barang->stok == 0 || !$barang->checkoutable) text-danger @else text-warning @endif"
+                        data-id="{{ $barang->id }}">
+                        @if (!$barang->checkoutable && $barang->stok > 0)
+                          Jumlah produk di keranjang melebihi stok produk
+                        @elseif ($barang->stok == 0)
+                          Stok produk habis
+                        @else
+                          Tersisa {{ $barang->stok }} produk tersedia
+                        @endif
+                      </p>
+                    </td>
+                    <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
+                      @rupiah($barang->pivot->sub_total)
+                    </td>
+                    <td>
+                      <form action="{{ route('user.keranjang.destroy', ['keranjang' => $barang->id]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-icon link-danger" role="button">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                @endforeach
+                <tr>
+                  <td colspan="2"></td>
+                  <td>Total Harga</td>
+                  <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(fn($barang) => $barang->pivot->sub_total))</td>
+                  <td>
+                    @php
+                      $checkoutable = true;
+
+                      foreach ($barangs as $barang) {
+                          if (!$barang->checkoutable) {
+                              $checkoutable = false;
+                              break;
+                          }
+                      }
+                    @endphp
+                    <a href="{{ route('user.checkout.index', ['toko' => $barangs[0]->toko_id]) }}"
+                      class="btn btn-checkout btn-primary w-100 @if (!$checkoutable) disabled @endif"
+                      role="button" data-id="{{ $barangs[0]->toko_id }}">Checkout</a>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+          <div class="rounded shadow-sm bg-white p-4 sticky-bottom">
+            <h6>Checkout</h6>
+            <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+              <p class="fw-semibold m-0">Total Harga Keseluruhan</p>
+              <h6 id="total" class="m-0">@rupiah($total)</h6>
+            </div>
+
+            @php
+              $checkoutable = true;
+
+              foreach ($keranjangs as $toko => $barangs) {
+                  if (!$checkoutable) {
+                      break;
+                  }
 
                   foreach ($barangs as $barang) {
                       if (!$barang->checkoutable) {
@@ -88,43 +120,44 @@
                           break;
                       }
                   }
-                @endphp
-                <a href="{{ route('user.checkout.index', ['toko' => $barangs[0]->toko_id]) }}"
-                  class="btn btn-checkout btn-primary w-100 @if (!$checkoutable) disabled @endif"
-                  role="button" data-id="{{ $barangs[0]->toko_id }}">Checkout</a>
-              </td>
-            </tr>
-          @endforeach
-        </tbody>
-      </table>
-      <div class="rounded shadow-sm bg-white p-4 sticky-bottom">
-        <h6>Checkout</h6>
-        <div class="d-flex flex-row w-100 justify-content-between align-items-center">
-          <p class="fw-semibold m-0">Total Harga Keseluruhan</p>
-          <h6 id="total" class="m-0">@rupiah($total)</h6>
+              }
+            @endphp
+
+            <a href="{{ route('user.checkout.index') }}"
+              class="btn btn-primary w-100 mt-4 @if (!$checkoutable) disabled @endif" role="button">
+              Checkout Semua Barang
+            </a>
+          </div>
         </div>
 
-        @php
-          $checkoutable = true;
-
-          foreach ($keranjangs as $toko => $barangs) {
-              if (!$checkoutable) {
-                  break;
-              }
-
-              foreach ($barangs as $barang) {
-                  if (!$barang->checkoutable) {
-                      $checkoutable = false;
-                      break;
-                  }
-              }
-          }
-        @endphp
-
-        <a href="{{ route('user.checkout.index') }}"
-          class="btn btn-primary w-100 mt-4 @if (!$checkoutable) disabled @endif" role="button">
-          Checkout Semua Barang
-        </a>
+        <div class="col-4">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0">Hasil Interaksi Kandungan</h6>
+            </div>
+            <div class="card-body">
+              @foreach ($kandungans as $k)
+                <div
+                  class="alert @if ($k->jenis_interaksi == 'baik') alert-primary @elseif ($k->jenis_interaksi == 'buruk') alert-danger @else alert-secondary @endif">
+                  <div class="alert-title text-capitalize">
+                    Interaksi {{ $k->jenis_interaksi }}
+                  </div>
+                  <p class="fw-semibold">
+                    {{ $k->barang_satu }} dan {{ $k->barang_dua }}
+                    @if ($k->jenis_interaksi == 'baik')
+                      dapat digunakan dengan bersamaan
+                    @elseif ($k->jenis_interaksi == 'buruk')
+                      tidak dapat digunakan bersamaan
+                    @else
+                      tidak memiliki interaksi apapun
+                    @endif
+                  </p>
+                  {{ $k->deskripsi_interaksi }}
+                </div>
+              @endforeach
+            </div>
+          </div>
+        </div>
       </div>
     @else
       <div class="card">
@@ -167,7 +200,8 @@
           if (jumlah <= stok) {
             $(`.btn-checkout[data-id="${toko}"]`).removeClass('disabled');
             $(`.text-stok[data-id="${id}"]`).text(`Tersisa ${stok} produk tersedia`);
-            $(`.text-stok[data-id="${id}"]`).removeClass('text-danger').addClass('text-warning');
+            $(`.text-stok[data-id="${id}"]`).removeClass('text-danger').addClass(
+              'text-warning');
           }
         }
 
@@ -203,7 +237,8 @@
           if (jumlah <= stok) {
             $(`.btn-checkout[data-id="${toko}"]`).removeClass('disabled');
             $(`.text-stok[data-id="${idBarang}"]`).text(`Tersisa ${stok} produk tersedia`);
-            $(`.text-stok[data-id="${idBarang}"]`).removeClass('text-danger').addClass('text-warning');
+            $(`.text-stok[data-id="${idBarang}"]`).removeClass('text-danger').addClass(
+              'text-warning');
           }
         }
 

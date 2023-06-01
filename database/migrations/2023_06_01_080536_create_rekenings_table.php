@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFotoPengembaliansTable extends Migration
+class CreateRekeningsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateFotoPengembaliansTable extends Migration
      */
     public function up()
     {
-        Schema::create('foto_pengembalians', function (Blueprint $table) {
+        Schema::create('rekenings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengembalian_id')->constrained();
-            $table->string('path');
-            $table->string('ext');
+            $table->foreignId('bank_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->string('nomor_rekening');
+            $table->string('nama_penerima');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateFotoPengembaliansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foto_pengembalians');
+        Schema::dropIfExists('rekenings');
     }
 }
