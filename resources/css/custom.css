@@ -7,15 +7,51 @@
 
 /*# sourceMappingURL=custom.css.map */
 
-.card-hover {
-    transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-    -o-transition: all 0.5s;
+.bg-primary-gradient {
+    background: rgb(102, 119, 236);
+    background: linear-gradient(
+        135deg,
+        rgba(102, 119, 236, 1) 70%,
+        rgba(255, 157, 255, 1) 100%
+    );
+}
+
+.list-group-item.active {
+    background: rgb(102, 119, 236);
+    background: linear-gradient(
+        135deg,
+        rgba(102, 119, 236, 1) 70%,
+        rgba(255, 157, 255, 1) 100%
+    );
+}
+
+.btn-primary,
+.btn-primary.disabled {
+    box-shadow: 0 2px 6px #acb5f6;
+    background: rgb(102, 119, 236);
+    background: linear-gradient(
+        135deg,
+        rgba(102, 119, 236, 1) 70%,
+        rgba(255, 157, 255, 1) 100%
+    );
+    border: none;
+}
+
+.card-primary-hover {
+    background: rgb(102, 119, 236);
+    transition: background 0.5s;
+    -webkit-transition: background 0.5s;
+    -o-transition: background 0.5s;
 }
 
 .card-primary-hover:hover {
-    background-color: #5d6bd7 !important;
-    color: white !important;
+    background: rgb(102, 119, 236);
+    background: linear-gradient(
+        135deg,
+        rgba(102, 119, 236, 1) 70%,
+        rgba(255, 157, 255, 1) 100%
+    );
+    color: white;
 }
 
 .card-hover:hover {

@@ -2,10 +2,10 @@
 @section('title', 'Skincare')
 @section('content')
   @auth
-    <h2 class="mb-4">Selamat Datang {{ auth()->user()->nama }}, Selamat Berbelanja</h2>
+    <p class="mb-4">Selamat Datang <span class="fw-bold">{{ auth()->user()->nama }}</span>, Selamat Berbelanja</p>
   @endauth
   @guest
-    <h2 class="mb-4">Selamat datang, silahkan
+    <p class="mb-4">Selamat datang, silahkan
       <span>
         <a class="link-primary" href="{{ route('login') }}">masuk</a>
       </span>
@@ -14,7 +14,7 @@
         <a class="link-primary" href="{{ route('register') }}">daftar</a>
       </span>
       terlebih dahulu untuk berbelanja
-    </h2>
+    </p>
   @endguest
 
   <div class="card mt-md-0 pt-md-0" style="margin-top: 22%">
@@ -44,7 +44,7 @@
     <div class="d-flex flex-row py-2 overflow-x-auto">
       @foreach ($terbaru as $produk)
         <div class="col-10 col-md-3">
-          <x-shared.card-produk :produk="$produk" />
+          <x-card-produk :produk="$produk" />
         </div>
       @endforeach
     </div>
@@ -55,7 +55,7 @@
     <div class="d-flex flex-row py-2 overflow-x-auto">
       @foreach ($terlaris as $produk)
         <div class="col-10 col-md-3">
-          <x-shared.card-produk :produk="$produk" />
+          <x-card-produk :produk="$produk" />
         </div>
       @endforeach
     </div>

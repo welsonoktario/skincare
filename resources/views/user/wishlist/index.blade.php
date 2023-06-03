@@ -13,7 +13,7 @@
     @if (count($wishlists))
       <div class="row row-cols-md-4 row-cols-2">
         @foreach ($wishlists as $wishlist)
-          <x-shared.card-produk :produk="$wishlist" />
+          <x-card-produk :produk="$wishlist" />
         @endforeach
       </div>
     @else

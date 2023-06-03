@@ -152,7 +152,7 @@
                       tidak memiliki interaksi apapun
                     @endif
                   </p>
-                  {{ $k->deskripsi_interaksi }}
+                  {{ $k->deskripsi_interaksi }} ({{ $k->sumber }})
                 </div>
               @endforeach
             </div>

@@ -9,15 +9,15 @@
     </ol>
   </nav>
 
+  <h5 class="mt-4">Kategori {{ $kategori->nama }}</h5>
+
   <div class="row row-cols-2 row-cols-md-4">
     @foreach ($barangs as $barang)
-      <div class="p-2">
-        <div class="card">
-          <x-shared.card-produk :produk="$barang" />
-        </div>
-      </div>
+      <x-card-produk :produk="$barang" />
     @endforeach
   </div>
 
-  {{ $barangs->links() }}
+  <div class="text-right">
+    {{ $barangs->links() }}
+  </div>
 @endsection

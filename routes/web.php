@@ -1,15 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\user\AlamatController;
 use App\Http\Controllers\user\BarangController;
 use App\Http\Controllers\user\CheckoutController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\user\HomeController;
 use App\Http\Controllers\user\KategoriController;
 use App\Http\Controllers\user\ProfilController;
 use App\Http\Controllers\user\TopupController;
 use App\Http\Controllers\user\KeranjangController;
 use App\Http\Controllers\user\TransaksiController;
+use App\Http\Controllers\user\TokoController;
+use App\Http\Controllers\user\WishlistController;
 
 use App\Http\Controllers\admin\HomeController as AdminHomeController;
 use App\Http\Controllers\admin\TokoController as AdminTokoController;
@@ -18,7 +21,6 @@ use App\Http\Controllers\admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\TopupController as AdminTopupController;
 use App\Http\Controllers\toko\BarangController as TokoBarangController;
 use App\Http\Controllers\toko\HomeController as TokoHomeController;
-use App\Http\Controllers\user\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,7 @@ use App\Http\Controllers\user\WishlistController;
 Route::group(['as' => 'user.'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/search', [HomeController::class, 'search'])->name('home.search');
+    Route::get('/toko/{toko}', [TokoController::class, 'index'])->name('toko.index');
 
     Route::resources(([
         'kategori' => KategoriController::class,

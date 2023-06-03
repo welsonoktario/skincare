@@ -584,7 +584,8 @@ select.form-control:not([size]):not([multiple]) {
   .alert:not(.alert-light) a {
     color: #fff; }
   .alert.alert-primary {
-    background-color: #6777ef; }
+    background: rgb(102,119,236);
+    background: linear-gradient(135deg, rgba(102,119,236,1) 70%, rgba(255,157,255,1) 100%); }
   .alert.alert-secondary {
     background-color: #cdd3d8; }
   .alert.alert-success {

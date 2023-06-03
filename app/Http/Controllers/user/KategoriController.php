@@ -18,8 +18,9 @@ class KategoriController extends Controller
     {
         $barangs = $kategori
             ->barangs()
-            ->paginate(4)
+            ->paginate(10)
             ->withQueryString();
+
         return view('user.kategori.show', compact('kategori', 'barangs'));
     }
 }

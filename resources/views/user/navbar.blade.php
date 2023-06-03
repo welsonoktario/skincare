@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-primary shadow" style="position: fixed; top: 0; left:0; right:0; z-index: 80">
+<nav class="navbar navbar-expand-lg bg-primary-gradient shadow" style="position: fixed; top: 0; left:0; right:0; z-index: 80">
   <div class="container">
     <a href="{{ route('user.home') }}" class="navbar-brand text-capitalize" style="letter-spacing: 0.125rem">Skincare</a>
 

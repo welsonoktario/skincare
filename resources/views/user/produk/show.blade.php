@@ -99,7 +99,8 @@
                     <img class="rounded-circle mb-md-2" src="{{ $produk->toko->foto ?: 'https://picsum.photos/100' }}"
                       alt="{{ $produk->toko->nama }}" height="64" width="64">
                     <div>
-                      <a class="link-primary text-decoration-none fw-semibold mb-0" href="#">
+                      <a class="link-primary text-decoration-none fw-semibold mb-0"
+                        href="{{ route('user.toko.index', $produk->toko_id) }}">
                         {{ $produk->toko->nama }}
                       </a>
                       <p class="mb-0">
@@ -127,7 +128,22 @@
           @if (count($produk->ulasans))
             <div class="card-body">
               @foreach ($produk->ulasans as $ulasan)
-                <x-user.barang.ulasan :ulasan="$ulasan" />
+                <div>
+                  <p class="text-black fw-medium mb-0">
+                    {{ $ulasan->user->nama }}
+                  </p>
+                  <p>
+                    @for ($i = 1; $i <= $ulasan->rating; $i++)
+                      <i class="fas fa-star text-primary"></i>
+                    @endfor
+                  </p>
+                  @if ($ulasan->komentar)
+                    <p class="mb-0 text-black">
+                      {{ $ulasan->komentar }}
+                    </p>
+                  @endif
+                </div>
+
 
                 @if (!$loop->last)
                   <hr>
