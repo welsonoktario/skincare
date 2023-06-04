@@ -300,6 +300,23 @@ class KeranjangController extends Controller
                 // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
                 ->orWhereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k2']['kandungan'], $p['k1']['kandungan']])
                 ->first();
+
+            /* HASIL QUERY DIATAS:
+                SELECT
+                    ik.jenis_interaksi AS jenis_interaksi,
+                    ik.deskripsi_interaksi AS deskripsi_interaksi,
+                    ik.sumber AS sumber,
+                    k1.nama AS kandungan_satu,
+                    k2.nama AS kandungan_dua
+                FROM interaksi_kandungans AS ik
+                    INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
+                    INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
+                WHERE
+                    (ik.kandungan_satu_id = 1 AND ik.kandungan_dua_id = 4) OR
+                    (ik.kandungan_satu_id = 4 AND ik.kandungan_dua_id = 1)
+                LIMIT 1
+            */
+
             /*
             kalo ada hasil interaksi di db:
                 [
