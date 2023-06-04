@@ -30,7 +30,10 @@ class KeranjangController extends Controller
         // cek tiap barang di keranjang user
         // apakah stoknya cukup atau kurang dari stok barang yang dijual
         foreach ($keranjangs as $barang) {
-            $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok;
+            // kasih tanda tiap barang yang ada di keranjang apakah dapat di-checkout
+            $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok; // hasilnya true atau false
+            // $barang['checkoutable'] = true
+            // atau $barang['checkoutable'] = false
         }
 
         // kelompokkan barang2 di keranjang berdasarkan nama toko
