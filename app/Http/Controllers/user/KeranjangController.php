@@ -19,18 +19,24 @@ class KeranjangController extends Controller
      */
     public function index()
     {
+        // ngambil barang2 di keranjang dari user yang lagi login
         $keranjangs = Auth::user()
             ->keranjangs()
             ->get();
 
+        // cek kandungan
         $kandungans = self::cekInteraksi($keranjangs);
 
+        // cek tiap barang di keranjang user
+        // apakah stoknya cukup atau kurang dari stok barang yang dijual
         foreach ($keranjangs as $barang) {
             $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok;
         }
 
+        // kelompokkan barang2 di keranjang berdasarkan nama toko
         $keranjangs = $keranjangs->groupBy('toko.nama');
 
+        // hitung total seluruh barang dan jumlah di keranjang user
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
                 return $barang->pivot->sub_total;
@@ -296,9 +302,9 @@ class KeranjangController extends Controller
                 // join table interaksi_kandungans dengan table kandungans (k2) yang interaksi_dua_id sama dengan id kandungan
                 ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
                 // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
-                ->whereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k1']['kandungan'], $p['k2']['kandungan']])
+                ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
                 // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
-                ->orWhereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k2']['kandungan'], $p['k1']['kandungan']])
+                ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
                 ->first();
 
             /* HASIL QUERY DIATAS:
