@@ -56,6 +56,14 @@ Route::group(['as' => 'user.'], function () {
         Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('user.alamat.setUtama');
 
         Route::prefix('profil')->group(function () {
+            // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat
+            // Route::get('/alamat/{id}', [AlamatController::class, 'show']) => skincare.com/alamat/{alamat}
+            // Route::get('/alamat/{id}/create', [AlamatController::class, 'create']) => skincare.com/alamat/{alamat}/create
+            // Route::get('/alamat/{id}/edit', [AlamatController::class, 'edit']) => skincare.com/alamat/{alamat}/edit
+            // Route::put('/alamat/{id}', [AlamatController::class, 'update']) => skincare.com/alamat/{id}
+            // Route::post('/alamat', [AlamatController::class, 'store']) => skincare.com/alamat
+            // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
+            Route::get('/alamat', [AlamatController::class, 'findAll']);
             Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
         });
 
@@ -70,6 +78,7 @@ Route::group(['as' => 'user.'], function () {
 });
 
 Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
+    // skincare.com/toko/akun
     Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
     Route::resource('barang', TokoBarangController::class);
     Route::resource('akun', TokoAkunController::class);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
+use DB;
 
 class KategoriController extends Controller
 {
@@ -18,7 +19,7 @@ class KategoriController extends Controller
     {
         $barangs = $kategori
             ->barangs()
-            ->paginate(10)
+            ->paginate(4)
             ->withQueryString();
 
         return view('user.kategori.show', compact('kategori', 'barangs'));

@@ -19,7 +19,6 @@ class KeranjangController extends Controller
      */
     public function index()
     {
-        $interaksis = [];
         $keranjangs = Auth::user()
             ->keranjangs()
             ->get();
@@ -141,62 +140,208 @@ class KeranjangController extends Controller
 
     private function cekInteraksi($keranjangs)
     {
-        $hasilInteraksis = collect([]);
-        // ""
         $pasangan = collect([]);
 
         // bikin pasangan kandungan yang tidak berulang-ulang
         foreach ($keranjangs as $barang) {
             if (!$barang->kandungan_id) {
-                continue;
+                continue; // skip kalo barang1 gaada kandungan
             }
 
             foreach ($keranjangs as $barang2) {
                 if (!$barang2->kandungan_id) {
-                    continue;
+                    continue; // skip kalo barang2 gaada kandungan
                 }
 
+                // cek jika kandungan barang1 sama barang2 beda
+                // kalo kandungan barang1 & barang2 sama, skip, ngulang loop
                 if ($barang->kandungan_id != $barang2->kandungan_id) {
                     $tmp = collect([
                         [
-                            'barang' => $barang->nama,
-                            'kandungan' => $barang->kandungan_id
+                            'barang' => $barang->nama, // nivea
+                            'kandungan' => $barang->kandungan_id  // 3
                         ],
                         [
-                            'barang' => $barang2->nama,
-                            'kandungan' => $barang2->kandungan_id
+                            'barang' => $barang2->nama, // vaseline
+                            'kandungan' => $barang2->kandungan_id // 2
                         ]
-                    ])->sortBy('kandungan');
+                    ]);
+                    /*
+                        $tmp = [
+                            [
+                                'barang' => nivea,
+                                'kandungan' => 3
+                            ],
+                            [
+                                'barang' => vaseline
+                                'kandungan' => 2
+                            ]
+                        ]
+                    */
+
+                    $tmp = $tmp->sortBy('kandungan'); // urutkan berdasarkan kandungan_id
+                    /*
+                        $tmp = [
+                            [
+                                'barang' => vaseline,
+                                'kandungan' => 2
+                            ],
+                            [
+                                'barang' => nivea
+                                'kandungan' => 3
+                            ]
+                        ]
+                    */
 
                     $tmp = collect(["k1", "k2"])->combine($tmp);
+                    /*
+                        $tmp = [
+                            'k1' => [
+                                'barang' => 'vaseline',
+                                'kandungan' => 2
+                            ],
+                            'k2' => [
+                                'barang' => 'nivea'
+                                'kandungan' => 3
+                            ]
+                        ]
+                        */
 
+                       // cek jika text $tmp dijadikan json (string)
+                       // ada didalam text $pasangan dijadikan json (string)
+
+                        // str_contains untuk ngecek apakah sejumlah text (string)
+                        // ada didalam text (string) lainnya
+                        // ex: "llo w" didalam "hello world" hasilnya true
                     if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
                         $pasangan->add($tmp);
+                        /*
+                            $pasangan = [
+                                [
+                                    'k1' => [
+                                        'barang' => 'vaseline',
+                                        'kandungan' => 2
+                                    ],
+                                    'k2' => [
+                                        'barang' => 'nivea'
+                                        'kandungan' => 3
+                                    ]
+                                ]
+                            ]
+                        */
                     }
                 }
             }
         }
 
-        // dd($pasangan);
-
+        $hasilInteraksis = collect([]);
         // ambil hasil interaksi dari tiap pasangan kandungan
+        /*
+            $pasangan = [
+                [
+                    'k1' => [
+                        'barang' => 'scarlett',
+                        'kandungan' => 1
+                    ],
+                    'k2' => [
+                        'barang' => 'vaseline'
+                        'kandungan' => 2
+                    ]
+                ],
+                [
+                    'k1' => [
+                        'barang' => 'scarlett',
+                        'kandungan' => 1
+                    ],
+                    'k2' => [
+                        'barang' => 'nivea'
+                        'kandungan' => 3
+                    ]
+                ],
+                [
+                    'k1' => [
+                        'barang' => 'vaseline',
+                        'kandungan' => 2
+                    ],
+                    'k2' => [
+                        'barang' => 'nivea'
+                        'kandungan' => 3
+                    ]
+                ]
+            ]
+        */
         foreach($pasangan as $p) {
-            $hasilInteraksi = DB::table('interaksi_kandungans', 'ik')
-                ->selectRaw('ik.jenis_interaksi jenis_interaksi, ik.deskripsi_interaksi deskripsi_interaksi, ik.sumber sumber, k1.nama kandungan_satu, k2.nama as kandungan_dua')
-                ->join('kandungans as k1', 'k1.id', '=', 'ik.kandungan_satu_id')
-                ->join('kandungans as k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+            /*
+                $p = [
+                    'k1' => [
+                        'barang' => 'scarlett',
+                        'kandungan' => 1
+                    ],
+                    'k2' => [
+                        'barang' => 'vaseline'
+                        'kandungan' => 2
+                    ]
+                ],
+            */
+            $hasilInteraksi = DB::table('interaksi_kandungans', 'ik') // FROM interaksi_kandungans AS ik
+                ->selectRaw(
+                    'ik.jenis_interaksi AS jenis_interaksi,
+                    ik.deskripsi_interaksi AS deskripsi_interaksi,
+                    ik.sumber AS sumber,
+                    k1.nama AS kandungan_satu,
+                    k2.nama AS kandungan_dua'
+                )
+                ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
+                ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
                 ->whereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k1']['kandungan'], $p['k2']['kandungan']])
                 ->orWhereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k2']['kandungan'], $p['k1']['kandungan']])
                 ->first();
+            /*
+            kalo ada hasil interaksi di db:
+                [
+                    'jenis_interaksi' => 'baik',
+                    'deskripsi_interaksi' => 'bagus aja',
+                    'sumber' => 'katanya',
+                    'kandungan_satu' => 'AHA',
+                    'kandungan_dua' => 'AHB'
+                ]
 
+            kalo gaada: null
+            */
+
+            // kalo hasil interaksi ada di tabel interaksi_kandungans
             if ($hasilInteraksi) {
                 $hasilInteraksi->barang_satu = $p['k1']['barang'];
+                /*
+                    [
+                        'jenis_interaksi' => 'baik',
+                        'deskripsi_interaksi' => 'bagus aja',
+                        'sumber' => 'katanya',
+                        'kandungan_satu' => 'AHA',
+                        'kandungan_dua' => 'AHB',
+                        'barang_satu' => 'scarlett'
+                    ]
+                */
+
                 $hasilInteraksi->barang_dua = $p['k2']['barang'];
+                /*
+                    [
+                        'jenis_interaksi' => 'baik',
+                        'deskripsi_interaksi' => 'bagus aja',
+                        'sumber' => 'katanya',
+                        'kandungan_satu' => 'AHA',
+                        'kandungan_dua' => 'AHB',
+                        'barang_satu' => 'scarlett',
+                        'barang_dua' => 'vaseline'
+                    ]
+                */
+
+                // hasil interaksi ditambah ke array $hasilInteraksis
                 $hasilInteraksis->add($hasilInteraksi);
             }
         }
-        // dd($hasilInteraksis);
 
+        dd($hasilInteraksi);
         return $hasilInteraksis;
     }
 }

@@ -11,8 +11,8 @@
     background: rgb(102, 119, 236);
     background: linear-gradient(
         135deg,
-        rgba(102, 119, 236, 1) 70%,
-        rgba(255, 157, 255, 1) 100%
+        rgba(102, 119, 236, 1) 0%,
+        rgba(255, 157, 255, 1) 75%
     );
 }
 
@@ -20,8 +20,8 @@
     background: rgb(102, 119, 236);
     background: linear-gradient(
         135deg,
-        rgba(102, 119, 236, 1) 70%,
-        rgba(255, 157, 255, 1) 100%
+        rgba(102, 119, 236, 1) 0%,
+        rgba(255, 157, 255, 1) 75%
     );
 }
 
@@ -31,8 +31,8 @@
     background: rgb(102, 119, 236);
     background: linear-gradient(
         135deg,
-        rgba(102, 119, 236, 1) 70%,
-        rgba(255, 157, 255, 1) 100%
+        rgba(102, 119, 236, 1) 0%,
+        rgba(255, 157, 255, 1) 75%
     );
     border: none;
 }
@@ -48,8 +48,9 @@
     background: rgb(102, 119, 236);
     background: linear-gradient(
         135deg,
-        rgba(102, 119, 236, 1) 70%,
-        rgba(255, 157, 255, 1) 100%
+        rgba(102, 119, 236, 1) 0%,
+        rgba(255, 157, 255, 1) 75%
+        /* rgb(29, 147, 101) 75% */
     );
     color: white;
 }

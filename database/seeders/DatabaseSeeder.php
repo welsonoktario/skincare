@@ -24,19 +24,19 @@ class DatabaseSeeder extends Seeder
             KotaSeeder::class,
         ]);
 
-        Kategori::factory()
-            ->count(5)
-            ->create();
+        // Kategori::factory()
+        //     ->count(5)
+        //     ->create();
 
-        User::factory()
-            ->has(
-                Toko::factory()
-                    ->has(Barang::factory()->count(5), 'barangs')
-                    ->count(1),
-                'toko'
-            )
-            ->count(5)
-            ->create();
+        // User::factory()
+        //     ->has(
+        //         Toko::factory()
+        //             ->has(Barang::factory()->count(5), 'barangs')
+        //             ->count(1),
+        //         'toko'
+        //     )
+        //     ->count(5)
+        //     ->create();
 
         Ekspedisi::insert([
             'nama' => 'jne'
