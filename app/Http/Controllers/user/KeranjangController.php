@@ -205,14 +205,14 @@ class KeranjangController extends Controller
                                 'kandungan' => 3
                             ]
                         ]
-                        */
+                    */
 
-                       // cek jika text $tmp dijadikan json (string)
-                       // ada didalam text $pasangan dijadikan json (string)
+                    // cek jika text $tmp dijadikan json (string)
+                    // ada didalam text $pasangan dijadikan json (string)
 
-                        // str_contains untuk ngecek apakah sejumlah text (string)
-                        // ada didalam text (string) lainnya
-                        // ex: "llo w" didalam "hello world" hasilnya true
+                    // str_contains untuk ngecek apakah sejumlah text (string)
+                    // ada didalam text (string) lainnya
+                    // ex: "llo w" didalam "hello world" hasilnya true
                     if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
                         $pasangan->add($tmp);
                         /*
@@ -291,9 +291,13 @@ class KeranjangController extends Controller
                     k1.nama AS kandungan_satu,
                     k2.nama AS kandungan_dua'
                 )
+                // join table interaksi_kandungans dengan table kandungans (k1) yang interaksi_satu_id sama dengan id kandungan
                 ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
+                // join table interaksi_kandungans dengan table kandungans (k2) yang interaksi_dua_id sama dengan id kandungan
                 ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+                // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
                 ->whereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k1']['kandungan'], $p['k2']['kandungan']])
+                // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
                 ->orWhereRaw('ik.kandungan_satu_id = ? AND ik.kandungan_dua_id = ?', [$p['k2']['kandungan'], $p['k1']['kandungan']])
                 ->first();
             /*
@@ -319,7 +323,7 @@ class KeranjangController extends Controller
                         'sumber' => 'katanya',
                         'kandungan_satu' => 'AHA',
                         'kandungan_dua' => 'AHB',
-                        'barang_satu' => 'scarlett'
+                        'barang_satu' => 'scarlett' <-- nama barang 1
                     ]
                 */
 
@@ -331,8 +335,8 @@ class KeranjangController extends Controller
                         'sumber' => 'katanya',
                         'kandungan_satu' => 'AHA',
                         'kandungan_dua' => 'AHB',
-                        'barang_satu' => 'scarlett',
-                        'barang_dua' => 'vaseline'
+                        'barang_satu' => 'scarlett', <-- nama barang 1
+                        'barang_dua' => 'vaseline' <-- nama barang2
                     ]
                 */
 
@@ -341,7 +345,6 @@ class KeranjangController extends Controller
             }
         }
 
-        dd($hasilInteraksi);
         return $hasilInteraksis;
     }
 }

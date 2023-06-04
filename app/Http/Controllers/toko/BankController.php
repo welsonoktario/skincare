@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Toko;
+namespace App\Http\Controllers\toko;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaksi;
-use App\Models\TransaksiDetail;
-use Auth;
 use Illuminate\Http\Request;
 
-class RiwayatTransaksiController extends Controller
+class BankController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +14,6 @@ class RiwayatTransaksiController extends Controller
      */
     public function index()
     {
-        $riwayattransaksi = TransaksiDetail::where('transaksi_id', Auth::user()->toko->id)->get();
-        // $riwayattransaksi = TransaksiDetail::all();
-        return view('toko.riwayattransaksi.index',compact('riwayattransaksi'));
-
     }
 
     /**
@@ -52,9 +45,7 @@ class RiwayatTransaksiController extends Controller
      */
     public function show($id)
     {
-        $riwayattransaksi = Transaksi::find($id);
-
-        return view('toko.riwayattransaksi.show', compact('riwayattransaksi'));
+        //
     }
 
     /**

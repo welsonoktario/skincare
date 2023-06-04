@@ -17,21 +17,21 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="stok">Stok barang :</label>
             <div class="col-sm-10">
-                <input type="number" class="form-control" id="stok" placeholder="Tulis stok barang" name="stok">
+                <input type="number" min="0" class="form-control" id="stok" placeholder="Tulis stok barang" name="stok">
             </div>
         </div>
         <br>
         <div class="form-group">
             <label class="control-label col-sm-2" for="harga">Harga Barang :</label>
             <div class="col-sm-10">
-                <input type="number" class="form-control" id="harga" placeholder="Tulis harga barang per hari"
+                <input type="number" min="0"class="form-control" id="harga" placeholder="Tulis harga Barang"
                     name="harga">
             </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-sm-2" for="berat">Berat :</label>
+          <label class="control-label col-sm-2" for="berat">Berat (Kg) :</label>
           <div class="col-sm-10">
-              <input type="number" class="form-control" id="berat" placeholder="Tulis berat barang per hari"
+              <input type="number" min="0"class="form-control" id="berat" placeholder="Tulis berat barang "
                   name="berat">
           </div>
       </div>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-sm-2" for="kategoris">kategoris :</label>
+          <label class="control-label col-sm-2" for="kategoris">Kategori :</label>
           <div class="col-sm-10">
               <select name="kategoris" class="form-control" id="kategoris">
                   @foreach ($kategoris as $ak)

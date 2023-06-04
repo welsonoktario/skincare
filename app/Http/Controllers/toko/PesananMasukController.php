@@ -73,13 +73,15 @@ class PesananMasukController extends Controller
     public function update(Request $request, $id)
     {
         $pesananmasuk = Transaksi::find($id);
-        $pesananmasuk->update(['status' => $request->aksi]);
+        // $pesananmasuk->update(['status' => $request->aksi]);
 
 
         if ($request->aksi == 'diproses') {
+            $pesananmasuk->update(['status'=>'diproses']);
             return redirect()->route('toko.pesananmasuk.index')->with('success', 'Pesanan Telah Diterima');
         } else if ($request->aksi == 'batal') {
-            return redirect()->route('admin.pesananmasuk.index')->with('success', 'Pesanan Telah Ditolak');
+            $pesananmasuk->update(['status'=>'batal']);
+            return redirect()->route('toko.pesananmasuk.index')->with('success', 'Pesanan Telah Ditolak');
         }
     }
 

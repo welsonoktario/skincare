@@ -2,7 +2,7 @@
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Etalase</h1>
+      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Etalsasase</h1>
       <button id="btnTambahEtalase" class="d-sm-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>
         <span class="ms-1 text-white">Tambah Etalase</span>
@@ -14,17 +14,21 @@
           <table id="tableEtalase" class="table table-striped">
             <thead>
               <tr>
+                <th>Id</th>
                 <th>Nama Etalase</th>
-                <th>'</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               @foreach ($etalases as $e)
                 <tr class="listEtalase">
+                  <th>{{ $e->id }}</th>
                   <td> {{ $e->nama }}</td>
                   <td>
                     <button id="btnEditEtalase" data-id="{{ $e->id }}"
                       class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
+                      <button class="btnDetailEtalase btn btn-sm btn-primary text-white"
+                      data-id="{{ $e->id }}">Detail</button>
                       <form action="{{ route('toko.etalase.destroy', $e->id) }}" method="POST">
                         @csrf
                         @method("DELETE")
@@ -86,11 +90,26 @@
           $('#modalEtalaseContent').html(res);
         });
       });
+      $('.listEtalase .btnDetailEtalase').click(function() {
+        const id = $(this).data('id');
+        $('#modalEtalase').modal('show');
+        $('#modalEtalaseContent').html('');
+        $('#modalLoading').show();
+        $.get(`etalase/${id}`, function(res) {
+          $('#modalLoading').hide();
+          $('#modalEtalaseContent').html(res);
+        });
+      });
       $('#tableEtalase').DataTable({
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
         },
-        columns: [{
+        columns: [
+          {
+            name: 'Id',
+            orderable: true
+          },
+          {
             name: 'Nama Etalase',
             orderable: true
           },

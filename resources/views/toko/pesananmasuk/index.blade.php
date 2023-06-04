@@ -1,9 +1,7 @@
-@extends('toko.app')
+@extends('layouts.toko')
 @section('content')
-
 <div class="container-fluid">
   <p class="h3 my-4 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Pesanan Masuk</p>
-
   <form id="form-aksi" method="POST">
     @csrf
     @method('PUT')
@@ -36,8 +34,6 @@
                     data-aksi="diproses" data-customer="{{ $data->user->id }}" type="submit">Konfirmasi</button>
                   <button class="btn btn-aksi btn-secondary text-dark" data-transaksi="{{ $data->id }}"
                     data-aksi="batal" data-customer="{{ $data->user->id }}" type="submit">Tolak</button>
-                  {{-- <a href="{{ route('admin.pesanan.show', $data->id) }}"
-                    class="btn btn-primary align-self-lg-start">Detail</a> --}}
                 </div>
               @endif
             </div>
@@ -50,6 +46,7 @@
     @endforelse
   </form>
 </div>
+@endsection
 @push('scripts')
   <script>
     $(function() {
@@ -64,7 +61,7 @@
         $('#aksi').val(aksi);
         $('#customer').val(customer);
 
-        $('#form-aksi').prop('action', route('admin.pesananmasuk.update', transaksi));
+        $('#form-aksi').prop('action',  '/toko/pesananmasuk/'+transaksi);
         $('#form-aksi').submit();
       });
     });

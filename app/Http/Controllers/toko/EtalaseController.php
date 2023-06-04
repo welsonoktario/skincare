@@ -18,9 +18,9 @@ class EtalaseController extends Controller
      */
     public function index()
     {
-        $etalases = Etalase::Where('toko_id',Auth::user()->toko->id)->get();
+        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
         // dd($etalase);
-        return view('toko.etalase.index',compact('etalases'));
+        return view('toko.etalase.index', compact('etalases'));
     }
 
     /**
@@ -30,8 +30,8 @@ class EtalaseController extends Controller
      */
     public function create()
     {
-        $etalases= Etalase::where('toko_id',Auth::user()->toko->id)->get();
-        return view('toko.etalase.create',compact('etalases'));
+        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
+        return view('toko.etalase.create', compact('etalases'));
     }
 
     /**
@@ -61,7 +61,9 @@ class EtalaseController extends Controller
      */
     public function show($id)
     {
-        //
+        $etalases = Etalase::with(['barangs'])->find($id);
+
+        return view('toko.etalase.show', compact('etalases'));
     }
 
     /**
@@ -72,8 +74,8 @@ class EtalaseController extends Controller
      */
     public function edit($id)
     {
-        $etalases= Etalase::where('toko_id',Auth::user()->toko->id)->get();
-        return view('toko.etalase.edit',compact('etalases'));
+        $etalases = Etalase::find($id);
+        return view('toko.etalase.edit', compact('etalases'));
     }
 
     /**
@@ -85,7 +87,14 @@ class EtalaseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $etalases = Etalase::find($id);
+
+        $etalases->update([
+            //'nama' -> dipanggil di view edit (id, label), sedangkan $request->nama ini diambil dari nama database
+            'nama' => $request->nama,
+        ]);
+
+        return redirect()->route('toko.etalase.index');
     }
 
     /**
@@ -97,9 +106,10 @@ class EtalaseController extends Controller
     public function destroy($id)
     {
         $etalases = Etalase::whereId($id)->firstOrFail();
+        $etalases->barangs()->update(['etalase_id' => null]);
         $namaEtalases = $etalases->nama;
         $etalases->delete();
 
-        return redirect()->route('toko.etalase.index')->with('success', 'Barang dengan nama ' . $namaEtalases . ' telah dihapus');
+        return redirect()->back();
     }
 }

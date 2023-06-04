@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Etalase;
 use App\Models\Kategori;
-use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
@@ -18,6 +18,13 @@ class BarangController extends Controller
      */
     public function index()
     {
+        // nampilin barang yang status = diterima atau pending
+        // $barangs = Barang::whereIn('status', ['diterima', 'pending'])->where('toko_id', Auth::user()->toko->id)->get();
+
+        // tampilkan semua barang yang status = diterima dari toko
+        // $barangs = Barang::where('status', 'diterima')->where('toko_id', Auth::user()->toko->id)->get();
+
+        // tampilkan semua barang dari toko
         $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
 
         return view('toko.barang.index', compact('barangs'));
@@ -32,8 +39,8 @@ class BarangController extends Controller
     {
         $kategoris = Kategori::all();
         $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
-
-        return view('toko.barang.create', compact('etalases', 'kategoris'));
+        $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
+        return view('toko.barang.create', compact('barangs', 'etalases', 'kategoris'));
     }
 
     /**
@@ -44,7 +51,7 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $barang = Barang::create([
+        $barangs = Barang::create([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
@@ -78,7 +85,8 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        //
+        $barangs = Barang::find($id);
+        return view('toko.barang.edit', compact('barangs'));
     }
 
     /**
@@ -90,7 +98,17 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $barangs = Barang::find($id);
+
+        $barangs->update([
+            //'nama' -> dipanggil di view edit (id, label), sedangkan $request->nama ini diambil dari nama database
+            'nama' => $request->nama,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        return redirect()->route('toko.barang.index');
     }
 
     /**
@@ -101,6 +119,10 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $barangs = Barang::whereId($id)->firstOrFail();
+        $namaBarangs = $barangs->nama;
+        $barangs->delete();
+
+        return redirect()->route('toko.barang.index')->with('success', 'Barang dengan nama ' . $namaBarangs . ' telah dihapus');
     }
 }
