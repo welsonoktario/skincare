@@ -23,18 +23,19 @@
               @foreach ($etalases as $e)
                 <tr class="listEtalase">
                   <th>{{ $e->id }}</th>
-                  <td> {{ $e->nama }}</td>
+                  <td>{{ $e->nama }}</td>
                   <td>
                     <button id="btnEditEtalase" data-id="{{ $e->id }}"
                       class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
-                      <button class="btnDetailEtalase btn btn-sm btn-primary text-white"
+                    <button class="btnDetailEtalase btn btn-sm btn-primary text-white"
                       data-id="{{ $e->id }}">Detail</button>
-                      <form action="{{ route('toko.etalase.destroy', $e->id) }}" method="POST">
-                        @csrf
-                        @method("DELETE")
-                        <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
-                          onclick="if(!confirm('Apakah anda yakin?')) return false"; />
-                      </form>
+                    <form action="{{ route('toko.etalase.destroy', $e->id) }}" method="POST"
+                      class="w-auto d-inline-block">
+                      @csrf
+                      @method('DELETE')
+                      <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
+                        onclick="if(!confirm('Apakah anda yakin?')) return false"; />
+                    </form>
                   </td>
                 </tr>
               @endforeach
@@ -67,6 +68,7 @@
     </div>
   </div>
 @endsection
+
 @push('scripts')
   <script>
     $(document).ready(function() {
@@ -104,8 +106,7 @@
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
         },
-        columns: [
-          {
+        columns: [{
             name: 'Id',
             orderable: true
           },

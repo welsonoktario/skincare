@@ -50,7 +50,7 @@ class Barang extends Model
         return $this->hasMany(FotoBarang::class);
     }
 
-    public function wishlists()
+    public function users()
     {
         return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
     }

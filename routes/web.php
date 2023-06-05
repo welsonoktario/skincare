@@ -14,13 +14,19 @@ use App\Http\Controllers\user\TransaksiController;
 use App\Http\Controllers\user\TokoController;
 use App\Http\Controllers\user\WishlistController;
 
+use App\Http\Controllers\toko\BarangController as TokoBarangController;
+use App\Http\Controllers\toko\EtalaseController as TokoEtalaseController;
+use App\Http\Controllers\toko\HomeController as TokoHomeController;
+use App\Http\Controllers\toko\PenarikanController as TokoPenarikanController;
+use App\Http\Controllers\toko\PesananMasukController as TokoPesananMasukController;
+use App\Http\Controllers\toko\RekeningController as TokoRekeningController;
+use App\Http\Controllers\toko\RiwayatTransaksiController as TokoRiwayatTransaksi;
+
 use App\Http\Controllers\admin\HomeController as AdminHomeController;
 use App\Http\Controllers\admin\TokoController as AdminTokoController;
-use App\Http\Controllers\admin\VerifikasiBarang as AdminVerifikasiBarangController;
+use App\Http\Controllers\admin\VerifikasiBarangController as AdminVerifikasiBarangController;
 use App\Http\Controllers\admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\TopupController as AdminTopupController;
-use App\Http\Controllers\toko\BarangController as TokoBarangController;
-use App\Http\Controllers\toko\HomeController as TokoHomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +42,7 @@ use App\Http\Controllers\toko\HomeController as TokoHomeController;
 Route::group(['as' => 'user.'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/search', [HomeController::class, 'search'])->name('home.search');
-    Route::get('/toko/{toko}', [TokoController::class, 'index'])->name('toko.index');
+    Route::get('/seller/{toko}', [TokoController::class, 'index'])->name('toko.index');
 
     Route::resources(([
         'kategori' => KategoriController::class,
@@ -63,7 +69,6 @@ Route::group(['as' => 'user.'], function () {
             // Route::put('/alamat/{id}', [AlamatController::class, 'update']) => skincare.com/alamat/{id}
             // Route::post('/alamat', [AlamatController::class, 'store']) => skincare.com/alamat
             // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
-            Route::get('/alamat', [AlamatController::class, 'findAll']);
             Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
         });
 
@@ -84,15 +89,18 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
     Route::resource('akun', TokoAkunController::class);
     Route::resource('etalase', TokoEtalaseController::class);
     Route::resource('pesanan', TokoPesananController::class);
+    Route::resource('riwayattransaksi', TokoRiwayatTransaksi::class);
+    Route::resource('rekening', TokoRekeningController::class);
+    Route::resource('penarikan', TokoPenarikanController::class);
+    Route::resource('pesananmasuk', TokoPesananMasukController::class);
 });
 
-Route::prefix('admin')->group(function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('home', [AdminHomeController::class, 'index'])->name('homeadmin');
-    Route::resource('toko', AdminTokoController::class, ['as' => 'admin']);
-    Route::resource('member', AdminMemberController::class, ['as' => 'admin']);
-    Route::resource('verifikasibarang', AdminVerifikasiBarangController::class, ['as' => 'admin']);
-    Route::resource('topup', AdminTopupController::class, ['as' => 'admin']);
+    Route::resource('toko', AdminTokoController::class);
+    Route::resource('member', AdminMemberController::class);
+    Route::resource('verifikasibarang', AdminVerifikasiBarangController::class);
+    Route::resource('topup', AdminTopupController::class);
 });
-
 
 require __DIR__ . '/auth.php';

@@ -10,7 +10,7 @@
 
       <li class="menu-header">Menu</li>
       <li class="nav-item">
-        <a href="{{ route('homeadmin') }}" class="nav-link">
+        <a href="{{ route('admin.homeadmin') }}" class="nav-link">
           <i class="fas fa-fire"></i>
           <span>Homeee</span>
         </a>

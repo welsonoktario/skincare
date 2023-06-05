@@ -52,6 +52,11 @@ class User extends Authenticatable
         return $this->hasMany(Topup::class);
     }
 
+    public function rekenings()
+    {
+        return $this->hasMany(Rekening::class);
+    }
+
     public function penarikans()
     {
         return $this->morphMany(Penarikan::class, 'penarikanable');

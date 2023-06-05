@@ -1,4 +1,4 @@
-{{-- @extends('admin.app')
+{{-- @extends('layouts.admin')
 @section('content') --}}
 <form action="{{ route('toko.barang.store') }}" method="POST" enctype="multipart/form-data">
     <div class="modal-header">

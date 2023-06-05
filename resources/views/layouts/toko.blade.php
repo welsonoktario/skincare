@@ -36,13 +36,12 @@
     @endauth
   </div>
 
+  <script src="{{ asset('js/manifest.js') }}"></script>
+  <script src="{{ asset('js/vendor.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
-  <script src="{{ asset('js/stisla.js') }}"></script>
-  <script src="{{ asset('js/scripts.js') }}"></script>
-  <script src="{{ asset('js/custom.js') }}"></script>
   @stack('scripts')
 </body>
 
