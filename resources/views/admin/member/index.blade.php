@@ -14,22 +14,22 @@
                 <th>Nama Member</th>
                 <th>Username</th>
                 <th>Alamat</th>
-                <th>No_HP</th>
+                <th>No. HP</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @foreach ($users as $u)
                 <tr class="listMember">
-                    <td>{{$u->id}}</td>
+                  <td>{{ $u->id }}</td>
                   <td> {{ $u->nama }}</td>
                   <td> {{ $u->username }}</td>
-                  <td> {{ $u->alamat }}</td>
+                  <td> {{ $a->alamatUtama[0]->alamat }}</td>
                   <td> {{ $u->no_hp }}</td>
                   <td>
                     <button id="btnEditMember" data-id="{{ $u->id }}"
                       class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
-                      <button class="btnDetailMember btn btn-sm btn-primary text-white"
+                    <button class="btnDetailMember btn btn-sm btn-primary text-white"
                       data-id="{{ $u->id }}">Detail</button>
                   </td>
                 </tr>

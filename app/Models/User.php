@@ -42,6 +42,10 @@ class User extends Authenticatable
         return $this->hasMany(Alamat::class);
     }
 
+    public function alamatUtama() {
+        return $this->hasMany(Alamat::class)->where('is_utama', true);
+    }
+
     public function transaksis()
     {
         return $this->hasMany(Transaksi::class);

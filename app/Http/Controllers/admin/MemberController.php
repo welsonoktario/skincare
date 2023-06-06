@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alamat;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Auth;
 
 class MemberController extends Controller
 {
@@ -16,9 +18,9 @@ class MemberController extends Controller
     public function index()
     {
 
-        $users = User::where('role','customer')->get();
+        $users = User::with('alamatUtama')->where('role', 'customer')->get();
 
-        return view('admin.member.index',compact('users'));
+        return view('admin.member.index', compact('users'));
     }
 
     /**

@@ -83,14 +83,15 @@ Route::group(['as' => 'user.'], function () {
 });
 
 Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
-    // skincare.com/toko/akun
     Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
     Route::resource('barang', TokoBarangController::class);
     Route::resource('akun', TokoAkunController::class);
     Route::resource('etalase', TokoEtalaseController::class);
     Route::resource('pesanan', TokoPesananController::class);
     Route::resource('riwayattransaksi', TokoRiwayatTransaksi::class);
+    Route::resource('profil', TokoProfilController::class);
     Route::resource('rekening', TokoRekeningController::class);
+    Route::resource('bank', TokoBankController::class);
     Route::resource('penarikan', TokoPenarikanController::class);
     Route::resource('pesananmasuk', TokoPesananMasukController::class);
 });
@@ -100,6 +101,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('toko', AdminTokoController::class);
     Route::resource('member', AdminMemberController::class);
     Route::resource('verifikasibarang', AdminVerifikasiBarangController::class);
+    Route::resource('verifikasitoko', AdminVerifikasiTokoController::class);
     Route::resource('topup', AdminTopupController::class);
 });
 

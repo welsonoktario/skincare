@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Toko;
 use Illuminate\Http\Request;
+use Throwable;
 
 class VerifikasiTokoController extends Controller
 {
@@ -14,7 +16,8 @@ class VerifikasiTokoController extends Controller
      */
     public function index()
     {
-        //
+        $verifikasitokos = Toko::where('status', 'pending')->get();
+        return view('admin.verifikasitoko.index', compact('verifikasitokos'));
     }
 
     /**
@@ -69,7 +72,24 @@ class VerifikasiTokoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $verifikasitokos = Toko::find($id);
+
+        if ($request->aksi == 'ditolak') {
+            try {
+                $verifikasitokos->update(['status' => 'ditolak']);
+                Toko::destroy($verifikasitokos->id);
+                return redirect()->route('admin.verifikasitoko.index')->with('success', "Verifikasi Toko  '{$verifikasitokos->nama}' berhasil ditolak");
+            } catch (Throwable $e) {
+                return redirect()->route('admin.verifikasitoko.index')->with('fail', 'Terjadi kesalahan sistem');
+            }
+        } elseif ($request->aksi == 'diterima') {
+            try {
+                $verifikasitokos->update(['status' => 'diterima']);
+                return redirect()->route('admin.verifikasitoko.index')->with('success', "Verifikasi Toko  '{$verifikasitokos->user->nama}' berhasil diterima");
+            } catch (Throwable $e) {
+                return redirect()->route('admin.verifikasitoko.index')->with('fail', 'Terjadi kesalahan sistem');
+            }
+        }
     }
 
     /**

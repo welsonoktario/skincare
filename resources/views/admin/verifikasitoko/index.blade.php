@@ -2,38 +2,38 @@
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Verifikasi Barang</h1>
+      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Verifikasi Toko</h1>
     </div>
     <div class="card shadow mb-3">
       <div class="card-body">
         <div class="table-responsive">
-          <table id="tableVerifikasiBarang" class="table table-striped">
+          <table id="tableVerifikasiToko" class="table table-striped">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nama Barang</th>
-                <th>Harga</th>
-                <th>Stok</th>
                 <th>Nama Toko</th>
+                <th>Alamat</th>
+                <th>No. HP</th>
+                <th>Deskripsi</th>
                 <th>Nama Pemilik Toko</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              @foreach ($verifikasibarangs as $b)
-                <tr class="listVerifikasiBarang">
-                  <td>{{ $b->id }}</td>
-                  <td>{{ $b->nama }}</td>
-                  <td>{{ $b->harga }}</td>
-                  <td>{{ $b->stok }}</td>
-                  <td>{{ $b->toko->nama }}</td>
-                  <td>{{ $b->toko->user->nama }}</td>
+              @foreach ($verifikasitokos as $vt)
+                <tr class="listVerifikasiToko">
+                  <td>{{ $vt->id }}</td>
+                  <td>{{ $vt->nama }}</td>
+                  <td>{{ $vt->alamat }}</td>
+                  <td>{{ $vt->no_telepon }}</td>
+                  <td>{{ $vt->telepon }}</td>
+                  <td>{{ $vt->user->nama }}</td>
                   <td class="d-inline-flex justify-content-center w-100">
-                    <button class="btnDetailVerifikasiBarang btn btn-sm btn-secondary text-white"
-                      data-id="{{ $b->id }}">Detail</button>
-                    <button class="btnAksi btn btn-sm btn-primary text-white mx-2" data-id="{{ $b->id }}"
+                    <button class="btnDetailVerifikasiToko btn btn-sm btn-secondary text-white"
+                      data-id="{{ $vt->id }}">Detail</button>
+                    <button class="btnAksi btn btn-sm btn-primary text-white mx-2" data-id="{{ $vt->id }}"
                       data-aksi="diterima">Terima</button>
-                    <button class="btnAksi btn btn-sm btn-danger text-white" data-id="{{ $b->id }}"
+                    <button class="btnAksi btn btn-sm btn-danger text-white" data-id="{{ $vt->id }}"
                       data-aksi="ditolak">Tolak</button>
                   </td>
                 </tr>
@@ -45,13 +45,13 @@
     </div>
   </div>
 
-  <form id="formVerifikasi" action="{{ url('admin/verifikasibarang/') }}" method="POST" hidden>
+  <form id="formVerifikasi" action="{{ url('admin/verifikasitoko/') }}" method="POST" hidden>
     @method('PATCH')
     @csrf
     <input id="formVerifikasiAksi" name="aksi" />
   </form>
 
-  <div id="modalVerifikasiBarang" class="modal fade" tabindex="-1">
+  <div id="modalVerifikasiToko" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
 
@@ -67,7 +67,7 @@
         </div>
 
         {{-- Content --}}
-        <div id="modalVerifikasiBarangContent"></div>
+        <div id="modalVerifikasiTokoContent"></div>
       </div>
     </div>
   </div>
@@ -75,25 +75,25 @@
 @push('scripts')
   <script>
     $(document).ready(function() {
-      $('.listVerifikasiBarang #btnVerifikasiBarang').click(function() {
+      $('.listVerifikasiToko #btnVerifikasiToko').click(function() {
         const id = $(this).data('id');
-        $('#modalVerifikasiBarang').modal('show');
-        $('#modalVerifikasiBarangContent').html('');
+        $('#modalVerifikasiToko').modal('show');
+        $('#modalVerifikasiTokoContent').html('');
         $('#modalLoading').show();
-        $.get(`verifikasibarang/${id}/edit`, function(res) {
+        $.get(`verifikasitoko/${id}/edit`, function(res) {
           $('#modalLoading').hide();
           $('#modalMemberContent').html(res);
         });
       });
 
-      $('.listVerifikasiBarang .btnDetailVerifikasiBarang').click(function() {
+      $('.listVerifikasiToko .btnDetailVerifikasiToko').click(function() {
         const id = $(this).data('id');
-        $('#modalVerifikasiBarang').modal('show');
-        $('#modalVerifikasiBarangContent').html('');
+        $('#modalVerifikasiToko').modal('show');
+        $('#modalVerifikasiTokoContent').html('');
         $('#modalLoading').show();
-        $.get(`verifikasibarang/${id}`, function(res) {
+        $.get(`verifikasitoko/${id}`, function(res) {
           $('#modalLoading').hide();
-          $('#modalVerifikasiBarangContent').html(res);
+          $('#modalVerifikasiTokoContent').html(res);
         });
       });
 
@@ -107,7 +107,7 @@
         $('#formVerifikasi').submit();
       });
 
-      $('#tableVerifikasiBarang').DataTable({
+      $('#tableVerifikasiToko').DataTable({
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
         },
@@ -116,19 +116,19 @@
             orderable: true
           },
           {
-            name: 'Nama Barang',
-            orderable: true
-          },
-          {
-            name: 'Harga',
-            orderable: true
-          },
-          {
-            name: 'Stok',
-            orderable: true
-          },
-          {
             name: 'Nama Toko',
+            orderable: true
+          },
+          {
+            name: 'Alamat',
+            orderable: true
+          },
+          {
+            name: 'No HP',
+            orderable: true
+          },
+          {
+            name: 'Deskripsi',
             orderable: true
           },
           {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use Illuminate\Http\Request;
+use Throwable;
 
 class VerifikasiBarangController extends Controller
 {
@@ -14,7 +16,8 @@ class VerifikasiBarangController extends Controller
      */
     public function index()
     {
-        //
+        $verifikasibarangs = Barang::where('status', 'pending')->get();
+        return view('admin.verifikasibarang.index', compact('verifikasibarangs'));
     }
 
     /**
@@ -69,7 +72,24 @@ class VerifikasiBarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $verifikasibarangs = Barang::find($id);
+
+        if ($request->aksi == 'ditolak') {
+            try {
+                $verifikasibarangs->update(['status' => 'ditolak']);
+                Barang::destroy($verifikasibarangs->id);
+                return redirect()->route('admin.verifikasibarang.index')->with('success', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil ditolak");
+            } catch (Throwable $e) {
+                return redirect()->route('admin.verifikasibarang.index')->with('fail', 'Terjadi kesalahan sistem');
+            }
+        } elseif ($request->aksi == 'diterima') {
+            try {
+                $verifikasibarangs->update(['status' => 'diterima']);
+                return redirect()->route('admin.verifikasibarang.index')->with('success', "Verifikasi Barang  '{$verifikasibarangs->user->nama}' berhasil diterima");
+            } catch (Throwable $e) {
+                return redirect()->route('admin.verifikasibarang.index')->with('fail', 'Terjadi kesalahan sistem');
+            }
+        }
     }
 
     /**

@@ -2,54 +2,25 @@
 <nav class="navbar navbar-expand-lg main-navbar">
   <form class="form-inline me-auto">
     <ul class="navbar-nav me-3">
-      <li><a href="#" data-bs-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
-      <li><a href="#" data-bs-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a>
+      <li>
+        <a href="#" data-bs-toggle="sidebar" class="nav-link nav-link-lg">
+          <i class="fas fa-bars"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-bs-toggle="search" class="nav-link nav-link-lg d-sm-none">
+          <i class="fas fa-search"></i>
+        </a>
       </li>
     </ul>
   </form>
   <ul class="navbar-nav navbar-right">
-    {{-- <li class="dropdown dropdown-list-toggle"><a href="#" data-bs-toggle="dropdown"
-        class="nav-link notification-toggle nav-link-lg beep"><i class="fas fa-shopping-bag"></i></a> --}}
-    {{-- <form id="form-checkout" class="dropdown-menu dropdown-list dropdown-menu-end"
-      action="{{ route('user.transaksi.store') }}" method="POST">
-      @csrf
-      <input class="d-none" type="date" name="tanggal_sewa" value="{{ request()->tanggal_sewa }}">
-      <input class="d-none" type="date" name="tanggal_batas_kembali"
-        value="{{ request()->tanggal_batas_kembali }}">
-      <div class="dropdown-header">
-        <p>Keranjang</p>
-      </div>
-      <div class="dropdown-list-content dropdown-list-icons">
-        @if ($keranjang)
-          @forelse ($keranjang->keranjangDetails as $k)
-            <a href="#" class="dropdown-item dropdown-item-unread">
-              <div class="dropdown-item-icon bg-primary text-white">
-                <img src="{{ asset("storage/img/{$k->barang->link_foto}") }}" height="100%" alt="">
-              </div>
-              <div class="dropdown-item-desc">
-                <p class="text-truncate">{{ $k->barang->nama }}</p>
-                <p class="text-truncate">Jumlah: {{ $k->jumlah }}</p>
-                <p class="time text-primary">@rupiah($k->barang->harga * $k->jumlah)</p>
-              </div>
-            </a>
-          @empty
-            <p class="mx-2">Tidak ada item di keranjang</p>
-          @endforelse
-        @endif
-      </div>
-      <div class="dropdown-footer text-center">
-        <button id="btnCheckout" type="submit" class="btn btn-primary">Checkout</button>
-      </div>
-    </form> --}}
     </li>
     <li class="dropdown">
       <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-        <div class="d-sm-none d-lg-inline-block">Hi, Welson</div>
+        <div class="d-sm-none d-lg-inline-block">Hi, Admin</div>
       </a>
       <div class="dropdown-menu dropdown-menu-end">
-        <a href="features-profile.html" class="dropdown-item has-icon">
-          <i class="far fa-user"></i> Profile
-        </a>
         <div class="dropdown-divider"></div>
         <a href="{{ route('logout') }}"
           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -144,7 +115,8 @@
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="fas fa-map-marker-alt"></i> <span>Google Maps</span></a>
+        <a href="#" class="nav-link has-dropdown"><i class="fas fa-map-marker-alt"></i> <span>Google
+            Maps</span></a>
         <ul class="dropdown-menu">
           <li><a href="gmaps-advanced-route.html">Advanced Route</a></li>
           <li><a href="gmaps-draggable-marker.html">Draggable Marker</a></li>
