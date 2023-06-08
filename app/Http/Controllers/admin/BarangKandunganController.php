@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Topup;
-use App\Models\User;
+use App\Models\BarangKandungan;
+use App\Models\Kandungan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
-class TopupController extends Controller
+class BarangKandunganController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +17,9 @@ class TopupController extends Controller
      */
     public function index()
     {
-        $topups = Topup::query()
-            ->where('status', 'pending')
-            ->get();
+        $barangKandungans = BarangKandungan::all();
 
-        return view('admin.topup.index', compact('topups'));
+        return view('admin.barangkandungan.index', compact('barangKandungans'));
     }
 
     /**
@@ -30,7 +29,9 @@ class TopupController extends Controller
      */
     public function create()
     {
-        //
+        $kandungans = Kandungan::all();
+
+        return view('admin.barangkandungan.create', compact('kandungans'));
     }
 
     /**
@@ -41,7 +42,16 @@ class TopupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $foto = $request->file('foto')->store('img/barang-kandungan', 'public');
+
+        BarangKandungan::query()
+            ->create([
+                'nama' => $request->nama,
+                'foto' => $foto,
+                'kandungan_id' => $request->kandungan,
+            ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -63,7 +73,10 @@ class TopupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $kandungans = Kandungan::all();
+        $barangKandungan = BarangKandungan::find($id);
+
+        return view('admin.barangkandungan.edit', compact('kandungans', 'barangKandungan'));
     }
 
     /**
@@ -75,19 +88,25 @@ class TopupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $topup = Topup::query()->find($id);
+        $storage = Storage::disk('public');
+        $barangKandungan = BarangKandungan::find($id);
 
-        if ($request->aksi == 'diterima') {
-            $topup->update([
-                'status' => 'diterima'
+        if ($request->hasFile('icon')) {
+            $icon = $request->file('icon');
+
+            if ($storage->exists($barangKandungan->path)) {
+                $storage->delete($barangKandungan->path);
+            }
+
+            $path = $icon->store('img/barang-kandungan', 'public');
+
+            $barangKandungan->update([
+                'name' => $request->nama,
+                'foto' => $path,
             ]);
-            $user = User::query()->find($topup->user_id);
-            $user->update([
-                'saldo' => $user->saldo + $topup->nominal
-            ]);
-        } elseif ($request->aksi == 'ditolak') {
-            $topup->update([
-                'status' => 'ditolak'
+        } else {
+            $barangKandungan->update([
+                'name' => $request->nama,
             ]);
         }
 

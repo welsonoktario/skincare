@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\toko;
+namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;

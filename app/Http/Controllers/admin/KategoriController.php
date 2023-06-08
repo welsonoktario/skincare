@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Topup;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Throwable;
 
-class TopupController extends Controller
+class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +16,9 @@ class TopupController extends Controller
      */
     public function index()
     {
-        $topups = Auth::user()->topups()->get();
+        $kategoris = Kategori::all();
 
-        return view('user.topup.index', compact('topups'));
+        return view('admin.kategori.index', compact('kategoris'));
     }
 
     /**
@@ -30,9 +28,7 @@ class TopupController extends Controller
      */
     public function create()
     {
-        $saldo = Auth::user()->saldo;
-
-        return view('user.topup.create', compact('saldo'));
+        return view('admin.kategori.create');
     }
 
     /**
@@ -43,10 +39,15 @@ class TopupController extends Controller
      */
     public function store(Request $request)
     {
-        $nominal = $request->nominal;
-        $topup = Auth::user()
-            ->topups()
-            ->create(compact('nominal'));
+        $path = $request->file('icon')->store(
+            'img/kategori',
+            'public'
+        );
+
+        $kategori = Kategori::create([
+            'nama' => $request->nama,
+            'icon' => $path,
+        ]);
 
         return redirect()->back();
     }
@@ -59,7 +60,7 @@ class TopupController extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**
@@ -70,9 +71,9 @@ class TopupController extends Controller
      */
     public function edit($id)
     {
-        $topup = Topup::find($id);
+        $kategori = Kategori::find($id);
 
-        return view('user.topup.edit', compact('topup'));
+        return view('admin.kategori.edit', compact('kategori'));
     }
 
     /**
@@ -84,26 +85,27 @@ class TopupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $fileBuktiPembayaran = $request->file('bukti_pembayaran');
+        $storage = Storage::disk('public');
+        $kategori = Kategori::find($id);
 
-        try {
-            $buktiPembayaran = Storage::disk('local')->putFileAs(
-                'topups',
-                $fileBuktiPembayaran,
-                "topup-{$id}.{$fileBuktiPembayaran->extension()}"
-            );
-            $topup = Topup::query()->find($id);
-            $topup->update([
-                'bukti_pembayaran' => $buktiPembayaran,
-                'status' => 'pending'
-            ]);
+        if ($request->hasFile('icon')) {
+            $icon = $request->file('icon');
 
-            return redirect()->back();
-        } catch (Throwable $e) {
-            return redirect()->back()->withErrors([
-                'msg' => 'Terjadi kesalahan memverifikasi pembayaran'
-            ]);
+            if ($storage->exists($kategori->icon)) {
+                $storage->delete($kategori->icon);
+            }
+
+            $path = $icon->store('img/kategori', 'public'); // img/kategori/fjbfoafboa.png/jpg
+
+            $kategori->nama = $request->nama;
+            $kategori->icon = $path; // img/kategori/fjbfoafboa.png/jpg
+            $kategori->save();
+        } else {
+            $kategori->nama = $request->nama;
+            $kategori->save();
         }
+
+        return redirect()->back();
     }
 
     /**
@@ -114,6 +116,10 @@ class TopupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Kategori::query()
+            ->find($id)
+            ->delete();
+
+        return redirect()->back();
     }
 }

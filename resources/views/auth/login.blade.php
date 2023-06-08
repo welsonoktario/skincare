@@ -6,8 +6,7 @@
       <div class="row">
         <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
           <div class="login-brand">
-            <img src="{{ asset('storage/img/logo.jpg') }}" alt="logo" width="100" class="shadow-light rounded-circle">
-
+            <img src="/img/logo.png" alt="logo" width="144" class="shadow-light rounded-circle">
           </div>
 
           <div class="card card-primary">
@@ -21,7 +20,8 @@
                 <div class="mb-3">
                   <label for="email">Email</label>
                   <input type="email" class="form-control form-control-user  @error('email') is-invalid @enderror"
-                    name="email" value="{{ old('email') }}" id="email" aria-describedby="emailHelp" placeholder="">
+                    name="email" value="{{ old('email') }}" id="email" aria-describedby="emailHelp"
+                    placeholder="nama@email.com" required>
 
                   @error('email')
                     <span class="invalid-feedback" role="alert">
@@ -29,17 +29,10 @@
                     </span>
                   @enderror
                 </div>
-                <div class="form-group">
-                  <div class="d-block">
-                    <label for="password" class="control-label">Password</label>
-                    <div class="float-end">
-                      <a href="auth-forgot-password.html" class="text-small">
-                        Forgot Password?
-                      </a>
-                    </div>
-                  </div>
+                <div class="mb-3">
+                  <label for="password" class="control-label">Password</label>
                   <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                    name="password" required>
+                    name="password" placeholder="Password" required>
                   <div class="invalid-feedback" required autocomplete="password">
                     @error('password')
                       <span class="invalid-feedback" role="alert">
@@ -49,8 +42,16 @@
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <button type="submit" class="btn btn-primary btn-lg btn-block">
+                <div class="mb-3">
+                  <div class="text-end">
+                    <a href="auth-forgot-password.html" class="text-small">
+                      Forgot Password?
+                    </a>
+                  </div>
+                </div>
+
+                <div class="form-group w-100">
+                  <button type="submit" class="btn btn-primary btn-lg w-100">
                     Login
                   </button>
                 </div>

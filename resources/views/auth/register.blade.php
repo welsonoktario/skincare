@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
           <div class="login-brand">
-            <img src="{{ asset("storage/img/logo.jpg") }}" alt="logo" width="100" class="shadow-light rounded-circle">
+            <img src="/img/logo.png" alt="logo" width="144" class="shadow-light rounded-circle">
           </div>
 
           <div class="card card-primary">
@@ -19,8 +19,18 @@
                 @csrf
                 <div class="form-group">
                   <label for="nama">Nama</label>
-                  <input id="nama" type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                    autofocus>
+                  <input id="nama" type="text" class="form-control @error('nama') is-invalid @enderror"
+                    name="nama" value="{{ old('nama') }}" autofocus>
+                </div>
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
+                    name="username" value="{{ old('username') }}" autofocus>
+                  @error('username')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
                 </div>
                 <div class="row">
                   <div class="form-group col-6">
@@ -46,7 +56,8 @@
 
                 <div class="form-group">
                   <label for="email">Email</label>
-                  <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email">
+                  <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                    name="email" value="{{ old('email') }}">
                   @error('email')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -57,7 +68,8 @@
                 </div>
                 <div class="form-group">
                   <label for="no_hp">No HP</label>
-                  <input id="no_hp" type="text" class="form-control @error('no_hp') is-invalid @enderror" name="no_hp">
+                  <input id="no_hp" type="text" class="form-control @error('no_hp') is-invalid @enderror"
+                    name="no_hp" value="{{ old('no_hp') }}">
                   @error('no_hp')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -66,25 +78,6 @@
                   <div class="invalid-feedback">
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="alamat">Alamat</label>
-                  <input id="alamat" type="text" class="form-control @error('alamat') is-invalid @enderror" name="alamat">
-                  @error('alamat')
-                    <span class="invalid-feedback" role="alert">
-                      <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
-                  <div class="invalid-feedback">
-                  </div>
-                </div>
-
-{{--
-                <div class="form-group">
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" name="agree" class="custom-control-input" id="agree">
-                    <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
-                  </div>
-                </div> --}}
 
                 <div class="form-group">
                   <button type="submit" class="btn btn-primary btn-lg btn-block">

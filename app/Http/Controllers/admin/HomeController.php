@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -16,7 +16,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $admin = User::where('user', 'admin')->get();
+        $admin = User::where('role', 'admin')->get();
         // $homeadmin = User::all();
         return view('admin.home', compact('admin'));
     }

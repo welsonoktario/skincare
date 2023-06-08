@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-primary-gradient shadow" style="position: fixed; top: 0; left:0; right:0; z-index: 80">
   <div class="container">
-    <a href="{{ route('user.home') }}" class="navbar-brand text-capitalize" style="letter-spacing: 0.125rem">Skincare</a>
+    <a href="{{ route('user.home') }}" class="navbar-brand text-uppercase" style="letter-spacing: 0.125rem">Skincareku</a>
 
     <div class="input-group my-auto w-auto d-none d-md-flex" style="padding: 0 auto">
       <input type="search" class="form-control input-search" placeholder="Cari barang atau toko"

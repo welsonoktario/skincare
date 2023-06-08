@@ -1,0 +1,20 @@
+<form id="formAddKategori" action="{{ route('admin.kategori.store') }}" class="modal-body" method="POST"
+  enctype="multipart/form-data">
+  @csrf
+
+  <div class="mb-3">
+    <label for="nama" class="form-label">Nama</label>
+    <input type="text" name="nama" class="form-control" placeholder="Nama kategori" required>
+  </div>
+
+  <div id="inputFile">
+    <label class="form-label" for="icon">Icon</label>
+    <div class="input-group">
+      <input name="icon" type="file" class="form-control" required>
+    </div>
+  </div>
+</form>
+
+<div class="modal-footer">
+  <button form="formAddKategori" class="btn btn-primary btn-block">Tambah</button>
+</div>

@@ -34,6 +34,14 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'email.reuired' => 'Email is required.',
+            'password.required' => 'Password is required.',
+        ];
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *
