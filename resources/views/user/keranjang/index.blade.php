@@ -137,13 +137,18 @@
             </div>
             <div class="card-body">
               @foreach ($kandungans as $k)
-                <div
-                  class="alert @if ($k->jenis_interaksi == 'baik') alert-primary @elseif ($k->jenis_interaksi == 'buruk') alert-danger @else alert-secondary @endif">
+                <div @class([
+                    'alert',
+                    'alert-success' => $h->jenis_interaksi == 'baik',
+                    'alert-danger' => $h->jenis_interaksi == 'buruk',
+                    'alert-secondary text-dark' => $h->jenis_interaksi == 'tidak ada',
+                ])>
                   <div class="alert-title text-capitalize">
                     Interaksi {{ $k->jenis_interaksi }}
                   </div>
                   <p class="fw-semibold">
-                    {{ $k->barang_satu }} dan {{ $k->barang_dua }}
+                    <span class="fw-semibold">{{ $k->barang_satu }}</span> dan <span
+                      class="fw-semibold">{{ $k->barang_dua }}</span>
                     @if ($k->jenis_interaksi == 'baik')
                       dapat digunakan dengan bersamaan
                     @elseif ($k->jenis_interaksi == 'buruk')

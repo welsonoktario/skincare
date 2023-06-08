@@ -27,6 +27,7 @@ use App\Http\Controllers\admin\TokoController as AdminTokoController;
 use App\Http\Controllers\admin\VerifikasiBarangController as AdminVerifikasiBarangController;
 use App\Http\Controllers\admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\TopupController as AdminTopupController;
+use App\Http\Controllers\user\CekKandunganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,9 @@ Route::group(['as' => 'user.'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/search', [HomeController::class, 'search'])->name('home.search');
     Route::get('/seller/{toko}', [TokoController::class, 'index'])->name('toko.index');
+
+    Route::get('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.index');
+    Route::post('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.cek');
 
     Route::resources(([
         'kategori' => KategoriController::class,
