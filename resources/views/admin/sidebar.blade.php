@@ -12,9 +12,27 @@
       <li class="nav-item">
         <a href="{{ route('admin.homeadmin') }}" class="nav-link">
           <i class="fas fa-fire"></i>
-          <span>Homeee</span>
+          <span>Home</span>
         </a>
       <li>
+      <li>
+        <a href="{{ route('admin.kategori.index') }}" class="nav-link">
+          <i class="fas fa-fire"></i>
+          <span>Kategori</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('admin.kandungan.index') }}" class="nav-link">
+          <i class="fas fa-fire"></i>
+          <span>Kandungan</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('admin.barangkandungan.index') }}" class="nav-link">
+          <i class="fas fa-fire"></i>
+          <span>Barang Pengecekan</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a href="{{ route('admin.member.index') }}" class="nav-link">
           <i class="fas fa-fire"></i>
