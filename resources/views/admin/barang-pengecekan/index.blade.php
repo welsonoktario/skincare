@@ -3,11 +3,11 @@
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
       <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
-        Kandungan
+        Barang Pengecekan
       </h1>
-      <button type="button" class="btn btn-primary btn-tambah">Tambah Kandungan</button>
+      <button type="button" class="btn btn-primary btn-tambah">Tambah Barang</button>
     </div>
-    <div class="card shadow mb-3">
+    {{-- <div class="card shadow mb-3">
       <div class="card-body">
         <div class="table-responsive">
           <table id="tableKandungan" class="table table-striped">
@@ -39,7 +39,7 @@
           </table>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 
   <div id="modalKandungan" class="modal fade" tabindex="-1">

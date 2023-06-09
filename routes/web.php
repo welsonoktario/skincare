@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\BarangKandunganController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\User\AlamatController;
 use App\Http\Controllers\User\BarangController;
+use App\Http\Controllers\User\CekKandunganController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\KategoriController;
@@ -23,13 +25,13 @@ use App\Http\Controllers\Toko\RekeningController as TokoRekeningController;
 use App\Http\Controllers\Toko\RiwayatTransaksiController as TokoRiwayatTransaksi;
 
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\KandunganController as AdminKandunganController;
 use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
 use App\Http\Controllers\Admin\TokoController as AdminTokoController;
 use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBarangController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Admin\TopupController as AdminTopupController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
-use App\Http\Controllers\User\CekKandunganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +112,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('verifikasitoko', AdminVerifikasiTokoController::class);
     Route::resource('topup', AdminTopupController::class);
     Route::resource('kategori', AdminKategoriController::class);
+    Route::resource('kandungan', AdminKandunganController::class);
+    // Route::resource('interaksi-kandungan', AdminInteraksiKandunganController::class);
+    Route::resource('barang-pengecekan', BarangKandunganController::class);
 });
 
 require __DIR__ . '/auth.php';

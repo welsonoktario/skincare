@@ -16,5 +16,8 @@
 </form>
 
 <div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#modalKategori" aria-label>
+    Batal
+  </button>
   <button form="formAddKategori" class="btn btn-primary btn-block">Tambah</button>
 </div>

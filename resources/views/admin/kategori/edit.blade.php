@@ -5,7 +5,8 @@
 
   <div class="mb-3">
     <label for="nama" class="form-label">Nama</label>
-    <input type="text" name="nama" class="form-control" placeholder="Nama kategori" value="{{ $kategori->nama }}" required>
+    <input type="text" name="nama" class="form-control" placeholder="Nama kategori" value="{{ $kategori->nama }}"
+      required>
   </div>
 
   <div id="imgPreview" class="d-inline-flex flex-column align-items-center w-100">
@@ -25,6 +26,8 @@
 </form>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary">Batal</button>
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#modalKategori" aria-label>
+    Batal
+  </button>
   <button form="formAddKategori" type="submit" class="btn btn-primary">Ubah</button>
 </div>

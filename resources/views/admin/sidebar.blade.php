@@ -28,7 +28,7 @@
         </a>
       </li>
       <li>
-        <a href="{{ route('admin.barangkandungan.index') }}" class="nav-link">
+        <a href="{{ route('admin.barang-pengecekan.index') }}" class="nav-link">
           <i class="fas fa-fire"></i>
           <span>Barang Pengecekan</span>
         </a>

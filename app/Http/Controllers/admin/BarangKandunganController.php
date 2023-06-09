@@ -19,7 +19,7 @@ class BarangKandunganController extends Controller
     {
         $barangKandungans = BarangKandungan::all();
 
-        return view('admin.barangkandungan.index', compact('barangKandungans'));
+        return view('admin.barang-pengecekan.index', compact('barangKandungans'));
     }
 
     /**
@@ -31,7 +31,7 @@ class BarangKandunganController extends Controller
     {
         $kandungans = Kandungan::all();
 
-        return view('admin.barangkandungan.create', compact('kandungans'));
+        return view('admin.barang-pengecekan.create', compact('kandungans'));
     }
 
     /**
@@ -76,7 +76,7 @@ class BarangKandunganController extends Controller
         $kandungans = Kandungan::all();
         $barangKandungan = BarangKandungan::find($id);
 
-        return view('admin.barangkandungan.edit', compact('kandungans', 'barangKandungan'));
+        return view('admin.barang-pengecekan.edit', compact('kandungans', 'barangKandungan'));
     }
 
     /**
