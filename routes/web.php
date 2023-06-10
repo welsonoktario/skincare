@@ -108,6 +108,15 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function() {
+        Route::get('/', [AdminInteraksiKandunganController::class, 'index'])->name('index');
+        Route::get('/create', [AdminInteraksiKandunganController::class, 'create'])->name('create');
+        Route::post('/', [AdminInteraksiKandunganController::class, 'store'])->name('store');
+        Route::get('/{k1}/{k2}/edit', [AdminInteraksiKandunganController::class, 'edit'])->name('edit');
+        Route::put('/{k1}/{k2}', [AdminInteraksiKandunganController::class, 'update'])->name('update');
+        Route::delete('/{k1}/{k2}', [AdminInteraksiKandunganController::class, 'destroy'])->name('destroy');
+    });
+
     Route::get('home', [AdminHomeController::class, 'index'])->name('homeadmin');
     Route::resource('toko', AdminTokoController::class);
     Route::resource('member', AdminMemberController::class);
@@ -116,7 +125,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('topup', AdminTopupController::class);
     Route::resource('kategori', AdminKategoriController::class);
     Route::resource('kandungan', AdminKandunganController::class);
-    Route::resource('interaksi-kandungan', AdminInteraksiKandunganController::class);
     Route::resource('barang-pengecekan', AdminBarangPengecekanController::class);
     Route::resource('penarikantoko', AdminVerifikasiPenarikanToko::class);
     Route::resource('penarikanuser', AdminVerifikasiPenarikanUser::class);

@@ -19,6 +19,7 @@
                 <th>Hasil Interaksi</th>
                 <th>Deskripsi Interaksi</th>
                 <th>Sumber</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -33,7 +34,9 @@
                   <td class="d-inline-flex justify-content-center w-100">
                     <button class="btn-edit my-auto btn btn-sm btn-primary text-white mx-2" data-k1="{{ $i->k1_id }}"
                       data-k2="{{ $i->k2_id }}">Ubah</button>
-                    <form class="my-auto" action="{{ route('admin.interaksi-kandungan.destroy', $i->id) }}" method="POST">
+                    <form class="my-auto"
+                      action="{{ route('admin.interaksi-kandungan.destroy', ['k1' => $i->k1_id, 'k2' => $i->k2_id]) }}"
+                      method="POST">
                       @csrf
                       @method('DELETE')
                       <button type="submit" class="btn btn-sm btn-danger text-white" data-k1="{{ $i->k1_id }}"
@@ -85,11 +88,14 @@
       });
 
       $('.listInteraksi .btn-edit').click(function() {
-        const id = $(this).data('id');
+        const {
+          k1,
+          k2
+        } = $(this).data();
         $('#modalInteraksi').modal('show');
         $('#modalInteraksiContent').html('');
         $('#modalLoading').show();
-        $.get(`interaksi-kandungan/${id}/edit`, function(res) {
+        $.get(`interaksi-kandungan/${k1}/${k2}/edit`, function(res) {
           $('#modalLoading').hide();
           $('#modalInteraksiContent').html(res);
         });

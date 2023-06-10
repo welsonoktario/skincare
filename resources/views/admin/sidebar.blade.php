@@ -28,6 +28,12 @@
         </a>
       </li>
       <li>
+        <a href="{{ route('admin.interaksi-kandungan.index') }}" class="nav-link">
+          <i class="fas fa-fire"></i>
+          <span>Interaksi Kandungan</span>
+        </a>
+      </li>
+      <li>
         <a href="{{ route('admin.barang-pengecekan.index') }}" class="nav-link">
           <i class="fas fa-fire"></i>
           <span>Barang Pengecekan</span>

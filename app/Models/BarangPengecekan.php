@@ -12,6 +12,6 @@ class BarangPengecekan extends Model
 
     public function kandungans()
     {
-        return $this->belongsToMany(Kandungan::class);
+        return $this->belongsToMany(Kandungan::class, 'barang_pengecekan_kandungans');
     }
 }

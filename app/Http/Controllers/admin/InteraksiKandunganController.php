@@ -17,9 +17,9 @@ class InteraksiKandunganController extends Controller
     public function index()
     {
         $interaksis = DB::table('interaksi_kandungans', 'ik')
-            ->selectRaw('k1.id k1_id, k1.nama kandungan_satu, k2.id k2_id, k2.nama kandungan_dua, ik.jenis_interaksi jenis, ik.deskripsi_interaksi deskripsi, ik.sumber sumber')
-            ->join('kandungans k1', 'k1.id', '=', 'ik.kandungan_satu_id')
-            ->join('kandungans k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+            ->selectRaw('k1.id AS k1_id, k1.nama AS kandungan_satu, k2.id AS k2_id, k2.nama AS kandungan_dua, ik.jenis_interaksi AS jenis, ik.deskripsi_interaksi AS deskripsi, ik.sumber AS sumber')
+            ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
+            ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
             ->get();
 
         return view('admin.interaksi-kandungan.index', compact('interaksis'));
@@ -34,7 +34,7 @@ class InteraksiKandunganController extends Controller
     {
         $kandungans = Kandungan::all();
 
-        return view('admin.interaksi-kandungan.index', compact('kandungans'));
+        return view('admin.interaksi-kandungan.create', compact('kandungans'));
     }
 
     /**
@@ -58,32 +58,20 @@ class InteraksiKandunganController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $k1
+     * @param  int  $k2
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function edit($k1, $k2)
     {
         $kandungans = Kandungan::all();
-        $k1 = $request->k1;
-        $k2 = $request->k2;
 
-        $interaksis = DB::table('interaksi_kandungans', 'ik')
-            ->selectRaw('k1.id k1_id, k1.nama kandungan_satu, k2.id k2_id, k2.nama kandungan_dua, ik.jenis_interaksi jenis, ik.deskripsi_interaksi deskripsi, ik.sumber sumber')
-            ->join('kandungans k1', 'k1.id', '=', 'ik.kandungan_satu_id')
-            ->join('kandungans k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+        $interaksi = DB::table('interaksi_kandungans', 'ik')
+            ->selectRaw('k1.id AS k1_id, k1.nama AS kandungan_satu, k2.id AS k2_id, k2.nama AS kandungan_dua, ik.jenis_interaksi AS jenis, ik.deskripsi_interaksi AS deskripsi, ik.sumber AS sumber')
+            ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
+            ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
             ->whereRaw('k1.id = ? AND k2.id = ?', [$k1, $k2])
             ->first();
 
@@ -94,24 +82,42 @@ class InteraksiKandunganController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $k1
+     * @param  int  $k2
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $k1, $k2)
     {
-        $interaksis = DB::table('interaksi_kandungans', 'ik')
-            ->selectRaw('k1.id k1_id, k1.nama kandungan_satu, k2.id k2_id, k2.nama kandungan_dua, ik.jenis_interaksi jenis, ik.deskripsi_interaksi deskripsi, ik.sumber sumber')
-            ->get();
+        $query = DB::table('interaksi_kandungans')
+            ->whereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$k1, $k2])
+            ->limit(1)
+            ->update([
+                'kandungan_satu_id' => $k1,
+                'kandungan_dua_id' => $k2,
+                'jenis_interaksi' => $request->jenis,
+                'deskripsi_interaksi' => $request->deskripsi,
+                'sumber' => $request->sumber
+            ]);
+
+        return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  $k1
+     * @param  int  $k2
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($k1, $k2)
     {
-        //
+        DB::table('interaksi_kandungans')
+            ->where([
+                ['kandungan_satu_id', $k1],
+                ['kandungan_dua_id', $k2],
+            ])
+            ->delete();
+
+        return redirect()->back();
     }
 }

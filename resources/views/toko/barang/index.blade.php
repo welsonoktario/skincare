@@ -87,6 +87,7 @@
     </div>
   </div>
 @endsection
+
 @push('scripts')
   <script src="https://www.unpkg.com/@selectize/selectize/dist/js/selectize.min.js"></script>
   <script>

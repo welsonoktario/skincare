@@ -17,7 +17,19 @@ class BarangPengecekanController extends Controller
      */
     public function index()
     {
-        $barangPengecekans = BarangPengecekan::all();
+        $barangPengecekans = BarangPengecekan::with('kandungans')->get();
+        $barangPengecekans = $barangPengecekans->map(function ($barang) {
+            $kandungans = "";
+
+            foreach ($barang->kandungans as $kandungan) {
+                $kandungans .= "{$kandungan->nama}, ";
+            }
+
+            $kandungans = rtrim($kandungans, ', ');
+
+            $barang->kandungans = $kandungans;
+            return $barang;
+        });
 
         return view('admin.barang-pengecekan.index', compact('barangPengecekans'));
     }
@@ -42,27 +54,17 @@ class BarangPengecekanController extends Controller
      */
     public function store(Request $request)
     {
-        $foto = $request->file('foto')->store('img/barang-kandungan', 'public');
+        // dd($request->all());
+        $foto = $request->file('foto')->store('img/barang-pengecekan', 'public');
 
-        BarangPengecekan::query()
+        $barangPengecekan = BarangPengecekan::query()
             ->create([
                 'nama' => $request->nama,
                 'foto' => "/storage/{$foto}",
-                'kandungan_id' => $request->kandungan,
             ]);
+        $barangPengecekan->kandungans()->attach($request->kandungans);
 
         return redirect()->back();
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -74,7 +76,9 @@ class BarangPengecekanController extends Controller
     public function edit($id)
     {
         $kandungans = Kandungan::all();
-        $barangPengecekan = BarangPengecekan::find($id);
+        $barangPengecekan = BarangPengecekan::query()
+            ->with('kandungans')
+            ->find($id);
 
         return view('admin.barang-pengecekan.edit', compact('kandungans', 'barangPengecekan'));
     }
@@ -91,23 +95,25 @@ class BarangPengecekanController extends Controller
         $storage = Storage::disk('public');
         $barangPengecekan = BarangPengecekan::find($id);
 
-        if ($request->hasFile('icon')) {
-            $icon = $request->file('icon');
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
 
             if ($storage->exists($barangPengecekan->path)) {
                 $storage->delete($barangPengecekan->path);
             }
 
-            $path = $icon->store('img/barang-kandungan', 'public');
+            $path = $foto->store('img/barang-pengecekan', 'public');
 
             $barangPengecekan->update([
                 'name' => $request->nama,
                 'foto' => "/storage/{$path}",
             ]);
+            $barangPengecekan->kandungans()->sync($request->kandungans);
         } else {
             $barangPengecekan->update([
                 'name' => $request->nama,
             ]);
+            $barangPengecekan->kandungans()->sync($request->kandungans);
         }
 
         return redirect()->back();
@@ -121,6 +127,12 @@ class BarangPengecekanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $barangPengecekan = BarangPengecekan::query()
+            ->findOrFail($id);
+
+        $barangPengecekan->kandungans()->detach();
+        $barangPengecekan->delete();
+
+        return redirect()->back();
     }
 }

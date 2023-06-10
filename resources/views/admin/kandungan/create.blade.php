@@ -1,3 +1,8 @@
+<div class="modal-header">
+  <h5 class="modal-title">Tambah Kandungan</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#modalKandungan" aria-label="Close"></button>
+</div>
+
 <form id="formAddKandungan" action="{{ route('admin.kandungan.store') }}" class="modal-body" method="POST">
   @csrf
 

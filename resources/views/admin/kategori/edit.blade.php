@@ -1,3 +1,8 @@
+<div class="modal-header">
+  <h5 class="modal-title">Ubah Kategori</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#modalKategori" aria-label="Close"></button>
+</div>
+
 <form id="formAddKategori" action="{{ route('admin.kategori.update', $kategori->id) }}" class="modal-body" method="POST"
   enctype="multipart/form-data">
   @csrf

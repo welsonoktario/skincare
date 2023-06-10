@@ -308,14 +308,6 @@ $(function() {
     $(".select2").select2();
   }
 
-  // Selectric
-  if(jQuery().selectric) {
-    $(".selectric").selectric({
-      disableOnMobile: false,
-      nativeOnMobile: false
-    });
-  }
-
   $(".notification-toggle").dropdown();
   $(".notification-toggle").parent().on('shown.bs.dropdown', function() {
     $(".dropdown-list-icons").niceScroll({

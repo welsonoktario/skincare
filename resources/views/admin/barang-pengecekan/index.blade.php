@@ -1,4 +1,10 @@
 @extends('layouts.admin')
+
+@push('styles')
+  <link rel="stylesheet" href="https://www.unpkg.com/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://www.unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+@endpush
+
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
@@ -7,7 +13,7 @@
       </h1>
       <button type="button" class="btn btn-primary btn-tambah">Tambah Barang</button>
     </div>
-    {{-- <div class="card shadow mb-3">
+    <div class="card shadow mb-3">
       <div class="card-body">
         <div class="table-responsive">
           <table id="tableKandungan" class="table table-striped">
@@ -15,22 +21,24 @@
               <tr>
                 <th>ID</th>
                 <th>Nama</th>
+                <th>Kandungan</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              @foreach ($kandungans as $k)
+              @foreach ($barangPengecekans as $b)
                 <tr class="listKandungan">
-                  <td>{{ $k->id }}</td>
-                  <td>{{ $k->nama }}</td>
+                  <td>{{ $b->id }}</td>
+                  <td>{{ $b->nama }}</td>
+                  <td>{{ $b->kandungans }}</td>
                   <td class="d-inline-flex justify-content-center w-100">
                     <button class="btn-edit my-auto btn btn-sm btn-primary text-white mx-2"
-                      data-id="{{ $k->id }}">Ubah</button>
-                    <form class="my-auto" action="{{ route('admin.kandungan.destroy', $k->id) }}" method="POST">
+                      data-id="{{ $b->id }}">Ubah</button>
+                    <form class="my-auto" action="{{ route('admin.barang-pengecekan.destroy', $b->id) }}" method="POST">
                       @csrf
                       @method('DELETE')
                       <button type="submit" class="btn btn-sm btn-danger text-white"
-                        data-id="{{ $k->id }}">Hapus</button>
+                        data-id="{{ $b->id }}">Hapus</button>
                     </form>
                   </td>
                 </tr>
@@ -39,7 +47,7 @@
           </table>
         </div>
       </div>
-    </div> --}}
+    </div>
   </div>
 
   <div id="modalKandungan" class="modal fade" tabindex="-1">
@@ -65,21 +73,25 @@
 @endsection
 
 @push('scripts')
+  <script src="https://www.unpkg.com/select2/dist/js/select2.min.js"></script>
   <script>
     $(document).ready(function() {
       $(document).on('click', '.btn-ganti', function() {
         $('#imgPreview').addClass('d-none');
         $('#inputFile').removeClass('d-none');
-        $('input[name="icon"]').prop('required', true);
+        $('input[name="foto"]').prop('required', true);
       });
 
       $('.btn-tambah').click(function() {
         $('#modalKandungan').modal('show');
         $('#modalKandunganContent').html('');
         $('#modalLoading').show();
-        $.get(`kandungan/create`, function(res) {
+        $.get(`barang-pengecekan/create`, function(res) {
           $('#modalLoading').hide();
           $('#modalKandunganContent').html(res);
+          $('#kandungans').select2({
+            theme: 'bootstrap-5'
+          });
         });
       });
 
@@ -88,9 +100,12 @@
         $('#modalKandungan').modal('show');
         $('#modalKandunganContent').html('');
         $('#modalLoading').show();
-        $.get(`kandungan/${id}/edit`, function(res) {
+        $.get(`barang-pengecekan/${id}/edit`, function(res) {
           $('#modalLoading').hide();
           $('#modalKandunganContent').html(res);
+          $('#kandungans').select2({
+            theme: 'bootstrap-5'
+          });
         });
       });
 
