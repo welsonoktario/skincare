@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
 use App\Models\Toko;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,7 @@ class HomeController extends Controller
     {
         $toko = Toko::firstWhere('id', Auth::user()->toko->id);
         $transaksis = Transaksi::where('toko_id', Auth::user()->toko->id)->get();
-        return view('toko.home', compact('toko','transaksis'));
+        return view('toko.home', compact('toko', 'transaksis'));
     }
 
     /**

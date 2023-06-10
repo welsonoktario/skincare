@@ -1,7 +1,10 @@
 @extends('layouts.toko')
 
 @push('styles')
-<link rel="stylesheet" href="https://www.unpkg.com/@selectize/selectize/dist/css/selectize.bootstrap5.css">
+  <link rel="stylesheet" href="https://www.unpkg.com/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://www.unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
+  <link rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" />
 @endpush
 
 @section('content')
@@ -67,48 +70,83 @@
   </div>
   </div>
   <div id="modalBarang" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        {{-- Loading --}}
-        <div id="modalLoading" class="row h-100 align-items-center">
-          <div class="col align-self-center">
-            <div class="d-flex my-5 justify-content-center">
-              <div class="spinner-border" role="status">
-                <span class="sr-only">Memuat...</span>
+    <div class="modal-dialog modal-dialog-scrollable">
+      {{-- Loading --}}
+      <div id="modalLoading" class="modal-content">
+        <div class="modal-body">
+          <div class="row h-100 align-items-center">
+            <div class="col align-self-center">
+              <div class="d-flex my-5 justify-content-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Memuat...</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {{-- Content --}}
-        <div id="modalBarangContent"></div>
       </div>
+
+      <div id="modalBarangContent" class="modal-content"></div>
     </div>
   </div>
 @endsection
 
 @push('scripts')
-  <script src="https://www.unpkg.com/@selectize/selectize/dist/js/selectize.min.js"></script>
+  <script src="https://www.unpkg.com/select2/dist/js/select2.min.js"></script>
+  <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+  <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+  <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+  <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
   <script>
     $(document).ready(function() {
+      $.fn.filepond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+
+      $('#modalBarang').on('hidden.bs.modal', function() {
+        $('#modalBarangContent').addClass('d-none');
+      });
+
+      $('#modalBarang').on('show.bs.modal', function() {
+        $('#modalBarangContent').addClass('d-none');
+        $('#modalBarangContent').html('');
+        $('#modalLoading').removeClass('d-none');
+      });
+
       $('#btnTambahBarang').click(function() {
         $('#modalBarang').modal('show');
-        $('#modalBarangContent').html('');
-        $('#modalLoading').show();
+
         $.get(`barang/create`, function(res) {
-          $('#modalLoading').hide();
           $('#modalBarangContent').html(res);
+          $('#modalLoading').addClass('d-none');
+          $('#modalBarangContent').removeClass('d-none');
+
+          $('input[name="fotos[]"]').filepond({
+            storeAsFile: true,
+            acceptedFileTypes: ['image/*'],
+          });
+
+          $('#kandungans').select2({
+            theme: 'bootstrap-5'
+          });
         });
       });
+
       $('.listBarang #btnEditBarang').click(function() {
-        const id = $(this).data('id');
+        var id = $(this).data('id');
         $('#modalBarang').modal('show');
-        $('#modalBarangContent').html('');
-        $('#modalLoading').show();
+
         $.get(`barang/${id}/edit`, function(res) {
-          $('#modalLoading').hide();
           $('#modalBarangContent').html(res);
+          $('#modalLoading').addClass('d-none');
+          $('#modalBarangContent').removeClass('d-none');
+
+          $('input[name="fotos[]"]').filepond({
+            storeAsFile: true,
+            acceptedFileTypes: ['image/*'],
+          });
+
+          $('#kandungans').select2({
+            theme: 'bootstrap-5'
+          });
         });
       });
       // $('#btnDeleteBarang').click(function(){

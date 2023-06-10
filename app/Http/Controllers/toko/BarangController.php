@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Toko;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Etalase;
+use App\Models\Kandungan;
 use App\Models\Kategori;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -38,9 +39,10 @@ class BarangController extends Controller
     public function create()
     {
         $kategoris = Kategori::all();
+        $kandungans = Kandungan::all();
         $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
         $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
-        return view('toko.barang.create', compact('barangs', 'etalases', 'kategoris'));
+        return view('toko.barang.create', compact('barangs', 'etalases', 'kategoris', 'kandungans'));
     }
 
     /**
@@ -51,17 +53,29 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $barangs = Barang::create([
+        $toko = Auth::user()->toko;
+        $kandungans = $request->kandungans;
+        $fotos = $request->file('fotos');
+
+        $barang = $toko->barangs()->create([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
             'stok' => $request->stok,
             'berat' => $request->berat,
-            'kategori_id' => $request->kategoris,
-            'etalase_id' => $request->etalases,
-            'toko_id' => Auth::user()->toko->id
+            'kategori_id' => $request->kategori,
+            'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);
-        // Alert::success('Sukses');
+
+        $barang->kandungans()->sync($kandungans);
+
+        foreach ($fotos as $foto) {
+            $path = $foto->store('img/barang', 'public');
+            $barang->fotos()->create([
+                'path' => "/storage/{$path}"
+            ]);
+        }
+
         return redirect()->route('toko.barang.index')->with('toast_success', 'Barang telah ditambah');
     }
 
@@ -103,9 +117,11 @@ class BarangController extends Controller
         $barangs->update([
             //'nama' -> dipanggil di view edit (id, label), sedangkan $request->nama ini diambil dari nama database
             'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
             'stok' => $request->stok,
-            'deskripsi' => $request->deskripsi,
+            'kategori_id' => $request->kategori,
+            'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);
 
         return redirect()->route('toko.barang.index');
