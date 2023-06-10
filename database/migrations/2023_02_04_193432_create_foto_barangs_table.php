@@ -17,7 +17,6 @@ class CreateFotoBarangsTable extends Migration
             $table->id();
             $table->foreignId('barang_id')->constrained();
             $table->string('path');
-            $table->string('ext');
             $table->timestamps();
         });
     }
