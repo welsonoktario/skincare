@@ -117,7 +117,7 @@
         </table>
         <div class="w-100 text-end">
           <button type="button" class="btn btn-primary btn-pembayaran w-25" data-bs-toggle="modal"
-            data-bs-target="#modalPembayaran" disabled>
+            data-bs-target="#modalPembayaran" >
             Pilih Pembayaran
           </button>
         </div>
