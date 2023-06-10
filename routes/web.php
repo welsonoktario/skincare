@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\BarangKandunganController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\User\AlamatController;
@@ -24,13 +23,17 @@ use App\Http\Controllers\Toko\PesananMasukController as TokoPesananMasukControll
 use App\Http\Controllers\Toko\RekeningController as TokoRekeningController;
 use App\Http\Controllers\Toko\RiwayatTransaksiController as TokoRiwayatTransaksi;
 
+use App\Http\Controllers\Admin\BarangPengecekanController as AdminBarangPengecekanController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\InteraksiKandunganController as AdminInteraksiKandunganController;
 use App\Http\Controllers\Admin\KandunganController as AdminKandunganController;
 use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
 use App\Http\Controllers\Admin\TokoController as AdminTokoController;
 use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBarangController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Admin\TopupController as AdminTopupController;
+use App\Http\Controllers\admin\VerifikasiPenarikanToko as AdminVerifikasiPenarikanToko;
+use App\Http\Controllers\admin\VerifikasiPenarikanUser as AdminVerifikasiPenarikanUser;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
 
 /*
@@ -113,8 +116,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('topup', AdminTopupController::class);
     Route::resource('kategori', AdminKategoriController::class);
     Route::resource('kandungan', AdminKandunganController::class);
-    // Route::resource('interaksi-kandungan', AdminInteraksiKandunganController::class);
-    Route::resource('barang-pengecekan', BarangKandunganController::class);
+    Route::resource('interaksi-kandungan', AdminInteraksiKandunganController::class);
+    Route::resource('barang-pengecekan', AdminBarangPengecekanController::class);
+    Route::resource('penarikantoko', AdminVerifikasiPenarikanToko::class);
+    Route::resource('penarikanuser', AdminVerifikasiPenarikanUser::class);
 });
 
 require __DIR__ . '/auth.php';
