@@ -27,7 +27,7 @@
               <a href="{{ route('user.kategori.show', $kategori->id) }}"
                 class="card bg-primary card-primary-hover text-decoration-none m-1 m-md-2">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                  <img src="{{ "/storage/{$kategori->icon}" }}" alt="{{ $kategori->nama }}" height="36">
+                  <img src="{{ $kategori->icon }}" alt="{{ $kategori->nama }}" height="36">
                   <h6 class="text-title text-white mt-4 mb-0 text-center">
                     {{ $kategori->nama }}
                   </h6>

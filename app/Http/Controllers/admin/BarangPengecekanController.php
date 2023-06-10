@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\BarangKandungan;
+use App\Models\BarangPengecekan;
 use App\Models\Kandungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class BarangKandunganController extends Controller
+class BarangPengecekanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,9 @@ class BarangKandunganController extends Controller
      */
     public function index()
     {
-        $barangKandungans = BarangKandungan::all();
+        $barangPengecekans = BarangPengecekan::all();
 
-        return view('admin.barang-pengecekan.index', compact('barangKandungans'));
+        return view('admin.barang-pengecekan.index', compact('barangPengecekans'));
     }
 
     /**
@@ -44,10 +44,10 @@ class BarangKandunganController extends Controller
     {
         $foto = $request->file('foto')->store('img/barang-kandungan', 'public');
 
-        BarangKandungan::query()
+        BarangPengecekan::query()
             ->create([
                 'nama' => $request->nama,
-                'foto' => $foto,
+                'foto' => "/storage/{$foto}",
                 'kandungan_id' => $request->kandungan,
             ]);
 
@@ -74,9 +74,9 @@ class BarangKandunganController extends Controller
     public function edit($id)
     {
         $kandungans = Kandungan::all();
-        $barangKandungan = BarangKandungan::find($id);
+        $barangPengecekan = BarangPengecekan::find($id);
 
-        return view('admin.barang-pengecekan.edit', compact('kandungans', 'barangKandungan'));
+        return view('admin.barang-pengecekan.edit', compact('kandungans', 'barangPengecekan'));
     }
 
     /**
@@ -89,23 +89,23 @@ class BarangKandunganController extends Controller
     public function update(Request $request, $id)
     {
         $storage = Storage::disk('public');
-        $barangKandungan = BarangKandungan::find($id);
+        $barangPengecekan = BarangPengecekan::find($id);
 
         if ($request->hasFile('icon')) {
             $icon = $request->file('icon');
 
-            if ($storage->exists($barangKandungan->path)) {
-                $storage->delete($barangKandungan->path);
+            if ($storage->exists($barangPengecekan->path)) {
+                $storage->delete($barangPengecekan->path);
             }
 
             $path = $icon->store('img/barang-kandungan', 'public');
 
-            $barangKandungan->update([
+            $barangPengecekan->update([
                 'name' => $request->nama,
-                'foto' => $path,
+                'foto' => "/storage/{$path}",
             ]);
         } else {
-            $barangKandungan->update([
+            $barangPengecekan->update([
                 'name' => $request->nama,
             ]);
         }
