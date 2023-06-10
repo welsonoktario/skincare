@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class KategoriFactory extends Factory
+class KandunganFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,8 +14,7 @@ class KategoriFactory extends Factory
     public function definition()
     {
         return [
-            'nama' => $this->faker->word(),
-            'icon' => $this->faker->imageUrl(100, 100)
+            'nama' => $this->faker->text(10, '1')
         ];
     }
 }

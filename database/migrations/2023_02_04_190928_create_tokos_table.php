@@ -19,7 +19,6 @@ class CreateTokosTable extends Migration
             $table->foreignId('kota_id')->constrained();
             $table->string('nama');
             $table->string('foto')->nullable();
-            $table->string('alamat');
             $table->text('deskripsi');
             $table->string('no_telepon');
             $table->integer('saldo')->default(0);

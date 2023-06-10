@@ -15,7 +15,6 @@ class CreateBarangPengecekansTable extends Migration
     {
         Schema::create('barang_pengecekans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kandungan_id')->constrained();
             $table->string('nama');
             $table->string('foto');
             $table->timestamps();

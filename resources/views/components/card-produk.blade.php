@@ -1,7 +1,7 @@
 @props(['produk'])
 
 <div class="px-2">
-  <div class="card text-decoration-none card-hover px-0">
+  <div class="card text-decoration-none card-hover px-0 mb-2">
     <img class="card-img-top w-100" src="{{ $produk->placeholder }}" />
     <div class="card-body">
       <a href="{{ route('user.kategori.show', $produk->kategori_id) }}"

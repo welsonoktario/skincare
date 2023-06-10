@@ -14,12 +14,12 @@ class BarangFactory extends Factory
     public function definition()
     {
         return [
-            'kategori_id' => random_int(1, 5),
-            'nama' => $this->faker->words(2, true),
-            'deskripsi' => $this->faker->sentence,
-            'harga' => random_int(1000, 100000),
+            'kategori_id' => random_int(1, 6),
+            'nama' => $this->faker->realText(10),
+            'deskripsi' => $this->faker->realText(),
+            'harga' => ceil(random_int(1000, 100000)),
             'stok' => random_int(1, 100),
-            'berat' => random_int(1, 1000)
+            'berat' => ceil(random_int(1, 1000))
         ];
     }
 }
