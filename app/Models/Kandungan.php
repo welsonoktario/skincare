@@ -12,7 +12,12 @@ class Kandungan extends Model
 
     public function barangs()
     {
-        return $this->hasMany(Barang::class);
+        return $this->belongsToMany(Barang::class, 'barang_kandungans');
+    }
+
+    public function barangPengecekans()
+    {
+        return $this->belongsToMany(BarangPengecekan::class, 'barang_pengecekan_kandungans');
     }
 
     public function interaksis()

@@ -40,9 +40,9 @@ class Barang extends Model
         return $this->belongsTo(Kategori::class);
     }
 
-    public function kandungan()
+    public function kandungans()
     {
-        return $this->belongsTo(Kandungan::class);
+        return $this->belongsToMany(Kandungan::class, 'barang_kandungans');
     }
 
     public function fotos()
