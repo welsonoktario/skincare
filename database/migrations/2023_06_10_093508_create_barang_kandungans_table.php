@@ -14,11 +14,8 @@ class CreateBarangKandungansTable extends Migration
     public function up()
     {
         Schema::create('barang_kandungans', function (Blueprint $table) {
-            $table->id();
+            $table->foreignId('barang_id')->constrained();
             $table->foreignId('kandungan_id')->constrained();
-            $table->string('nama');
-            $table->string('foto');
-            $table->timestamps();
         });
     }
 
