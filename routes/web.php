@@ -66,7 +66,7 @@ Route::group(['as' => 'user.'], function () {
             Route::get('alamats', [CheckoutController::class, 'loadAlamats'])->name('checkout.alamats');
             Route::get('kota', [CheckoutController::class, 'loadKota'])->name('checkout.loadKota');
             Route::post('ongkir', [CheckoutController::class, 'loadOngkir'])->name('checkout.loadOngkir');
-            Route::post('checkout', [CheckoutController::class, 'checkout'])->name('checkout.checkout');
+            Route::post('payment_post', [CheckoutController::class, 'payment_post'])->name('checkout.checkout');
             Route::get('pembayaran', [CheckoutController::class, 'pembayaran'])->name('checkout.pembayaran');
         });
 
