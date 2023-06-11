@@ -130,7 +130,7 @@
           </div>
         </div>
 
-        <div class="col-4">
+        {{-- <div class="col-4">
           <div class="card">
             <div class="card-header">
               <h6 class="card-title mb-0">Hasil Interaksi Kandungan</h6>
@@ -162,7 +162,7 @@
               @endforeach
             </div>
           </div>
-        </div>
+        </div> --}}
       </div>
     @else
       <div class="card">

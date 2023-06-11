@@ -54,12 +54,24 @@ class CheckoutController extends Controller
 
         // return Response::json($keranjangs);
 
+        return view('user.checkout.index', compact(
+            'provinsis',
+            'alamat',
+            'keranjangs',
+            'total'
+        ));
+    }
+
+    public function getPayment(Request $request)
+    {
         // count payment gateway in index
-        $userId = Auth::user()->id;
+        $user = Auth::user();
+        $total = $request->total;
+        $userId = $user->id;
 
         // PAYMENT
-        $getName = User::whereId($userId)->value('nama');
-        $getPhone = User::whereId($userId)->value('no_hp');
+        $getName = $user->nama;
+        $getPhone = $user->no_hp;
         // Set your Merchant Server Key
         \Midtrans\Config::$serverKey = 'SB-Mid-server-yUxga--v_4EQ_EKe8TWMMmbZ';
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
@@ -70,34 +82,29 @@ class CheckoutController extends Controller
         \Midtrans\Config::$is3ds = true;
         // $ongkir = $request->ongkirs
         // $grand_total =  $total + $ongkirs; sementara belum ada ongkos kirim yang ter-generate
-        $params = array(
-            'transaction_details' => array(
+        $params = [
+            'transaction_details' => [
                 'order_id' => rand(),
                 'gross_amount' => $total, // ganti jadi $grand_total kalau sudah ada ongkos kirim
-            ),
-            'customer_details' => array(
+            ],
+            'customer_details' => [
                 'first_name' => $getName,
                 'phone' => $getPhone
-            ),
-        );
+            ],
+        ];
         $snapToken = \Midtrans\Snap::getSnapToken($params);
-        return view('user.checkout.index', ['snap_token' => $snapToken], compact(
-            'provinsis',
-            'alamat',
-            'keranjangs',
-            'total'
-        ));
+
+        return response()->json(['snapToken' => $snapToken]);
     }
+
     public function payment_post(Request $request)
     {
-        $json = json_decode($request->get('json'));
         $user = Auth::user();
+        // dd($json);
         $ekspedisis = $request->ekspedisis;
         $ongkirs = $request->ongkirs;
         $alamat = $request->alamat;
-        $pembayaran = $json->payment_type;
-        $payment_code = isset($json->payment_code) ? $json->payment_code : null;
-
+        $metode = $request->metode;
         $date = Carbon::now();
         $transaksis = [];
 
@@ -114,65 +121,121 @@ class CheckoutController extends Controller
             });
         });
 
-        DB::beginTransaction();
+        if ($metode == 'transfer') {
+            $json = json_decode($request->get('json'));
+            $pembayaran = $json->payment_type;
+            $payment_code = isset($json->payment_code) ? $json->payment_code : null;
+            $status = $json->transaction_status == 'settlement' ? 'diproses' : 'pending';
 
-        try {
-            foreach ($keranjangs as $toko => $barangs) {
-                $total = $barangs->sum(function ($b) {
-                    return $b->pivot->sub_total;
-                });
-                $ongkir = $ongkirs[$toko];
-                $idToko = $barangs[0]->toko_id;
+            DB::beginTransaction();
 
-                $transaksi = Auth::user()
-                    ->transaksis()
-                    ->create([
-                        'toko_id' => $idToko,
-                        'ekspedisi_id' => $ekspedisis,
-                        'alamat_id' => $alamat,
-                        'date' => $date,
-                        'total_harga' => $total,
-                        // 'ongkos_pengiriman' => $ongkir,
-                        'payment_type' => $pembayaran,
-                        'payment_code' => $payment_code,
-                        'status' => $pembayaran == 'saldo' ? 'diproses' : 'pending'
-                    ]);
-                $transaksiDetails = [];
+            try {
+                foreach ($keranjangs as $toko => $barangs) {
+                    $total = $barangs->sum(function ($b) {
+                        return $b->pivot->sub_total;
+                    });
+                    $ongkir = $ongkirs[$toko];
+                    $idToko = $barangs[0]->toko_id;
 
-                foreach ($barangs as $barang) {
-                    $transaksiDetails[] = [
-                        'barang_id' => $barang->id,
-                        'sub_total' => $barang->pivot->sub_total,
-                        'jumlah' => $barang->pivot->jumlah
-                    ];
+                    $transaksi = Auth::user()
+                        ->transaksis()
+                        ->create([
+                            'toko_id' => $idToko,
+                            'ekspedisi_id' => $ekspedisis,
+                            'alamat_id' => $alamat,
+                            'date' => $date,
+                            'total_harga' => $total,
+                            'ongkos_pengiriman' => $ongkir,
+                            'jenis_pembayaran' => $metode,
+                            'payment_type' => $pembayaran,
+                            'payment_code' => $payment_code,
+                            'status' => $status
+                        ]);
+                    $transaksiDetails = [];
 
-                    if ($pembayaran == 'saldo') {
+                    foreach ($barangs as $barang) {
+                        $transaksiDetails[] = [
+                            'barang_id' => $barang->id,
+                            'sub_total' => $barang->pivot->sub_total,
+                            'jumlah' => $barang->pivot->jumlah
+                        ];
+
                         $barang->update([
                             'stok' => $barang->stok - $barang->pivot->jumlah
                         ]);
                     }
+
+                    $transaksi->transaksiDetails()->createMany($transaksiDetails);
+                    $transaksis[] = (int) $transaksi->id;
+
+                    $user->keranjangs()->detach($transaksis);
                 }
 
-                $transaksi->transaksiDetails()->createMany($transaksiDetails);
+                DB::commit();
+                return Redirect::route('user.transaksi.index', ['tipe' => 'pending']);
+            } catch (Throwable $e) {
+                DB::rollBack();
+                dd($e);
 
-                if ($pembayaran == 'saldo') {
-                    $user->update([
-                        'saldo' => $user->saldo - $total
-                    ]);
-                }
-
-                $transaksis[] = (int) $transaksi->id;
-
-                $user->keranjangs()->detach();
+                return Redirect::back()->withException($e);
             }
+        } else {
+            DB::beginTransaction();
 
-            DB::commit();
-            return Redirect::route('user.transaksi.index');
-        } catch (Throwable $e) {
-            DB::rollBack();
-            dd($e);
+            try {
+                foreach ($keranjangs as $toko => $barangs) {
+                    $total = $barangs->sum(function ($b) {
+                        return $b->pivot->sub_total;
+                    });
+                    $ongkir = $ongkirs[$toko];
+                    $idToko = $barangs[0]->toko_id;
 
-            return Redirect::back()->withException($e);
+                    $transaksi = Auth::user()
+                        ->transaksis()
+                        ->create([
+                            'toko_id' => $idToko,
+                            'ekspedisi_id' => $ekspedisis,
+                            'alamat_id' => $alamat,
+                            'date' => $date,
+                            'total_harga' => $total,
+                            'ongkos_pengiriman' => $ongkir,
+                            'jenis_pembayaran' => $metode,
+                            'payment_type' => 'saldo',
+                            'status' => 'diproses'
+                        ]);
+                    $transaksiDetails = [];
+
+                    foreach ($barangs as $barang) {
+                        $transaksiDetails[] = [
+                            'barang_id' => $barang->id,
+                            'sub_total' => $barang->pivot->sub_total,
+                            'jumlah' => $barang->pivot->jumlah
+                        ];
+
+                        $barang->update([
+                            'stok' => $barang->stok - $barang->pivot->jumlah
+                        ]);
+                    }
+
+                    $transaksi->transaksiDetails()->createMany($transaksiDetails);
+
+                    $user->update([
+                        'saldo' => $user->saldo - ($total + $ongkir)
+                    ]);
+
+                    $transaksis[] = (int) $transaksi->id;
+
+                    $user->keranjangs()->detach($transaksis);
+                }
+
+                DB::commit();
+                return Redirect::route('user.transaksi.index', ['tipe' => 'pending']);
+            } catch (Throwable $e) {
+                DB::rollBack();
+                dd($e);
+
+                return Redirect::back()->withException($e);
+            }
         }
     }
 

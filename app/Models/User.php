@@ -70,7 +70,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Barang::class, 'keranjangs', 'user_id', 'barang_id')
             ->withPivot(['sub_total', 'jumlah'])
-            ->with(['toko', 'kandungan']);
+            ->with(['toko', 'kandungans']);
     }
 
     public function keranjangsWithTokoEskpedisi()

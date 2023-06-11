@@ -25,7 +25,7 @@ class KeranjangController extends Controller
             ->get();
 
         // cek kandungan
-        $kandungans = self::cekInteraksi($keranjangs);
+        // $kandungans = self::cekInteraksi($keranjangs);
 
         // cek tiap barang di keranjang user
         // apakah stoknya cukup atau kurang dari stok barang yang dijual
@@ -46,7 +46,8 @@ class KeranjangController extends Controller
             });
         });
 
-        return view('user.keranjang.index', compact('keranjangs', 'total', 'kandungans'));
+        // return view('user.keranjang.index', compact('keranjangs', 'total', 'kandungans'));
+        return view('user.keranjang.index', compact('keranjangs', 'total'));
     }
 
     /**

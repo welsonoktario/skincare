@@ -66,7 +66,7 @@
               <div class="vr"></div>
               <div>
                 <p class="mb-0 text-small">Total Transaksi</p>
-                <h6 class="mb-0">@rupiah($transaksi->total_harga)</h6>
+                <h6 class="mb-0">@rupiah(($transaksi->total_harga + $transaksi->ongkos_pengiriman))</h6>
               </div>
             </div>
           </div>
