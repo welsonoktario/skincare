@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alamat;
 use App\Models\Ekspedisi;
 use App\Models\Kota;
 use App\Models\Provinsi;
 use App\Models\Transaksi;
+use App\Models\TransaksiDetail;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +23,15 @@ class CheckoutController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        $userId = Auth::user()->id;
         $provinsis = Provinsi::all();
-        $alamat = $user->alamats()
+        // $alamat = $user->alamats()
+        //     ->with(['kota', 'provinsi'])
+        //     ->firstWhere('is_utama', true);
+        $alamat = Alamat::whereUserId($userId)
             ->with(['kota', 'provinsi'])
-            ->firstWhere('is_utama', true);
+            ->get();
+        // return dd($alamat);
         $keranjangs = $user->keranjangsWithTokoEskpedisi()
             ->when($request->toko, function ($q) use ($request) {
                 return $q->where('toko_id', $request->toko);
@@ -37,7 +46,7 @@ class CheckoutController extends Controller
                 })
             ];
         });
-        // dd($alamat);
+        // dd($keranjangs2);
 
         $total = collect($keranjangs)->sum(function ($keranjang) {
             return $keranjang['total'];
@@ -45,21 +54,51 @@ class CheckoutController extends Controller
 
         // return Response::json($keranjangs);
 
-        return view('user.checkout.index', compact(
+        // count payment gateway in index
+        $userId = Auth::user()->id;
+
+        // PAYMENT
+        $getName = User::whereId($userId)->value('nama');
+        $getPhone = User::whereId($userId)->value('no_hp');
+        // Set your Merchant Server Key
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-yUxga--v_4EQ_EKe8TWMMmbZ';
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$isProduction = false;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
+        // $ongkir = $request->ongkirs
+        // $grand_total =  $total + $ongkirs; sementara belum ada ongkos kirim yang ter-generate
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => $total, // ganti jadi $grand_total kalau sudah ada ongkos kirim
+            ),
+            'customer_details' => array(
+                'first_name' => $getName,
+                'phone' => $getPhone
+            ),
+        );
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        return view('user.checkout.index', ['snap_token' => $snapToken], compact(
             'provinsis',
             'alamat',
             'keranjangs',
             'total'
         ));
     }
-
-    public function checkout(Request $request)
+    public function payment_post(Request $request)
     {
+        $json = json_decode($request->get('json'));
         $user = Auth::user();
         $ekspedisis = $request->ekspedisis;
         $ongkirs = $request->ongkirs;
         $alamat = $request->alamat;
-        $pembayaran = $request->metode;
+        $pembayaran = $json->payment_type;
+        $payment_code = isset($json->payment_code) ? $json->payment_code : null;
+
+        $date = Carbon::now();
         $transaksis = [];
 
         $keranjangs = $user->keranjangsWithTokoEskpedisi()
@@ -85,19 +124,17 @@ class CheckoutController extends Controller
                 $ongkir = $ongkirs[$toko];
                 $idToko = $barangs[0]->toko_id;
 
-                $ekspedisi = Ekspedisi::query()
-                    ->firstWhere('nama', $ekspedisis[$toko])
-                    ->id;
-
                 $transaksi = Auth::user()
                     ->transaksis()
                     ->create([
                         'toko_id' => $idToko,
-                        'ekspedisi_id' => $ekspedisi,
+                        'ekspedisi_id' => $ekspedisis,
                         'alamat_id' => $alamat,
+                        'date' => $date,
                         'total_harga' => $total,
-                        'ongkos_pengiriman' => $ongkir,
-                        'jenis_pembayaran' => $pembayaran,
+                        // 'ongkos_pengiriman' => $ongkir,
+                        'payment_type' => $pembayaran,
+                        'payment_code' => $payment_code,
                         'status' => $pembayaran == 'saldo' ? 'diproses' : 'pending'
                     ]);
                 $transaksiDetails = [];
@@ -130,14 +167,10 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
-
-            if ($pembayaran == 'saldo') {
-                return Redirect::route('user.transaksi.index');
-            } else {
-                return Redirect::route('user.checkout.pembayaran', compact('transaksis'));
-            }
+            return Redirect::route('user.transaksi.index');
         } catch (Throwable $e) {
             DB::rollBack();
+            dd($e);
 
             return Redirect::back()->withException($e);
         }
