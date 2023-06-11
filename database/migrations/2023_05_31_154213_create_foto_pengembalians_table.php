@@ -17,7 +17,6 @@ class CreateFotoPengembaliansTable extends Migration
             $table->id();
             $table->foreignId('pengembalian_id')->constrained();
             $table->string('path');
-            $table->string('ext');
             $table->timestamps();
         });
     }

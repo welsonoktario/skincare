@@ -23,6 +23,37 @@
         required>
     </div>
 
+    <div id="diskonWrapper" class="row mb-3 d-none">
+      <div class="col-12">
+        <label class="custom-switch">
+          <input type="checkbox" id="isDiskon" class="custom-switch-input">
+          <span class="custom-switch-indicator"></span>
+          <span class="custom-switch-description">Tambah diskon barang</span>
+        </label>
+      </div>
+      <div class="col-5 mt-2 diskon-col d-none">
+        <label class="form-label" for="harga">Jenis Diskon</label>
+        <select class="form-select" name="jenis_diskon" id="jenisDiskon">
+          <option selected disabled>Pilih jenis diskon</option>
+          <option value="persen">Persen</option>
+          <option value="nominal">Nominal</option>
+        </select>
+      </div>
+      <div class="col-7 mt-2 diskon-col d-none">
+        <label class="form-label" for="harga">Nominal Diskon</label>
+        <div class="input-group">
+          <span class="input-group-text" id="igNominal">Rp</span>
+          <input type="number" min="0" class="form-control" id="nominalDiskon" placeholder="Nominal Diskon"
+            name="nominal_diskon">
+          <span class="input-group-text" id="igPersen">%</span>
+        </div>
+      </div>
+      <div class="col-12 mt-2 diskon-col d-none">
+        <label for="harga_diskon" class="form-label">Harga Setelah Diskon</label>
+        <input type="number" class="form-control" id="hargaDiskon" name="harga_diskon" readonly>
+      </div>
+    </div>
+
     <div class="mb-3">
       <label class="form-label" for="berat">Berat</label>
       <div class="input-group">

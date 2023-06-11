@@ -92,7 +92,7 @@
 @endsection
 
 @push('scripts')
-  <script src="https://www.unpkg.com/select2/dist/js/select2.min.js"></script>
+  <script src="https://unpkg.com/select2/dist/js/select2.min.js"></script>
   <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
   <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
   <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
@@ -100,6 +100,71 @@
   <script>
     $(document).ready(function() {
       $.fn.filepond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+
+      $(document).on('change', '#harga', function() {
+        var harga = $(this).val();
+        $('#nominalDiskon').prop('min', 1);
+
+        if (harga) {
+          $('#diskonWrapper').removeClass('d-none');
+          $('#nominalDiskon').prop('max', harga);
+        } else {
+          $('#diskonWrapper').addClass('d-none');
+          $('#nominalDiskon').prop('max', 100);
+        }
+      });
+
+      $(document).on('change', '#isDiskon', function() {
+        $('.diskon-col').toggleClass('d-none');
+      });
+
+      $(document).on('change', '#jenisDiskon', function() {
+        var jenis = $(this).val();
+        $('#nominalDiskon').prop('min', 1);
+
+        if (jenis == 'persen') {
+          $('#igPersen').removeClass('d-none');
+          $('#igNominal').addClass('d-none');
+          $('#nominalDiskon').prop('max', 100);
+        } else {
+          $('#igPersen').addClass('d-none');
+          $('#igNominal').removeClass('d-none');
+          $('#nominalDiskon').prop('max', $('#harga').val());
+        }
+      });
+
+      $(document).on('change', '#nominalDiskon', function() {
+        var jenis = $('#jenisDiskon').val();
+        var harga = $('#harga').val();
+        var nominal = $(this).val(); // 100
+        var hargaDiskon;
+
+        if (jenis == 'persen') {
+          $(this).prop('max', 100);
+          if (nominal > 100) {
+            nominal = 100;
+          } else if (nominal < 1) {
+            nominal = 1;
+          }
+
+          $(this).val(nominal);
+
+          hargaDiskon = harga - (harga * (nominal / 100));
+        } else {
+          $(this).prop('max', harga);
+          if (nominal > harga) {
+            nominal = harga;
+          } else if (nominal < 1) {
+            nominal = 1;
+          }
+
+          $(this).val(nominal);
+
+          hargaDiskon = harga - nominal;
+        }
+
+        $('#hargaDiskon').val(hargaDiskon);
+      });
 
       $('#modalBarang').on('hidden.bs.modal', function() {
         $('#modalBarangContent').addClass('d-none');
@@ -121,6 +186,7 @@
 
           $('input[name="fotos[]"]').filepond({
             storeAsFile: true,
+            maxFiles: 5,
             acceptedFileTypes: ['image/*'],
           });
 
@@ -141,6 +207,7 @@
 
           $('input[name="fotos[]"]').filepond({
             storeAsFile: true,
+            maxFiles: 5,
             acceptedFileTypes: ['image/*'],
           });
 

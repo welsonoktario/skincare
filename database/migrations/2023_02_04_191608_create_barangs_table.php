@@ -22,6 +22,8 @@ class CreateBarangsTable extends Migration
             $table->text('deskripsi');
             $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
             $table->integer('harga')->default(1);
+            $table->enum('jenis_diskon', ['persen', 'nominal'])->nullable();
+            $table->integer('nominal_diskon')->nullable();
             $table->integer('stok')->default(0);
             $table->integer('berat')->default(0);
             $table->timestamps();

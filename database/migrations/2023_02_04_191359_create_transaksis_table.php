@@ -21,9 +21,9 @@ class CreateTransaksisTable extends Migration
             $table->foreignId('alamat_id')->constrained();
             $table->integer('total_harga')->default(0);
             $table->integer('ongkos_pengiriman')->default(0);
-            $table->enum('jenis_pembayaran', ['saldo', 'transfer'])->default('saldo');
+            $table->enum('jenis_pembayaran', ['bank_transfer', 'echannel', 'saldo']);
+            $table->string('kode_pembayaran')->nullable();
             $table->enum('status', ['pending', 'diproses', 'dikirim', 'selesai', 'batal'])->default('pending');
-            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

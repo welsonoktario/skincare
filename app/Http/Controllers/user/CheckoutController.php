@@ -100,7 +100,6 @@ class CheckoutController extends Controller
     public function payment_post(Request $request)
     {
         $user = Auth::user();
-        // dd($json);
         $ekspedisis = $request->ekspedisis;
         $ongkirs = $request->ongkirs;
         $alamat = $request->alamat;
@@ -122,6 +121,7 @@ class CheckoutController extends Controller
         });
 
         if ($metode == 'transfer') {
+            // Bayar pake midtrans
             $json = json_decode($request->get('json'));
             $pembayaran = $json->payment_type;
             $payment_code = isset($json->payment_code) ? $json->payment_code : null;
@@ -143,17 +143,18 @@ class CheckoutController extends Controller
                             'toko_id' => $idToko,
                             'ekspedisi_id' => $ekspedisis,
                             'alamat_id' => $alamat,
-                            'date' => $date,
                             'total_harga' => $total,
                             'ongkos_pengiriman' => $ongkir,
-                            'jenis_pembayaran' => $metode,
-                            'payment_type' => $pembayaran,
-                            'payment_code' => $payment_code,
-                            'status' => $status
+                            'jenis_pembayaran' => $pembayaran,
+                            'kode_pembayaran' => $payment_code,
+                            'status' => $status,
+                            'created_at' => $date
                         ]);
                     $transaksiDetails = [];
+                    $barangs = [];
 
                     foreach ($barangs as $barang) {
+                        $barangs[] = $barang->id;
                         $transaksiDetails[] = [
                             'barang_id' => $barang->id,
                             'sub_total' => $barang->pivot->sub_total,
@@ -168,7 +169,7 @@ class CheckoutController extends Controller
                     $transaksi->transaksiDetails()->createMany($transaksiDetails);
                     $transaksis[] = (int) $transaksi->id;
 
-                    $user->keranjangs()->detach($transaksis);
+                    $user->keranjangs()->detach($barangs);
                 }
 
                 DB::commit();
@@ -180,6 +181,7 @@ class CheckoutController extends Controller
                 return Redirect::back()->withException($e);
             }
         } else {
+            // Bayar pake saldo
             DB::beginTransaction();
 
             try {
@@ -199,13 +201,15 @@ class CheckoutController extends Controller
                             'date' => $date,
                             'total_harga' => $total,
                             'ongkos_pengiriman' => $ongkir,
-                            'jenis_pembayaran' => $metode,
-                            'payment_type' => 'saldo',
+                            'jenis_pembayaran' => 'saldo',
+                            'kode_pembayaran' => $date->format('Ymdhms'),
                             'status' => 'diproses'
                         ]);
                     $transaksiDetails = [];
+                    $barangs = [];
 
                     foreach ($barangs as $barang) {
+                        $barangs[] = $barang->id;
                         $transaksiDetails[] = [
                             'barang_id' => $barang->id,
                             'sub_total' => $barang->pivot->sub_total,
@@ -225,7 +229,7 @@ class CheckoutController extends Controller
 
                     $transaksis[] = (int) $transaksi->id;
 
-                    $user->keranjangs()->detach($transaksis);
+                    $user->keranjangs()->detach($barangs);
                 }
 
                 DB::commit();
