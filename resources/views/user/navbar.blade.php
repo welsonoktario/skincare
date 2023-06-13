@@ -43,7 +43,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ route('user.profil.index') }}"
+              <a href="{{ route('user.transaksi.index') }}"
                 class="dropdown-item has-icon d-flex flex-row align-items-center">
                 <i class="fas fa-receipt"></i>Pesanan
               </a>

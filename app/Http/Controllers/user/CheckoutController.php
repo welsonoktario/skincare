@@ -125,7 +125,7 @@ class CheckoutController extends Controller
             $json = json_decode($request->get('json'));
             $pembayaran = $json->payment_type;
             $payment_code = isset($json->payment_code) ? $json->payment_code : null;
-            $status = $json->transaction_status == 'settlement' ? 'diproses' : 'pending';
+            $status = $json->transaction_status == 'settlement' ? 'diproses' : 'menunggu pembayaran';
 
             DB::beginTransaction();
 

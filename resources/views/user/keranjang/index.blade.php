@@ -35,7 +35,18 @@
                   <tr>
                     <td class="py-4">
                       <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
-                      <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
+                      <p class="fw-semibold text-center">
+                        {{ $barang->nama }}
+                      </p>
+
+                      <div class="text-small text-dark">
+                        <p class="mb-0">Kandungan:</p>
+                        <ul>
+                          @foreach ($barang->kandungans as $k)
+                            <li class="my-0">{{ $k->nama }}</li>
+                          @endforeach
+                        </ul>
+                      </div>
                     </td>
                     <td class="text-right">
                       @rupiah($barang->harga)
@@ -130,7 +141,7 @@
           </div>
         </div>
 
-        {{-- <div class="col-4">
+        <div class="col-4">
           <div class="card">
             <div class="card-header">
               <h6 class="card-title mb-0">Hasil Interaksi Kandungan</h6>
@@ -139,16 +150,16 @@
               @foreach ($kandungans as $k)
                 <div @class([
                     'alert',
-                    'alert-success' => $h->jenis_interaksi == 'baik',
-                    'alert-danger' => $h->jenis_interaksi == 'buruk',
-                    'alert-secondary text-dark' => $h->jenis_interaksi == 'tidak ada',
+                    'alert-success' => $k->jenis_interaksi == 'baik',
+                    'alert-danger' => $k->jenis_interaksi == 'buruk',
+                    'alert-secondary text-dark' => $k->jenis_interaksi == 'tidak ada',
                 ])>
                   <div class="alert-title text-capitalize">
                     Interaksi {{ $k->jenis_interaksi }}
                   </div>
                   <p class="fw-semibold">
-                    <span class="fw-semibold">{{ $k->barang_satu }}</span> dan <span
-                      class="fw-semibold">{{ $k->barang_dua }}</span>
+                    <span class="fw-semibold">{{ "{$k->barang_satu} ({$k->kandungan_satu})" }}</span> dan <span
+                      class="fw-semibold">{{ "{$k->barang_dua} ({$k->kandungan_dua})" }}</span>
                     @if ($k->jenis_interaksi == 'baik')
                       dapat digunakan dengan bersamaan
                     @elseif ($k->jenis_interaksi == 'buruk')
@@ -162,7 +173,7 @@
               @endforeach
             </div>
           </div>
-        </div> --}}
+        </div>
       </div>
     @else
       <div class="card">

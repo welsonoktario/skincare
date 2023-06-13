@@ -1,5 +1,5 @@
 @php
-  $tipes = [['tipe' => 'pending', 'label' => 'Pending'], ['tipe' => 'diproses', 'label' => 'Diproses'], ['tipe' => 'dikirim', 'label' => 'Dikirim'], ['tipe' => 'ulas', 'label' => 'Menunggu Ulasan'], ['tipe' => 'selesai', 'label' => 'Selesai'], ['tipe' => 'batal', 'label' => 'Dibatalkan']];
+  $tipes = [['tipe' => 'pembayaran', 'label' => 'Menunggu Pembayaran'], ['tipe' => 'konfirmasi', 'label' => 'Menunggu Konfirmasi'], ['tipe' => 'diproses', 'label' => 'Diproses'], ['tipe' => 'dikirim', 'label' => 'Dikirim'], ['tipe' => 'ulas', 'label' => 'Menunggu Ulasan'], ['tipe' => 'selesai', 'label' => 'Selesai'], ['tipe' => 'batal', 'label' => 'Dibatalkan'], ['tipe' => 'kembali', 'label' => 'Dikembalikan']];
   $currentTipe = request()->get('tipe') ?: 'semua';
 @endphp
 
@@ -9,6 +9,9 @@
   <h6 class="mt-2 mx-0 mb-0 text-dark">Daftar Transaksi</h6>
 
   <ul class="nav nav-pills nav-fill mt-4">
+    <li class="nav-item">
+      <a class="nav-link {{ $currentTipe == 'semua' ? 'active' : '' }}" href="{{ route('user.transaksi.index') }}">Semua</a>
+    </li>
     @foreach ($tipes as $tipe)
       <li class="nav-item">
         <a class="nav-link {{ $currentTipe == $tipe['tipe'] ? 'active' : '' }}"
@@ -31,6 +34,10 @@
               <div class="d-flex flex-row align-items-center" style="column-gap: 1rem">
                 <a class="fw-bold link-secondary text-decoration-none" href="#">{{ $toko->nama }}</a>
                 @switch($transaksi->status)
+                  @case('konfirmasi')
+                    <label class="badge badge-pill badge-primary" style="font-size: 0.6rem">Menunggu Konfirmasi</label>
+                  @break
+
                   @case('diproses')
                     <label class="badge badge-pill badge-warning" style="font-size: 0.6rem">Diproses</label>
                   @break
@@ -66,7 +73,7 @@
               <div class="vr"></div>
               <div>
                 <p class="mb-0 text-small">Total Transaksi</p>
-                <h6 class="mb-0">@rupiah(($transaksi->total_harga + $transaksi->ongkos_pengiriman))</h6>
+                <h6 class="mb-0">@rupiah($transaksi->total_harga + $transaksi->ongkos_pengiriman)</h6>
               </div>
             </div>
           </div>

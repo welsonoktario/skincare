@@ -71,30 +71,39 @@
               <hr>
 
               <div class="row justify-content-between align-items-center">
-                <div class="col-12 col-md-5">
-                  <p class="mb-0">Berat Satuan: @berat($produk->berat)</p>
-                  <p class="mb-0">
-                    Kategori:
-                    <a class="link-primary text-decoration-none fw-semibold"
-                      href="{{ route('user.kategori.show', $produk->kategori_id) }}">
-                      {{ $produk->kategori->nama }}
-                    </a>
+                <div class="col-12 col-md-5 flex-grow-1">
+                  <p class="mb-0 fw-light">
+                    Berat Satuan: <span class="fw-semibold">@berat($produk->berat)</span>
                   </p>
-                  <p class="mb-0">
+                  <p class="mb-0 fw-light">
+                    Kategori:
+                    <span>
+                      <a class="link-primary text-decoration-none fw-semibold"
+                        href="{{ route('user.kategori.show', $produk->kategori_id) }}">
+                        {{ $produk->kategori->nama }}
+                      </a>
+                    </span>
+                  </p>
+                  <p class="mb-0 fw-light">
                     Etalase:
-                    <a class="link-primary text-decoration-none fw-semibold"
-                      href="{{ $produk->etalase_id ? '#' : '#' }}">
-                      {{ $produk->etalase ? $produk->etalase->nama : 'Semua' }}
-                    </a>
+                    <span>
+                      <a class="link-primary text-decoration-none fw-semibold"
+                        href="{{ $produk->etalase_id ? '#' : '#' }}">
+                        {{ $produk->etalase ? $produk->etalase->nama : 'Semua' }}
+                      </a>
+                    </span>
+                  </p>
+                  <p class="mb-0 fw-light">
+                    Bahan Aktif: <span class="fw-semibold">{{ $produk->kandungans->pluck('nama')->implode(', ') }}</span>
                   </p>
                 </div>
 
-                <div class="col-12 col-md-2 align-self-stretch text-center">
+                <div class="col-12 col-md-2 align-self-stretch text-center mx-0 px-0" style="width: fit-content">
                   <div class="vr h-100 d-none d-md-block mx-auto"></div>
                   <hr class="d-block d-md-none">
                 </div>
 
-                <div class="col-12 col-md-5 text-md-center">
+                <div class="col-12 col-md-5 text-md-center flex-grow-1">
                   <div class="d-flex flex-row d-md-inline align-items-center" style="column-gap: 1rem">
                     <img class="rounded-circle mb-md-2" src="{{ $produk->toko->foto ?: 'https://picsum.photos/100' }}"
                       alt="{{ $produk->toko->nama }}" height="64" width="64">
@@ -105,7 +114,7 @@
                       </a>
                       <p class="mb-0">
                         <i class="fas fa-star fa-xs text-warning"></i>
-                        4.8
+                        {{ $rating ?: 'Belum ada rating' }}
                       </p>
                     </div>
                   </div>
@@ -114,7 +123,7 @@
 
               <hr>
 
-              <p class="mb-0 text-black">{{ $produk->deskripsi }}</p>
+              <p class="mb-0 text-dark fw-light">{{ $produk->deskripsi }}</p>
           </div>
         </div>
 

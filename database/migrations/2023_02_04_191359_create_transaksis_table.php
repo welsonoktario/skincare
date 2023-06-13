@@ -23,7 +23,7 @@ class CreateTransaksisTable extends Migration
             $table->integer('ongkos_pengiriman')->default(0);
             $table->enum('jenis_pembayaran', ['bank_transfer', 'echannel', 'saldo']);
             $table->string('kode_pembayaran')->nullable();
-            $table->enum('status', ['pending', 'diproses', 'dikirim', 'selesai', 'batal'])->default('pending');
+            $table->enum('status', ['menunggu pembayaran', 'menunggu konfirmasi', 'diproses', 'dikirim', 'selesai', 'batal']);
             $table->timestamps();
             $table->softDeletes();
         });
