@@ -72,7 +72,10 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('user.alamat.setUtama');
-
+        Route::group(['prefix' => 'topup'], function () {
+            Route::post('get-topup', [TopupController::class, 'getTopUp'])->name('topup.getTopUp');
+            Route::post('topup_post', [TopupController::class, 'topup_post'])->name('topup.topup');
+        });
         Route::prefix('profil')->group(function () {
             // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat
             // Route::get('/alamat/{id}', [AlamatController::class, 'show']) => skincare.com/alamat/{alamat}
@@ -83,7 +86,6 @@ Route::group(['as' => 'user.'], function () {
             // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
             Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
         });
-
         Route::resources([
             'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
@@ -109,7 +111,7 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-    Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function() {
+    Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function () {
         Route::get('/', [AdminInteraksiKandunganController::class, 'index'])->name('index');
         Route::get('/create', [AdminInteraksiKandunganController::class, 'create'])->name('create');
         Route::post('/', [AdminInteraksiKandunganController::class, 'store'])->name('store');

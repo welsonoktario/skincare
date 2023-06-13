@@ -14,7 +14,6 @@
         <div class="row">
           <div class="col-12">
             @if ($alamat)
-              {{-- {{ dd($alamat[0]['id']) }} --}}
               <input type="hidden" name="alamat" value="{{ $alamat[0]['id'] }}">
               <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button"
                 data-bs-toggle="modal" data-bs-target="#modalAlamats">
@@ -339,7 +338,6 @@
         document.getElementById('json_callback').value = JSON.stringify(result);
         $('#formPembayaran').submit();
       }
-
       function hitungGrandTotal() {
         let totalOngkir = 0;
         let grandTotal = 0;

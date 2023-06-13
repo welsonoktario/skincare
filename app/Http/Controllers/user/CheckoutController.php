@@ -67,8 +67,6 @@ class CheckoutController extends Controller
         // count payment gateway in index
         $user = Auth::user();
         $total = $request->total;
-        $userId = $user->id;
-
         // PAYMENT
         $getName = $user->nama;
         $getPhone = $user->no_hp;
@@ -236,7 +234,7 @@ class CheckoutController extends Controller
                 return Redirect::route('user.transaksi.index', ['tipe' => 'pending']);
             } catch (Throwable $e) {
                 DB::rollBack();
-                dd($e);
+                // dd($e);
 
                 return Redirect::back()->withException($e);
             }
