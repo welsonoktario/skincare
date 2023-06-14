@@ -46,13 +46,13 @@
           <div class="d-flex flex-row overflow-auto mt-2">
             @foreach ($produk->fotos as $foto)
               @if ($loop->iteration === 1)
-                <img src="{{ $foto->path }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
+                <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
                   class="w-25 me-2 rounded thumbnail" />
               @elseif($loop->iteration === count($produk->fotos))
-                <img src="{{ $foto->path }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
+                <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
                   class="w-25 ms-2 rounded thumbnail" />
               @else
-                <img src="{{ $foto->path }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
+                <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
                   class="w-25 mx-2 rounded thumbnail" />
               @endif
             @endforeach

@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\TopupController as AdminTopupController;
 use App\Http\Controllers\admin\VerifikasiPenarikanToko as AdminVerifikasiPenarikanToko;
 use App\Http\Controllers\admin\VerifikasiPenarikanUser as AdminVerifikasiPenarikanUser;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
+use App\Http\Middleware\IsAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,8 +95,10 @@ Route::group(['as' => 'user.'], function () {
     });
 });
 
-Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
+Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], function () {
     Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
+    Route::get('/barang/{id}/foto', [TokoBarangController::class, 'loadFotos'])->name('barang.foto');
+
     Route::resource('barang', TokoBarangController::class);
     Route::resource('akun', TokoAkunController::class);
     Route::resource('etalase', TokoEtalaseController::class);
@@ -108,7 +111,7 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.'], function () {
     Route::resource('pesananmasuk', TokoPesananMasukController::class);
 });
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [IsAdmin::class]], function () {
     Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function() {
         Route::get('/', [AdminInteraksiKandunganController::class, 'index'])->name('index');
         Route::get('/create', [AdminInteraksiKandunganController::class, 'create'])->name('create');

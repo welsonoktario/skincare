@@ -9,6 +9,7 @@ use App\Models\Kandungan;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -42,6 +43,7 @@ class BarangController extends Controller
         $kandungans = Kandungan::all();
         $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
         $barangs = Barang::where('toko_id', Auth::user()->toko->id)->get();
+
         return view('toko.barang.create', compact('barangs', 'etalases', 'kategoris', 'kandungans'));
     }
 
@@ -74,7 +76,7 @@ class BarangController extends Controller
         foreach ($fotos as $foto) {
             $path = $foto->store('img/barang', 'public');
             $barang->fotos()->create([
-                'path' => "/storage/{$path}"
+                'path' => $path
             ]);
         }
 
@@ -101,8 +103,19 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $barangs = Barang::find($id);
-        return view('toko.barang.edit', compact('barangs'));
+        $kategoris = Kategori::all();
+        $kandungans = Kandungan::all();
+        $etalases = Etalase::where('toko_id', Auth::user()->toko->id)->get();
+        $barang = Barang::find($id);
+        $hargaDiskon = null;
+
+        if ($barang->nominal_diskon) {
+            $hargaDiskon = $barang->jenis_diskon == 'persen'
+                ? ($barang->harga - ($barang->harga * ($barang->nominal_diskon / 100)))
+                : $barang->harga - $barang->nominal_diskon;
+        }
+
+        return view('toko.barang.edit', compact('barang', 'kategoris', 'kandungans', 'etalases', 'hargaDiskon'));
     }
 
     /**
@@ -114,17 +127,40 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barangs = Barang::find($id);
+        $storage = Storage::disk('public');
+        $barang = Barang::query()->find($id);
+        $kandungans = $request->kandungans;
+        $fotos = $request->file('fotos');
 
-        $barangs->update([
-            //'nama' -> dipanggil di view edit (id, label), sedangkan $request->nama ini diambil dari nama database
+        $barang->update([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
             'stok' => $request->stok,
+            'berat' => $request->berat,
+            'jenis_diskon' => $request->jenis_diskon,
+            'nominal_diskon' => $request->nominal_diskon,
             'kategori_id' => $request->kategori,
             'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);
+
+        $barang->kandungans()->sync($kandungans);
+
+        if ($fotos) {
+            foreach ($barang->fotos as $foto) {
+                if ($storage->exists($foto->path)) {
+                    $storage->delete($foto->path);
+                    $foto->delete();
+                }
+            }
+
+            foreach ($fotos as $foto) {
+                $path = $foto->store('img/barang', 'public');
+                $barang->fotos()->create([
+                    'path' => $path
+                ]);
+            }
+        }
 
         return redirect()->route('toko.barang.index');
     }
@@ -142,5 +178,19 @@ class BarangController extends Controller
         $barangs->delete();
 
         return redirect()->route('toko.barang.index')->with('success', 'Barang dengan nama ' . $namaBarangs . ' telah dihapus');
+    }
+
+    public function loadFotos($id)
+    {
+        $storage = Storage::disk('public');
+        $fotos = Barang::query()
+            ->find($id)
+            ->fotos
+            ->pluck('path');
+        $fotos = $fotos->map(function ($path) use ($storage) {
+            return $storage->url($path);
+        });
+
+        return response()->json($fotos);
     }
 }

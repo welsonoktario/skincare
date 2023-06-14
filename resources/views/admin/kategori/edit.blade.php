@@ -16,7 +16,7 @@
 
   <div id="imgPreview" class="d-inline-flex flex-column align-items-center w-100">
     <div class="image-preview">
-      <img class="w-100" src="{{ $kategori->icon }}" alt="Icon">
+      <img class="w-100" src="{{ "/storage/{$kategori->icon}" }}" alt="Icon">
     </div>
     <button type="button" class="btn btn-link btn-ganti">Ganti icon</button>
   </div>

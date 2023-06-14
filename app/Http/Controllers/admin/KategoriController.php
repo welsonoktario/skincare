@@ -46,7 +46,7 @@ class KategoriController extends Controller
 
         $kategori = Kategori::create([
             'nama' => $request->nama,
-            'icon' => "/storage/{$path}",
+            'icon' => $path,
         ]);
 
         return redirect()->back();
@@ -98,7 +98,7 @@ class KategoriController extends Controller
             $path = $icon->store('img/kategori', 'public'); // img/kategori/fjbfoafboa.png/jpg
 
             $kategori->nama = $request->nama;
-            $kategori->icon = "/storage/$path"; // img/kategori/fjbfoafboa.png/jpg
+            $kategori->icon = $path; // img/kategori/fjbfoafboa.png/jpg
             $kategori->save();
         } else {
             $kategori->nama = $request->nama;

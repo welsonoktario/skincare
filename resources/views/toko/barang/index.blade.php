@@ -204,15 +204,27 @@
           $('#modalBarangContent').html(res);
           $('#modalLoading').addClass('d-none');
           $('#modalBarangContent').removeClass('d-none');
-
-          $('input[name="fotos[]"]').filepond({
-            storeAsFile: true,
-            maxFiles: 5,
-            acceptedFileTypes: ['image/*'],
-          });
+          $('#harga').trigger('change');
+          $('#isDiskon').trigger('change');
+          $('#jenisDiskon').trigger('change');
 
           $('#kandungans').select2({
             theme: 'bootstrap-5'
+          });
+
+          $.get(`barang/${id}/foto`, function(res) {
+            var files = res.map((path) => ({
+              source: path,
+            }))
+
+            console.log(files)
+
+            $('input[name="fotos[]"]').filepond({
+              storeAsFile: true,
+              maxFiles: 5,
+              acceptedFileTypes: ['image/*'],
+              files: files
+            });
           });
         });
       });

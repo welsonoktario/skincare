@@ -60,7 +60,7 @@ class BarangPengecekanController extends Controller
         $barangPengecekan = BarangPengecekan::query()
             ->create([
                 'nama' => $request->nama,
-                'foto' => "/storage/{$foto}",
+                'foto' => $foto,
             ]);
         $barangPengecekan->kandungans()->attach($request->kandungans);
 
@@ -106,7 +106,7 @@ class BarangPengecekanController extends Controller
 
             $barangPengecekan->update([
                 'name' => $request->nama,
-                'foto' => "/storage/{$path}",
+                'foto' => $path,
             ]);
             $barangPengecekan->kandungans()->sync($request->kandungans);
         } else {
