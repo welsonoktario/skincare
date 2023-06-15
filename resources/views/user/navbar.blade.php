@@ -66,7 +66,12 @@
           @guest
             <li>
               <a href="{{ route('login') }}" class="dropdown-item has-icon">
-                <i class="far fa-sign-in-alt"></i> Masuk
+                <i class="fas fa-sign-in-alt"></i> Masuk
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('user.cek-kandungan.index') }}" class="dropdown-item has-icon">
+                <i class="fas fa-tasks"></i> Cek Kandungan
               </a>
             </li>
           @endguest

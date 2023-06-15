@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,65 +16,71 @@ class CekKandunganController extends Controller
      */
     public function index(Request $request)
     {
-        $kategoris = Kategori::with('barangs')->get();
+        $barangs = Barang::all();
         $hasilInteraksis = collect([]);
+        $namaBarangs = collect([]);
 
         if ($request->has('barangs')) {
-            $barangs = Barang::query()
+            // dd($request->barangs);
+            $barangCek = Barang::query()
                 ->whereIn('id', $request->barangs)
                 ->get();
-            $hasilInteraksis = self::cekInteraksi($barangs);
+            $namaBarangs->add($barangCek[0]->nama);
+            $namaBarangs->add($barangCek[1]->nama);
+            $hasilInteraksis = self::cekInteraksi($barangCek);
         }
 
-        return view('user.cek-kandungan.index', compact('kategoris', 'hasilInteraksis'));
+        return view('user.cek-kandungan.index', compact('barangs', 'hasilInteraksis', 'namaBarangs'));
     }
 
     /**
-     * @param App\Models\Barang[] $barangs
+     * @param App\Models\Barang[] /$ids
      */
-    public function cekInteraksi($barangs)
+    private function cekInteraksi($barangs)
     {
         $pasangan = collect([]);
+        $kandunganBarang1 = $barangs[0]->kandungans;
+        $kandunganBarang2 = $barangs[1]->kandungans;
 
-        foreach ($barangs as $barang) {
-            if (!$barang->kandungan_id) {
-                continue;
-            }
+        if (count($kandunganBarang1) == 0 || count($kandunganBarang2) == 0) {
+            return $pasangan;
+        }
 
-            foreach ($barangs as $barang2) {
-                if (!$barang2->kandungan_id) {
+        foreach ($kandunganBarang1 as $kb1) {
+            foreach ($kandunganBarang2 as $kb2) {
+                if ($kb1->id == $kb2->id) {
                     continue;
                 }
 
-                if ($barang->kandungan_id != $barang2->kandungan_id) {
-                    $tmp = collect([
-                        [
-                            'barang' => $barang->nama,
-                            'kandungan' => $barang->kandungan_id
-                        ],
-                        [
-                            'barang' => $barang2->nama,
-                            'kandungan' => $barang2->kandungan_id
-                        ]
-                    ]);
+                $tmp = collect([
+                    [
+                        'barang' => $barangs[0]->nama,
+                        'kandungan' => $kb1->id
+                    ],
+                    [
+                        'barang' => $barangs[1]->nama,
+                        'kandungan' => $kb2->id
+                    ]
+                ]);
+                $tmp = $tmp->sortBy('kandungan');
+                $tmp = collect(["k1", "k2"])->combine($tmp);
 
-                    $tmp = $tmp->sortBy('kandungan');
-                    $tmp = collect(["k1", "k2"])->combine($tmp);
-
-                    if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
-                        $pasangan->add($tmp);
-                    }
+                if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
+                    $pasangan->add($tmp);
                 }
             }
         }
 
         $hasilInteraksis = collect([]);
-        foreach ($pasangan as $p) {
-            $hasilInteraksi = DB::table('interaksi_kandungans', 'ik') // FROM interaksi_kandungans AS ik
+
+        foreach($pasangan as $p) {
+            $hasilInteraksi = DB::table('interaksi_kandungans', 'ik')
                 ->selectRaw(
                     'ik.jenis_interaksi AS jenis_interaksi,
                     ik.deskripsi_interaksi AS deskripsi_interaksi,
                     ik.sumber AS sumber,
+                    k1.id AS k1,
+                    k2.id AS k2,
                     k1.nama AS kandungan_satu,
                     k2.nama AS kandungan_dua'
                 )
@@ -87,11 +92,20 @@ class CekKandunganController extends Controller
 
             if ($hasilInteraksi) {
                 $hasilInteraksi->barang_satu = $p['k1']['barang'];
-                $hasilInteraksi->barang_dua = $p['k2']['barang'];
 
-                $hasilInteraksis->add($hasilInteraksi);
+                $hasilInteraksi->barang_dua = $p['k2']['barang'];
+                if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
+                    $contains = $hasilInteraksis->contains(function ($hi) use ($p) {
+                        return $hi->k1 == $p['k1']['kandungan'] && $hi->k2 == $p['k2']['kandungan'];
+                    });
+
+                    if (!$contains) {
+                        $hasilInteraksis->add($hasilInteraksi);
+                    }
+                }
             }
         }
+
         $hasilInteraksis = $hasilInteraksis->groupBy('jenis_interaksi');
 
         return $hasilInteraksis;

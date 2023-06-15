@@ -16,9 +16,8 @@
     @yield('title', config('app.name', 'Laravel'))
   </title>
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@2,1&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
   <!-- Styles -->
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -46,7 +45,7 @@
   <script src="{{ asset('js/vendor.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-  data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
+    data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
   @stack('scripts')
 </body>
 
