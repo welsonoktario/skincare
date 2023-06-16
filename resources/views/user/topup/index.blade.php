@@ -118,7 +118,6 @@
                 $('input[name="nominal"]').val(nominal);
 
             });
-
             $('#btnTambahTopUp').click(function() {
                 $('#modalTopup').modal('show');
                 $('#modalTopupContent').html('');
