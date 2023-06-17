@@ -65,85 +65,99 @@
         {{-- Deskripsi produk --}}
         <div class="card mb-2">
           <div class="card-body">
-            <h6 class="text-black">{{ $produk->nama }}</h5>
-              <h5 class="text-black">@rupiah($produk->harga)</h5>
-
-              <hr>
-
-              <div class="row justify-content-between align-items-center">
-                <div class="col-12 col-md-5 flex-grow-1">
-                  <p class="mb-0 fw-light">
-                    Berat Satuan: <span class="fw-semibold">@berat($produk->berat)</span>
-                  </p>
-                  <p class="mb-0 fw-light">
-                    Kategori:
-                    <span>
-                      <a class="link-primary text-decoration-none fw-semibold"
-                        href="{{ route('user.kategori.show', $produk->kategori_id) }}">
-                        {{ $produk->kategori->nama }}
-                      </a>
-                    </span>
-                  </p>
-                  <p class="mb-0 fw-light">
-                    Etalase:
-                    <span>
-                      <a class="link-primary text-decoration-none fw-semibold"
-                        href="{{ $produk->etalase_id ? '#' : '#' }}">
-                        {{ $produk->etalase ? $produk->etalase->nama : 'Semua' }}
-                      </a>
-                    </span>
-                  </p>
-                  <p class="mb-0 fw-light">
-                    Bahan Aktif: <span class="fw-semibold">{{ $produk->kandungans->pluck('nama')->implode(', ') }}</span>
-                  </p>
+            <h6 class="text-black">{{ $produk->nama }}</h6>
+            <div class="d-inline-flex align-items-center fw-semibold h5">
+              @if ($produk->hargaDiskon)
+                <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
+                <span class="text-danger mx-1">@rupiah($produk->hargaDiskon)</span>
+                <div class="badge badge-danger">
+                  @if ($produk->jenis_diskon == 'persen')
+                    -{{ $produk->nominal_diskon }}%
+                  @else
+                    - @rupiah($produk->nominal_diskon)
+                  @endif
                 </div>
+              @else
+                @rupiah($produk->harga)
+              @endif
+            </div>
 
-                <div class="col-12 col-md-2 align-self-stretch text-center mx-0 px-0" style="width: fit-content">
-                  <div class="vr h-100 d-none d-md-block mx-auto"></div>
-                  <hr class="d-block d-md-none">
-                </div>
+            <hr>
 
-                <div class="col-12 col-md-5 text-md-center flex-grow-1">
-                  <div class="d-flex flex-row d-md-inline align-items-center" style="column-gap: 1rem">
-                    @if ($produk->toko->foto)
-                      <img class="rounded-circle mb-md-2" src="{{ $produk->toko->foto }}"
-                        alt="{{ $produk->toko->nama }}" height="64" width="64">
-                    @else
-                      <div class="bg-white p-2 rounded-circle" style="width: 64; height: 64;">
-                        <svg class="m-auto" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                          xmlns="http://www.w3.org/2000/svg" color="#000000">
-                          <path d="M3 10v9a2 2 0 002 2h14a2 2 0 002-2v-9" stroke="#000000" stroke-width="2"></path>
-                          <path d="M14.833 21v-6a2 2 0 00-2-2h-2a2 2 0 00-2 2v6" stroke="#000000" stroke-width="2"
-                            stroke-miterlimit="16"></path>
-                          <path
-                            d="M21.818 9.364l-1.694-5.929A.6.6 0 0019.547 3H15.5l.475 5.704a.578.578 0 00.278.45c.39.233 1.152.663 1.747.846 1.016.313 2.5.2 3.346.096a.57.57 0 00.472-.732z"
-                            stroke="#000000" stroke-width="2"></path>
-                          <path
-                            d="M14 10c.568-.175 1.288-.574 1.69-.812a.578.578 0 00.28-.549L15.5 3h-7l-.47 5.639a.578.578 0 00.28.55c.402.237 1.122.636 1.69.811 1.493.46 2.507.46 4 0z"
-                            stroke="#000000" stroke-width="2"></path>
-                          <path
-                            d="M3.876 3.435l-1.694 5.93a.57.57 0 00.472.73c.845.105 2.33.217 3.346-.095.595-.183 1.358-.613 1.747-.845a.578.578 0 00.278-.451L8.5 3H4.453a.6.6 0 00-.577.435z"
-                            stroke="#000000" stroke-width="2"></path>
-                        </svg>
-                      </div>
-                    @endif
-                    <div>
-                      <a class="link-primary text-decoration-none fw-semibold mb-0"
-                        href="{{ route('user.toko.index', $produk->toko_id) }}">
-                        {{ $produk->toko->nama }}
-                      </a>
-                      <p class="mb-0">
-                        <i class="fas fa-star fa-xs text-warning"></i>
-                        {{ $rating ?: 'Belum ada rating' }}
-                      </p>
+            <div class="row justify-content-between align-items-center">
+              <div class="col-12 col-md-5 flex-grow-1">
+                <p class="mb-0 fw-light">
+                  Berat Satuan: <span class="fw-semibold">@berat($produk->berat)</span>
+                </p>
+                <p class="mb-0 fw-light">
+                  Kategori:
+                  <span>
+                    <a class="link-primary text-decoration-none fw-semibold"
+                      href="{{ route('user.kategori.show', $produk->kategori_id) }}">
+                      {{ $produk->kategori->nama }}
+                    </a>
+                  </span>
+                </p>
+                <p class="mb-0 fw-light">
+                  Etalase:
+                  <span>
+                    <a class="link-primary text-decoration-none fw-semibold"
+                      href="{{ $produk->etalase_id ? '#' : '#' }}">
+                      {{ $produk->etalase ? $produk->etalase->nama : 'Semua' }}
+                    </a>
+                  </span>
+                </p>
+                <p class="mb-0 fw-light">
+                  Bahan Aktif: <span class="fw-semibold">{{ $produk->kandungans->pluck('nama')->implode(', ') }}</span>
+                </p>
+              </div>
+
+              <div class="col-12 col-md-2 align-self-stretch text-center mx-0 px-0" style="width: fit-content">
+                <div class="vr h-100 d-none d-md-block mx-auto"></div>
+                <hr class="d-block d-md-none">
+              </div>
+
+              <div class="col-12 col-md-5 text-md-center flex-grow-1">
+                <div class="d-flex flex-row d-md-inline align-items-center" style="column-gap: 1rem">
+                  @if ($produk->toko->foto)
+                    <img class="rounded-circle mb-md-2" src="{{ $produk->toko->foto }}" alt="{{ $produk->toko->nama }}"
+                      height="64" width="64">
+                  @else
+                    <div class="bg-white p-2 rounded-circle" style="width: 64; height: 64;">
+                      <svg class="m-auto" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24"
+                        fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <path d="M3 10v9a2 2 0 002 2h14a2 2 0 002-2v-9" stroke="#000000" stroke-width="2"></path>
+                        <path d="M14.833 21v-6a2 2 0 00-2-2h-2a2 2 0 00-2 2v6" stroke="#000000" stroke-width="2"
+                          stroke-miterlimit="16"></path>
+                        <path
+                          d="M21.818 9.364l-1.694-5.929A.6.6 0 0019.547 3H15.5l.475 5.704a.578.578 0 00.278.45c.39.233 1.152.663 1.747.846 1.016.313 2.5.2 3.346.096a.57.57 0 00.472-.732z"
+                          stroke="#000000" stroke-width="2"></path>
+                        <path
+                          d="M14 10c.568-.175 1.288-.574 1.69-.812a.578.578 0 00.28-.549L15.5 3h-7l-.47 5.639a.578.578 0 00.28.55c.402.237 1.122.636 1.69.811 1.493.46 2.507.46 4 0z"
+                          stroke="#000000" stroke-width="2"></path>
+                        <path
+                          d="M3.876 3.435l-1.694 5.93a.57.57 0 00.472.73c.845.105 2.33.217 3.346-.095.595-.183 1.358-.613 1.747-.845a.578.578 0 00.278-.451L8.5 3H4.453a.6.6 0 00-.577.435z"
+                          stroke="#000000" stroke-width="2"></path>
+                      </svg>
                     </div>
+                  @endif
+                  <div>
+                    <a class="link-primary text-decoration-none fw-semibold mb-0"
+                      href="{{ route('user.toko.index', $produk->toko_id) }}">
+                      {{ $produk->toko->nama }}
+                    </a>
+                    <p class="mb-0">
+                      <i class="fas fa-star fa-xs text-warning"></i>
+                      {{ $rating ?: 'Belum ada rating' }}
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <hr>
+            <hr>
 
-              <p class="mb-0 text-dark fw-light">{{ $produk->deskripsi }}</p>
+            <p class="mb-0 text-dark fw-light">{{ $produk->deskripsi }}</p>
           </div>
         </div>
 

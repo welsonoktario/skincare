@@ -31,6 +31,9 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           @auth
+            @php
+              $toko = auth()->user()->toko;
+            @endphp
             <li>
               <a href="{{ route('user.profil.index') }}"
                 class="dropdown-item has-icon d-flex flex-row align-items-center">
@@ -38,8 +41,14 @@
               </a>
             </li>
             <li>
-              <a href="{{ route('toko.hometoko') }}" class="dropdown-item has-icon d-flex flex-row align-items-center">
-                <i class="fas fa-store"></i>Toko
+              <a href="{{ $toko ? route('toko.hometoko') : route('toko.create') }}"
+                class="dropdown-item has-icon d-flex flex-row align-items-center">
+                <i class="fas fa-store"></i>
+                @if ($toko)
+                  Toko
+                @else
+                  Buka Toko
+                @endif
               </a>
             </li>
             <li>

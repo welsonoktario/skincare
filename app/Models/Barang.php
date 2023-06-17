@@ -13,7 +13,7 @@ class Barang extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $appends = ['placeholder'];
+    protected $appends = ['placeholder', 'hargaDiskon'];
 
     public function transaksiDetails()
     {
@@ -58,7 +58,25 @@ class Barang extends Model
     public function getPlaceholderAttribute()
     {
         return count($this->fotos)
-            ? $this->fotos[0]->path
+            ? "/storage/{$this->fotos[0]->path}"
             : '/img/placeholder.jpeg';
+    }
+
+    public function getHargaDiskonAttribute()
+    {
+        $jenisDiskon = $this->jenis_diskon;
+        $nominalDiskon = $this->nominal_diskon;
+
+        if (!$jenisDiskon) {
+            return null;
+        }
+
+        if ($jenisDiskon == 'persen') {
+            return $this->harga - ($this->harga * $nominalDiskon / 100);
+        }
+
+        if ($jenisDiskon == 'nominal') {
+            return $this->harga - $nominalDiskon;
+        }
     }
 }

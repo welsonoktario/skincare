@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kota;
+use App\Models\Provinsi;
 use Illuminate\Http\Request;
 use App\Models\Toko;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -29,7 +32,9 @@ class HomeController extends Controller
      */
     public function create()
     {
-        //
+        $provinsis = Provinsi::with('kotas:id,nama')->get();
+
+        return view('toko.create', compact('provinsis'));
     }
 
     /**
@@ -40,7 +45,26 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $foto = $request->file('foto');
+        $path = $foto->store('img/toko', 'public');
+
+        $toko = $request->user()
+            ->toko()
+            ->create([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'no_telepon' => $request->no_telepon,
+                'kota_id' => $request->kota,
+                'foto' => $path
+            ]);
+
+        if (!$toko) {
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        return redirect()->route('toko.hometoko');
     }
 
     /**
@@ -77,14 +101,12 @@ class HomeController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function loadKota(int $provinsi)
     {
-        //
+        $kotas = Kota::query()
+            ->where('provinsi_id', $provinsi)
+            ->get();
+
+        return response()->json(compact('kotas'));
     }
 }

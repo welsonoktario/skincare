@@ -35,7 +35,6 @@ use App\Http\Controllers\Admin\TopupController as AdminTopupController;
 use App\Http\Controllers\admin\VerifikasiPenarikanToko as AdminVerifikasiPenarikanToko;
 use App\Http\Controllers\admin\VerifikasiPenarikanUser as AdminVerifikasiPenarikanUser;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
-use App\Http\Middleware\IsAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,23 +95,31 @@ Route::group(['as' => 'user.'], function () {
 });
 
 Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], function () {
-    Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
-    Route::get('/barang/{id}/foto', [TokoBarangController::class, 'loadFotos'])->name('barang.foto');
+    Route::middleware(['hasToko'])->group(function () {
+        Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
 
-    Route::resource('barang', TokoBarangController::class);
-    Route::resource('akun', TokoAkunController::class);
-    Route::resource('etalase', TokoEtalaseController::class);
-    Route::resource('pesanan', TokoPesananController::class);
-    Route::resource('riwayattransaksi', TokoRiwayatTransaksi::class);
-    Route::resource('profil', TokoProfilController::class);
-    Route::resource('rekening', TokoRekeningController::class);
-    Route::resource('bank', TokoBankController::class);
-    Route::resource('penarikan', TokoPenarikanController::class);
-    Route::resource('pesananmasuk', TokoPesananMasukController::class);
+        Route::resource('barang', TokoBarangController::class);
+        Route::resource('akun', TokoAkunController::class);
+        Route::resource('etalase', TokoEtalaseController::class);
+        Route::resource('pesanan', TokoPesananController::class);
+        Route::resource('riwayattransaksi', TokoRiwayatTransaksi::class);
+        Route::resource('profil', TokoProfilController::class);
+        Route::resource('rekening', TokoRekeningController::class);
+        Route::resource('bank', TokoBankController::class);
+        Route::resource('penarikan', TokoPenarikanController::class);
+        Route::resource('pesananmasuk', TokoPesananMasukController::class);
+    });
+
+    Route::get('/create', [TokoHomeController::class, 'create'])->name('create');
+    Route::post('/', [TokoHomeController::class, 'store'])->name('store');
+    Route::get('{toko}/edit', [TokoHomeController::class, 'edit'])->name('edit');
+    Route::put('{toko}/update', [TokoHomeController::class, 'update'])->name('update');
+    Route::get('{provinsi}/kota', [TokoHomeController::class, 'loadKota'])->name('loadKota');
+    Route::get('/barang/{id}/foto', [TokoBarangController::class, 'loadFotos'])->name('barang.foto');
 });
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [IsAdmin::class]], function () {
-    Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function() {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth.admin']], function () {
+    Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function () {
         Route::get('/', [AdminInteraksiKandunganController::class, 'index'])->name('index');
         Route::get('/create', [AdminInteraksiKandunganController::class, 'create'])->name('create');
         Route::post('/', [AdminInteraksiKandunganController::class, 'store'])->name('store');
