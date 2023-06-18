@@ -22,7 +22,6 @@
         
     },
     "require-dev": {
-        "bangnokia/laravel-serve-livereload": "^1.1",
         "barryvdh/laravel-ide-helper": "^2.13",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PesananController extends Controller
 {
@@ -12,9 +14,16 @@ class PesananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $toko = Auth::user()->toko;
+
+        $pesanans = $toko->transaksis()
+            ->with(['user', 'transaksiDetails'])
+            ->when($request->tipe, fn ($q) => $q->where('status', $request->tipe))
+            ->get();
+
+        return view('toko.pesanan.index', compact('pesanans'));
     }
 
     /**
@@ -46,7 +55,11 @@ class PesananController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaksi = Transaksi::query()
+            ->with(['transaksiDetails.barang'])
+            ->find($id);
+
+        return view('toko.pesanan.show', compact('transaksi'));
     }
 
     /**
@@ -69,7 +82,14 @@ class PesananController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $pesananmasuk = Transaksi::find($id);
+        $status = ['diproses', 'dikirim'];
+
+        if (in_array($request->aksi, $status)) {
+            $pesananmasuk->update(['status' => $request->aksi]);
+        }
+
+        return redirect()->back();
     }
 
     /**

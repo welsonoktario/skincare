@@ -35,6 +35,11 @@
               $toko = auth()->user()->toko;
             @endphp
             <li>
+              <a href="{{ route('user.cek-kandungan.index') }}" class="dropdown-item has-icon">
+                <i class="fas fa-tasks"></i> Cek Kandungan
+              </a>
+            </li>
+            <li>
               <a href="{{ route('user.profil.index') }}"
                 class="dropdown-item has-icon d-flex flex-row align-items-center">
                 <i class="fas fa-user"></i>Profil

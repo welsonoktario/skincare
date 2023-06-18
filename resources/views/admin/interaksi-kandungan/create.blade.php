@@ -32,7 +32,6 @@
       <option value="0" selected disabled>Pilih hasil interaksi</option>
       <option value="baik">Baik</option>
       <option value="buruk">Buruk</option>
-      <option value="tidak ada">Tidak Ada</option>
     </select>
   </div>
 

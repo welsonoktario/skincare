@@ -1,9 +1,10 @@
-<form id="formTopup" action="{{ route('user.topup.store') }}" method="POST" enctype="multipart/form-data">
+<form id="formTopup" action="{{ route('user.topup.process') }}" method="POST" enctype="multipart/form-data">
   <div class="modal-header">
     <h5 class="modal-title">Tambah Saldo</h5>
   </div>
   <div class="modal-body">
     @csrf
+    <input type="hidden" name="json" id="json_callback">
     <div class="form-group">
       <label class="control-label" for="nominal">Nominal</label>
       <input type="number" class="form-control" id="nominal" placeholder="Masukkan Nominal" name="nominal">
@@ -28,6 +29,6 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button form="formTopup" type="submit" class="btn btn-primary">Tambah</button>
+    <button form="formTopup" type="submit" id="btnBayar" class="btn btn-primary">Tambah</button>
   </div>
 </form>

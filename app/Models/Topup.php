@@ -8,7 +8,8 @@ class Topup extends Model
 {
     protected $guarded = ['id'];
     protected $casts = [
-        'created_at' => 'date:Y-m-d H:i:s'
+        'created_at' => 'datetime:d M Y H:i:s',
+        'dibayar' => 'boolean'
     ];
 
     public function user()

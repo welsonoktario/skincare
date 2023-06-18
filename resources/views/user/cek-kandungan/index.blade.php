@@ -64,7 +64,6 @@
                     'list-group-item alert',
                     'alert-success' => $h->jenis_interaksi == 'baik',
                     'alert-danger' => $h->jenis_interaksi == 'buruk',
-                    'alert-secondary text-dark' => $h->jenis_interaksi == 'tidak ada',
                 ])>
                   <div class="alert-title text-capitalize">
                     Interaksi {{ $h->jenis_interaksi }}

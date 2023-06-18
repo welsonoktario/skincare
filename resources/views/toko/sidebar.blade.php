@@ -33,9 +33,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('toko.riwayattransaksi.index') }}">
+          <a class="nav-link" href="{{ route('toko.pesanan.index') }}">
             <i class="fas fa-address-card"></i>
-            <span>Riwayat Transaksi</span>
+            <span>Pesanan</span>
           </a>
         </li>
         <li class="nav-item">
@@ -48,12 +48,6 @@
           <a class="nav-link" href="{{ route('toko.penarikan.index') }}">
             <i class="fas fa-address-card"></i>
             <span>Daftar Penarikan</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('toko.pesananmasuk.index') }}">
-            <i class="fas fa-address-card"></i>
-            <span>Pesanan Masuk</span>
           </a>
         </li>
       @endif

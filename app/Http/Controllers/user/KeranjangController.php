@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -150,8 +151,12 @@ class KeranjangController extends Controller
                     continue; // skip kalo barang2 gaada kandungan
                 }
 
+                // buat pasangan kandungan tiap barang (step 5)
                 foreach ($kandunganBarang1 as $kb1) {
                     foreach ($kandunganBarang2 as $kb2) {
+
+                        // cek jika kandungan barang1 sama barang2 beda
+                        // kalo kandungan barang1 & barang2 sama, skip, ngulang loop
                         if ($kb1->id == $kb2->id) {
                             continue;
                         }
@@ -159,10 +164,12 @@ class KeranjangController extends Controller
                         $tmp = collect([
                             [
                                 'barang' => $barang->nama,
+                                'id_barang' => $barang->id,
                                 'kandungan' => $kb1->id
                             ],
                             [
                                 'barang' => $barang2->nama,
+                                'id_barang' => $barang2->id,
                                 'kandungan' => $kb2->id
                             ]
                         ]);
@@ -172,85 +179,6 @@ class KeranjangController extends Controller
                         if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
                             $pasangan->add($tmp);
                         }
-                    }
-                }
-
-                // cek jika kandungan barang1 sama barang2 beda
-                // kalo kandungan barang1 & barang2 sama, skip, ngulang loop
-                if ($barang->kandungan_id != $barang2->kandungan_id) {
-                    $tmp = collect([
-                        [
-                            'barang' => $barang->nama, // nivea
-                            'kandungan' => $barang->kandungan_id  // 3
-                        ],
-                        [
-                            'barang' => $barang2->nama, // vaseline
-                            'kandungan' => $barang2->kandungan_id // 2
-                        ]
-                    ]);
-                    /*
-                        $tmp = [
-                            [
-                                'barang' => nivea,
-                                'kandungan' => 3
-                            ],
-                            [
-                                'barang' => vaseline
-                                'kandungan' => 2
-                            ]
-                        ]
-                    */
-
-                    $tmp = $tmp->sortBy('kandungan'); // urutkan berdasarkan kandungan_id
-                    /*
-                        $tmp = [
-                            [
-                                'barang' => vaseline,
-                                'kandungan' => 2
-                            ],
-                            [
-                                'barang' => nivea
-                                'kandungan' => 3
-                            ]
-                        ]
-                    */
-
-                    $tmp = collect(["k1", "k2"])->combine($tmp);
-                    /*
-                        $tmp = [
-                            'k1' => [
-                                'barang' => 'vaseline',
-                                'kandungan' => 2
-                            ],
-                            'k2' => [
-                                'barang' => 'nivea'
-                                'kandungan' => 3
-                            ]
-                        ]
-                    */
-
-                    // cek jika text $tmp dijadikan json (string)
-                    // ada didalam text $pasangan dijadikan json (string)
-
-                    // str_contains untuk ngecek apakah sejumlah text (string)
-                    // ada didalam text (string) lainnya
-                    // ex: "llo w" didalam "hello world" hasilnya true
-                    if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
-                        $pasangan->add($tmp);
-                        /*
-                            $pasangan = [
-                                [
-                                    'k1' => [
-                                        'barang' => 'vaseline',
-                                        'kandungan' => 2
-                                    ],
-                                    'k2' => [
-                                        'barang' => 'nivea'
-                                        'kandungan' => 3
-                                    ]
-                                ]
-                            ]
-                        */
                     }
                 }
             }
@@ -297,36 +225,48 @@ class KeranjangController extends Controller
         foreach($pasanganBarangs as $pasangan) {
             foreach ($pasangan as $p) {
                 /*
-                $p = [
-                    'k1' => [
-                        'barang' => 'scarlett',
-                        'kandungan' => 1
+                    $p = [
+                        'k1' => [
+                            'barang' => 'scarlett',
+                            'kandungan' => 1
+                        ],
+                        'k2' => [
+                            'barang' => 'vaseline'
+                            'kandungan' => 2
+                        ]
                     ],
-                    'k2' => [
-                        'barang' => 'vaseline'
-                        'kandungan' => 2
-                    ]
-                ],
-            */
+                */
                 $hasilInteraksi = DB::table('interaksi_kandungans', 'ik') // FROM interaksi_kandungans AS ik
-                ->selectRaw(
-                    'ik.jenis_interaksi AS jenis_interaksi,
-                    ik.deskripsi_interaksi AS deskripsi_interaksi,
-                    ik.sumber AS sumber,
-                    k1.id AS k1,
-                    k2.id AS k2,
-                    k1.nama AS kandungan_satu,
-                    k2.nama AS kandungan_dua'
-                )
-                // join table interaksi_kandungans dengan table kandungans (k1) yang interaksi_satu_id sama dengan id kandungan
-                ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
-                // join table interaksi_kandungans dengan table kandungans (k2) yang interaksi_dua_id sama dengan id kandungan
-                ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
-                // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
-                ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
-                // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
-                ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
-                ->first();
+                    ->selectRaw(
+                        'ik.jenis_interaksi AS jenis_interaksi,
+                        ik.deskripsi_interaksi AS deskripsi_interaksi,
+                        ik.sumber AS sumber,
+                        k1.id AS k1,
+                        k2.id AS k2,
+                        k1.nama AS kandungan_satu,
+                        k2.nama AS kandungan_dua,
+                        b1.nama AS barang_satu,
+                        b2.nama AS barang_dua'
+                    )
+                    ->fromRaw(
+                        "interaksi_kandungans AS ik
+                        INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
+                        INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
+                        INNER JOIN barangs AS b1 ON b1.id = ? OR b1.id = ?
+                        INNER JOIN barangs AS b2 ON b2.id = ? OR b2.id = ?",
+                        [
+                            //mengambil id barang dari pasangan
+                            intval($p['k1']['id_barang']), // "1" ubah jadi 1
+                            intval($p['k2']['id_barang']), // "2" ubah jadi 2
+                            intval($p['k2']['id_barang']),
+                            intval($p['k1']['id_barang'])
+                        ]
+                    )
+                    // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
+                    ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
+                    // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
+                    // ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
+                    ->first();
 
                 /* HASIL QUERY DIATAS:
                     SELECT
@@ -334,13 +274,16 @@ class KeranjangController extends Controller
                         ik.deskripsi_interaksi AS deskripsi_interaksi,
                         ik.sumber AS sumber,
                         k1.nama AS kandungan_satu,
-                        k2.nama AS kandungan_dua
+                        k2.nama AS kandungan_dua,
+                        b1.nama AS barang_satu,
+                        b2.nama AS barang_dua
                     FROM interaksi_kandungans AS ik
                         INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
                         INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
+                        INNER JOIN barangs AS b1 ON b1.id = 1
+                        INNER JOIN barangs AS b2 ON b2.id = 2
                     WHERE
-                        (ik.kandungan_satu_id = 1 AND ik.kandungan_dua_id = 4) OR
-                        (ik.kandungan_satu_id = 4 AND ik.kandungan_dua_id = 1)
+                        (ik.kandungan_satu_id = 1 AND ik.kandungan_dua_id = 4)
                     LIMIT 1
                 */
 
@@ -352,6 +295,8 @@ class KeranjangController extends Controller
                         'sumber' => 'katanya',
                         'kandungan_satu' => 'AHA',
                         'kandungan_dua' => 'AHB'
+                        'barang_satu' => 'scarlett',
+                        'barang_dua' => 'vaseline'
                     ]
 
                 kalo gaada: null
@@ -359,42 +304,35 @@ class KeranjangController extends Controller
 
                 // kalo hasil interaksi ada di tabel interaksi_kandungans
                 if ($hasilInteraksi) {
-                    $hasilInteraksi->barang_satu = $p['k1']['barang'];
-                    /*
-                        [
-                            'jenis_interaksi' => 'baik',
-                            'deskripsi_interaksi' => 'bagus aja',
-                            'sumber' => 'katanya',
-                            'kandungan_satu' => 'AHA',
-                            'kandungan_dua' => 'AHB',
-                            'barang_satu' => 'scarlett' <-- nama barang 1
-                        ]
-                    */
-
-                    $hasilInteraksi->barang_dua = $p['k2']['barang'];
-                    /*
-                        [
-                            'jenis_interaksi' => 'baik',
-                            'deskripsi_interaksi' => 'bagus aja',
-                            'sumber' => 'katanya',
-                            'kandungan_satu' => 'AHA',
-                            'kandungan_dua' => 'AHB',
-                            'barang_satu' => 'scarlett', <-- nama barang 1
-                            'barang_dua' => 'vaseline' <-- nama barang2
-                        ]
-                    */
+                    // tambah nama pasangan barang ex: "nivea + vaseline"
+                    $hasilInteraksi->nama = $hasilInteraksi->barang_satu. ' + ' . $hasilInteraksi->barang_dua;
                     // hasil interaksi ditambah ke array $hasilInteraksis
                     if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
-                        $contains = $hasilInteraksis->contains(function ($hi) use ($p) {
-                            return $hi->k1 == $p['k1']['kandungan'] && $hi->k2 == $p['k2']['kandungan'];
+
+                        // cek jika sebelumnya sudah ada hasil interaksi yang kandungan_satu_id dan kandungan_dua_id
+                        // sama seperti hasil query yang didapatkan
+                        $contains = $hasilInteraksis->contains(function ($hi) use ($hasilInteraksi) {
+                            return $hi->k1 == $hasilInteraksi->k1 && $hi->k2 == $hasilInteraksi->k2 && $hi->barang_satu == $hasilInteraksi->barang_satu && $hi->barang_dua == $hasilInteraksi->barang_dua;
                         });
 
                         if (!$contains) {
                             $hasilInteraksis->add($hasilInteraksi);
                         }
-                        // $hasilInteraksis->add($hasilInteraksi);
                     }
                 }
+            }
+        }
+
+        // kelompokkan hasil interaksi berdasarkan gabungan nama barang ex: "nivea + vaseline"
+        $hasilInteraksis = $hasilInteraksis->groupBy('nama');
+
+        foreach ($hasilInteraksis as $i => $group) {
+            // jika tiap kelompok nama gabungan barang ada interaksi buruk
+            if ($group->contains('jenis_interaksi', 'buruk')) {
+                // ambil/tampilkan yang buruk aja
+                $hasilInteraksis[$i] = $group->filter(function ($hi) {
+                    return $hi->jenis_interaksi == 'buruk';
+                });
             }
         }
 

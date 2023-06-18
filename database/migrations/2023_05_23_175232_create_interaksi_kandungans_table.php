@@ -16,7 +16,7 @@ class CreateInteraksiKandungansTable extends Migration
         Schema::create('interaksi_kandungans', function (Blueprint $table) {
             $table->foreignId('kandungan_satu_id')->constrained('kandungans');
             $table->foreignId('kandungan_dua_id')->constrained('kandungans');
-            $table->enum('jenis_interaksi', ['baik', 'buruk', 'tidak ada'])->default('tidak ada');
+            $table->enum('jenis_interaksi', ['baik', 'buruk']);
             $table->text('deskripsi_interaksi')->nullable();
             $table->text('sumber')->nullable();
             $table->timestamps();

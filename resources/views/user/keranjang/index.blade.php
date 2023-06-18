@@ -147,29 +147,32 @@
               <h6 class="card-title mb-0">Hasil Interaksi Kandungan</h6>
             </div>
             <div class="card-body">
-              @foreach ($kandungans as $k)
-                <div @class([
-                    'alert',
-                    'alert-success' => $k->jenis_interaksi == 'baik',
-                    'alert-danger' => $k->jenis_interaksi == 'buruk',
-                    'alert-secondary text-dark' => $k->jenis_interaksi == 'tidak ada',
-                ])>
-                  <div class="alert-title text-capitalize">
-                    Interaksi {{ $k->jenis_interaksi }}
+              @foreach ($kandungans as $pasangan => $hasil)
+                <h6>{{ $pasangan }}</h6>
+
+                @foreach ($hasil as $k)
+                  <div @class([
+                      'alert',
+                      'alert-success' => $k->jenis_interaksi == 'baik',
+                      'alert-danger' => $k->jenis_interaksi == 'buruk',
+                  ])>
+                    <div class="alert-title text-capitalize">
+                      Interaksi {{ $k->jenis_interaksi }}
+                    </div>
+                    <p class="fw-semibold">
+                      <span class="fw-semibold">{{ "{$k->barang_satu} ({$k->kandungan_satu})" }}</span> dan <span
+                        class="fw-semibold">{{ "{$k->barang_dua} ({$k->kandungan_dua})" }}</span>
+                      @if ($k->jenis_interaksi == 'baik')
+                        dapat digunakan dengan bersamaan
+                      @elseif ($k->jenis_interaksi == 'buruk')
+                        tidak dapat digunakan bersamaan
+                      @else
+                        tidak memiliki interaksi apapun
+                      @endif
+                    </p>
+                    {{ $k->deskripsi_interaksi }} ({{ $k->sumber }})
                   </div>
-                  <p class="fw-semibold">
-                    <span class="fw-semibold">{{ "{$k->barang_satu} ({$k->kandungan_satu})" }}</span> dan <span
-                      class="fw-semibold">{{ "{$k->barang_dua} ({$k->kandungan_dua})" }}</span>
-                    @if ($k->jenis_interaksi == 'baik')
-                      dapat digunakan dengan bersamaan
-                    @elseif ($k->jenis_interaksi == 'buruk')
-                      tidak dapat digunakan bersamaan
-                    @else
-                      tidak memiliki interaksi apapun
-                    @endif
-                  </p>
-                  {{ $k->deskripsi_interaksi }} ({{ $k->sumber }})
-                </div>
+                @endforeach
               @endforeach
             </div>
           </div>

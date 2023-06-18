@@ -8,21 +8,21 @@
         class="link-info text-decoration-none">{{ $produk->kategori->nama }}</a>
       <p class="fw-medium fs-6">{{ $produk->nama }}</p>
       <div class="d-inline-flex align-items-center fw-semibold h6">
-      @if ($produk->hargaDiskon)
-        <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
-        <span class="text-danger mx-1">@rupiah($produk->hargaDiskon)</span>
-        <div class="badge badge-danger">
-          @if ($produk->jenis_diskon == 'persen')
-            -{{ $produk->nominal_diskon }}%
-          @else
-            - @rupiah($produk->nominal_diskon)
-          @endif
-        </div>
-      @else
-        @rupiah($produk->harga)
-      @endif
+        @if ($produk->hargaDiskon)
+          <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
+          <span class="text-danger mx-1">@rupiah($produk->hargaDiskon)</span>
+          <div class="badge badge-danger">
+            @if ($produk->jenis_diskon == 'persen')
+              -{{ $produk->nominal_diskon }}%
+            @else
+              - @rupiah($produk->nominal_diskon)
+            @endif
+          </div>
+        @else
+          @rupiah($produk->harga)
+        @endif
+      </div>
+      <a href="{{ route('user.produk.show', $produk->id) }}" class="stretched-link"></a>
     </div>
-    <a href="{{ route('user.produk.show', $produk->id) }}" class="stretched-link"></a>
   </div>
-</div>
 </div>

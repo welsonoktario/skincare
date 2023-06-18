@@ -39,7 +39,6 @@
       <option value="0" selected disabled>Pilih hasil interaksi</option>
       <option value="baik" selected="{{ $interaksi->jenis == 'baik' }}">Baik</option>
       <option value="buruk" selected="{{ $interaksi->jenis == 'buruk' }}">Buruk</option>
-      <option value="tidak ada" selected="{{ $interaksi->jenis == 'tidak ada' }}">Tidak Ada</option>
     </select>
   </div>
 

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Topup;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -115,5 +117,66 @@ class TopupController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getTopup(Request $request)
+    {
+        // count payment gateway in index
+        $user = Auth::user();
+        // PAYMENT
+        $getName = $user->nama;
+        $getPhone = $user->no_hp;
+        // Set your Merchant Server Key
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-yUxga--v_4EQ_EKe8TWMMmbZ';
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$isProduction = false;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
+        // $grand_total =  $total + $ongkirs; sementara belum ada ongkos kirim yang ter-generate
+        $params = [
+            'transaction_details' => [
+                'order_id' => rand(),
+                'gross_amount' => $request->total,
+            ],
+            'customer_details' => [
+                'first_name' => $getName,
+                'phone' => $getPhone
+            ],
+        ];
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        return response()->json(['snapToken' => $snapToken]);
+    }
+
+    public function processTopup(Request $request)
+    {
+        //
+        $user = Auth::user();
+        $getId = $user->id;
+        $nominal = $request->nominal;
+        $date = Carbon::now();
+        // Bayar pake midtrans
+        $json = json_decode($request->get('json'));
+        $status = $json->transaction_status == 'settlement' ? true : false;
+        // dd($status);
+        DB::beginTransaction();
+        try {
+            $data = Auth::user()
+                ->topups()
+                ->create([
+                    'user_id' => $getId,
+                    'nominal' => $nominal,
+                    'dibayar' => $status,
+                ]);
+            $data->save();
+            // $user->keranjangs()->detach($barangs); remove object from storage
+            DB::commit();
+            return redirect()->route('user.topup.index', ['tipe' => 'pending']);
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withException($e);
+        }
     }
 }

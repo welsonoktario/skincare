@@ -35,8 +35,8 @@
                   <td>{{ $u->created_at }}</td>
                   <td>@rupiah($u->nominal)</td>
                   <td class="text-capitalize">
-                    {{ $u->status }}
-                    @if ($u->status == 'menunggu pembayaran')
+                    {{ $u->dibayar ? 'Selesai' : 'Menunggu Pembayaran' }}
+                    @if (!$u->dibayar)
                       <p data-id="{{ $u->id }}" class="btnBayar link-primary mb-0 ml-1" style="cursor: pointer">
                         Bayar
                       </p>
@@ -79,25 +79,72 @@
 
         $('input[name="nominal"]').val(nominal);
       });
+
+      $(document).on('click', '#btnBayar', function(e) {
+        e.preventDefault();
+
+        fetch('/topup/get-topup', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            body: JSON.stringify({
+              total: Number($('input[name="nominal"]').val())
+            })
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            window.snap.pay(data.snapToken, {
+              onSuccess: function(result) {
+                send_response_to_form(result);
+              },
+              onPending: function(result) {
+                alert(
+                  'Harap menyelesaikan pembayaran dalam waktu 24 Jam'
+                );
+                send_response_to_form(result);
+              },
+              onError: function(result) {
+                alert('Pembayaran gagal');
+
+              },
+              onClose: function() {
+                alert('Batalkan pembayaran?');
+              }
+            })
+          });
+
+        function send_response_to_form(result) {
+          $('#json_callback').val(JSON.stringify(result));
+          $('#formTopup').submit();
+        }
+      });
+
       $('#btnTambahTopUp').click(function() {
         $('#modalTopup').modal('show');
         $('#modalTopupContent').html('');
         $('#modalLoading').show();
+
         $.get(`topup/create`, function(res) {
           $('#modalLoading').hide();
           $('#modalTopupContent').html(res);
         });
       });
+
       $('.btnBayar').click(function() {
         var id = $(this).data('id');
         $('#modalTopup').modal('show');
         $('#modalTopupContent').html('');
         $('#modalLoading').show();
+
         $.get(`topup/${id}/edit`, function(res) {
           $('#modalLoading').hide();
           $('#modalTopupContent').html(res);
         });
       });
+
       $('.listTopup #btnEdittopup').click(function() {
         const id = $(this).data('id');
         $('#modalTopup').modal('show');
@@ -108,11 +155,13 @@
           $('#modalTopupContent').html(res);
         });
       });
+
       $('#btnDeletetopup').click(function() {
         $('#modalTopup').modal('show');
         $('#modalTopupContent').html('');
         $('#modalLoading').show();
       });
+
       $('#tableTopup').DataTable({
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'

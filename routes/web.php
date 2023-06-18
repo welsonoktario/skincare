@@ -19,9 +19,8 @@ use App\Http\Controllers\Toko\BarangController as TokoBarangController;
 use App\Http\Controllers\Toko\EtalaseController as TokoEtalaseController;
 use App\Http\Controllers\Toko\HomeController as TokoHomeController;
 use App\Http\Controllers\Toko\PenarikanController as TokoPenarikanController;
-use App\Http\Controllers\Toko\PesananMasukController as TokoPesananMasukController;
+use App\Http\Controllers\Toko\PesananController as TokoPesananController;
 use App\Http\Controllers\Toko\RekeningController as TokoRekeningController;
-use App\Http\Controllers\Toko\RiwayatTransaksiController as TokoRiwayatTransaksi;
 
 use App\Http\Controllers\Admin\BarangPengecekanController as AdminBarangPengecekanController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -84,6 +83,11 @@ Route::group(['as' => 'user.'], function () {
             Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
         });
 
+        Route::group(['prefix' => 'topup'], function () {
+            Route::post('get-topup', [TopupController::class, 'getTopup'])->name('topup.getTopup');
+            Route::post('process-topup', [TopupController::class, 'processTopup'])->name('topup.process');
+        });
+
         Route::resources([
             'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
@@ -102,12 +106,10 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], func
         Route::resource('akun', TokoAkunController::class);
         Route::resource('etalase', TokoEtalaseController::class);
         Route::resource('pesanan', TokoPesananController::class);
-        Route::resource('riwayattransaksi', TokoRiwayatTransaksi::class);
         Route::resource('profil', TokoProfilController::class);
         Route::resource('rekening', TokoRekeningController::class);
         Route::resource('bank', TokoBankController::class);
         Route::resource('penarikan', TokoPenarikanController::class);
-        Route::resource('pesananmasuk', TokoPesananMasukController::class);
     });
 
     Route::get('/create', [TokoHomeController::class, 'create'])->name('create');

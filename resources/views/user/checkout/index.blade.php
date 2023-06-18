@@ -57,6 +57,7 @@
               @foreach ($keranjang['barangs'] as $barang)
                 <tr>
                   <td class="py-4">
+                    <input type="text" name="barangs[]" value="{{ $barang->id }}" class="d-none">
                     <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
                     <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
                   </td>
@@ -205,7 +206,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="pay-button" type="button" class="btn btn-primary btn-checkout w-25 pay-button">
+          <button type="button" class="btn btn-primary btn-checkout w-25 pay-button">
             Bayar
           </button>
         </div>
