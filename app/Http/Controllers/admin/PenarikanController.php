@@ -1,20 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Penarikan;
 use Illuminate\Http\Request;
 
-class VerifikasiPenarikanUser extends Controller
+class PenarikanController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $jenis = $request->jenis;
+        $penarikans = Penarikan::query()
+            ->with(['rekening.user.toko', 'rekening.bank'])
+            ->when($request->jenis, function ($q) use ($jenis) {
+                return $q->where('asal_penarikan', $jenis);
+            })
+            ->get();
+
+        return view('admin.penarikan.index', compact('penarikans', 'jenis'));
     }
 
     /**

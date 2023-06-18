@@ -19,7 +19,6 @@
         "staudenmeir/eloquent-has-many-deep": "^1.14",
         "tightenco/ziggy": "^1.5",
         "wulfheart/pretty_routes": "^0.3.0"
-        
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

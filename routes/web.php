@@ -30,9 +30,7 @@ use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
 use App\Http\Controllers\Admin\TokoController as AdminTokoController;
 use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBarangController;
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
-use App\Http\Controllers\Admin\TopupController as AdminTopupController;
-use App\Http\Controllers\admin\VerifikasiPenarikanToko as AdminVerifikasiPenarikanToko;
-use App\Http\Controllers\admin\VerifikasiPenarikanUser as AdminVerifikasiPenarikanUser;
+use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
 
 /*
@@ -135,12 +133,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth.admi
     Route::resource('member', AdminMemberController::class);
     Route::resource('verifikasibarang', AdminVerifikasiBarangController::class);
     Route::resource('verifikasitoko', AdminVerifikasiTokoController::class);
-    Route::resource('topup', AdminTopupController::class);
     Route::resource('kategori', AdminKategoriController::class);
     Route::resource('kandungan', AdminKandunganController::class);
     Route::resource('barang-pengecekan', AdminBarangPengecekanController::class);
-    Route::resource('penarikantoko', AdminVerifikasiPenarikanToko::class);
-    Route::resource('penarikanuser', AdminVerifikasiPenarikanUser::class);
+    Route::resource('penarikan', AdminPenarikanController::class);
 });
 
 require __DIR__ . '/auth.php';

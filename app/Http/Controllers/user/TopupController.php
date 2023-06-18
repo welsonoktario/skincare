@@ -20,7 +20,7 @@ class TopupController extends Controller
      */
     public function index()
     {
-        $topups = Auth::user()->topups()->get();
+        $topups = Auth::user()->topups()->orderBy('created_at', 'desc')->get();
 
         return view('user.topup.index', compact('topups'));
     }
@@ -155,24 +155,28 @@ class TopupController extends Controller
         $user = Auth::user();
         $getId = $user->id;
         $nominal = $request->nominal;
-        $date = Carbon::now();
         // Bayar pake midtrans
         $json = json_decode($request->get('json'));
         $status = $json->transaction_status == 'settlement' ? true : false;
         // dd($status);
         DB::beginTransaction();
         try {
-            $data = Auth::user()
-                ->topups()
+            $user->topups()
                 ->create([
                     'user_id' => $getId,
                     'nominal' => $nominal,
                     'dibayar' => $status,
+                    'jenis_pembayaran' => $json->payment_type,
+                    'kode_pembayaran' => $json->payment_code,
                 ]);
-            $data->save();
-            // $user->keranjangs()->detach($barangs); remove object from storage
+
+            if ($status) {
+                $user->update(['saldo' => $user->saldo + $nominal]);
+            }
+
             DB::commit();
-            return redirect()->route('user.topup.index', ['tipe' => 'pending']);
+
+            return redirect()->route('user.topup.index');
         } catch (Throwable $e) {
             DB::rollBack();
 

@@ -19,7 +19,7 @@ class CreateTopupsTable extends Migration
             $table->integer('nominal')->default(0);
             $table->boolean('dibayar');
             $table->string('bukti_pembayaran')->nullable();
-            $table->enum('jenis_pembayaran', ['bank_transfer', 'echannel', 'saldo']);
+            $table->enum('jenis_pembayaran', ['bank_transfer', 'echannel']);
             $table->string('kode_pembayaran')->nullable();
             $table->timestamps();
         });

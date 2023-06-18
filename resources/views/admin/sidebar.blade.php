@@ -65,18 +65,20 @@
           <span>Verifikasi Barang</span>
         </a>
       <li>
-      <li class="nav-item">
-        <a href="{{ route('admin.topup.index') }}" class="nav-link">
-          <i class="fas fa-fire"></i>
-          <span>Verifikasi Topup</span>
-        </a>
-      <li>
       <li class="nav-item dropdown">
         <a href="#" class="nav-link has-dropdown" data-bs-toggle="dropdown"><i class="fas fa-columns"></i>
           <span>Verifikasi Penarikan</span></a>
         <ul class="dropdown-menu">
-          <li><a class="nav-link" href="{{ route('admin.topup.index') }}">Toko</a></li>
-          <li><a class="nav-link" href="{{ route('admin.topup.index') }}">User</a></li>
+          <li>
+            <a class="nav-link" href="{{ route('admin.penarikan.index', ['jenis' => 'toko']) }}">
+              Toko
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="{{ route('admin.penarikan.index', ['jenis' => 'user']) }}">
+              User
+            </a>
+          </li>
         </ul>
       </li>
   </aside>

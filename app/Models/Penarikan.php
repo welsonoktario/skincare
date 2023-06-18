@@ -8,8 +8,8 @@ class Penarikan extends Model
 {
     protected $guarded = ['id'];
 
-    public function penarikanable()
+    public function rekening()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Rekening::class);
     }
 }
