@@ -40,9 +40,9 @@
                   <td class="font-monospace">{{ $rekening->nomor_rekening }}</td>
                   <td>{{ $rekening->nama_penerima }}</td>
                   <td class="d-inline-flex justify-content-center w-100">
-                    <button class="btnAksi btn btn-sm btn-primary text-white mx-2" data-id="{{ $p->id }}"
+                    <button class="btn-aksi btn btn-sm btn-primary text-white mx-2" data-id="{{ $p->id }}"
                       data-aksi="diterima">Terima</button>
-                    <button class="btnAksi btn btn-sm btn-danger text-white" data-id="{{ $p->id }}"
+                    <button class="btn-aksi btn btn-sm btn-danger text-white" data-id="{{ $p->id }}"
                       data-aksi="ditolak">Tolak</button>
                   </td>
                 </tr>
