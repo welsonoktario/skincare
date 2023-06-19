@@ -158,7 +158,7 @@ class TopupController extends Controller
         // Bayar pake midtrans
         $json = json_decode($request->get('json'));
         $status = $json->transaction_status == 'settlement' ? true : false;
-        // dd($status);
+        dd($json);
         DB::beginTransaction();
         try {
             $user->topups()
@@ -167,7 +167,6 @@ class TopupController extends Controller
                     'nominal' => $nominal,
                     'dibayar' => $status,
                     'jenis_pembayaran' => $json->payment_type,
-                    'kode_pembayaran' => $json->payment_code,
                 ]);
 
             if ($status) {
@@ -179,6 +178,7 @@ class TopupController extends Controller
             return redirect()->route('user.topup.index');
         } catch (Throwable $e) {
             DB::rollBack();
+            dd($json, $e->getMessage());
 
             return redirect()->back()->withException($e);
         }

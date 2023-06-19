@@ -15,7 +15,7 @@
   <div id="inputFile">
     <label class="form-label" for="icon">Icon</label>
     <div class="input-group">
-      <input name="icon" type="file" class="form-control" required>
+      <input name="icon" type="file" class="form-control" accept="image/*" required>
     </div>
   </div>
 </form>

@@ -37,7 +37,7 @@
 
   <div class="mb-3">
     <label for="deskripsi" class="form-label">Deskripsi Interaksi</label>
-    <textarea class="form-control" name="deskripsi" placeholder="Deskripsi interaksi" required></textarea>
+    <textarea class="form-control h-100" name="deskripsi" placeholder="Deskripsi interaksi" required></textarea>
   </div>
 
   <div class="mb-3">

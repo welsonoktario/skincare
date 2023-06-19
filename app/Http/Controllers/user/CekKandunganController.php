@@ -55,10 +55,12 @@ class CekKandunganController extends Controller
                 $tmp = collect([
                     [
                         'barang' => $barangs[0]->nama,
+                        'id_barang' => $barangs[0]->id,
                         'kandungan' => $kb1->id
                     ],
                     [
                         'barang' => $barangs[1]->nama,
+                        'id_barang' => $barangs[1]->id,
                         'kandungan' => $kb2->id
                     ]
                 ]);
@@ -82,21 +84,36 @@ class CekKandunganController extends Controller
                     k1.id AS k1,
                     k2.id AS k2,
                     k1.nama AS kandungan_satu,
-                    k2.nama AS kandungan_dua'
+                    k2.nama AS kandungan_dua,
+                    b1.nama AS barang_satu,
+                    b2.nama AS barang_dua'
                 )
-                ->join('kandungans AS k1', 'k1.id', '=', 'ik.kandungan_satu_id')
-                ->join('kandungans AS k2', 'k2.id', '=', 'ik.kandungan_dua_id')
+                ->fromRaw(
+                    "interaksi_kandungans AS ik
+                    INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
+                    INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
+                    INNER JOIN barangs AS b1 ON b1.id = ? OR b1.id = ?
+                    INNER JOIN barangs AS b2 ON b2.id = ? OR b2.id = ?",
+                    [
+                        intval($barangs[0]->id),
+                        intval($barangs[1]->id),
+                        intval($barangs[1]->id),
+                        intval($barangs[0]->id)
+                    ]
+                )
                 ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
-                ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
                 ->first();
 
             if ($hasilInteraksi) {
-                $hasilInteraksi->barang_satu = $p['k1']['barang'];
-
-                $hasilInteraksi->barang_dua = $p['k2']['barang'];
+                // tambah nama pasangan barang ex: "nivea + vaseline"
+                $hasilInteraksi->nama = $hasilInteraksi->barang_satu. ' + ' . $hasilInteraksi->barang_dua;
+                // hasil interaksi ditambah ke array $hasilInteraksis
                 if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
-                    $contains = $hasilInteraksis->contains(function ($hi) use ($p) {
-                        return $hi->k1 == $p['k1']['kandungan'] && $hi->k2 == $p['k2']['kandungan'];
+
+                    // cek jika sebelumnya sudah ada hasil interaksi yang kandungan_satu_id dan kandungan_dua_id
+                    // sama seperti hasil query yang didapatkan
+                    $contains = $hasilInteraksis->contains(function ($hi) use ($hasilInteraksi) {
+                        return $hi->k1 == $hasilInteraksi->k1 && $hi->k2 == $hasilInteraksi->k2 && $hi->barang_satu == $hasilInteraksi->barang_satu && $hi->barang_dua == $hasilInteraksi->barang_dua;
                     });
 
                     if (!$contains) {
@@ -105,8 +122,26 @@ class CekKandunganController extends Controller
                 }
             }
         }
+        $hasil = collect([]);
+        $hasilNama = $hasilInteraksis->groupBy('nama');
 
-        $hasilInteraksis = $hasilInteraksis->groupBy('jenis_interaksi');
+        foreach ($hasilNama as $i => $group) {
+            // jika tiap kelompok nama gabungan barang ada interaksi buruk
+            if ($group->contains('jenis_interaksi', 'buruk')) {
+                // ambil/tampilkan yang buruk aja
+                $hasilNama[$i] = $group->filter(function ($hi) {
+                    return $hi->jenis_interaksi == 'buruk';
+                });
+            }
+        }
+
+        foreach ($hasilNama as $i => $group) {
+            foreach ($group as $hi) {
+                $hasil->add($hi);
+            }
+        }
+
+        $hasilInteraksis = $hasil->groupBy('jenis_interaksi');
 
         return $hasilInteraksis;
     }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
+use App\Models\Toko;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PenarikanController extends Controller
@@ -78,7 +80,29 @@ class PenarikanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $jenis = $request->jenis;
+        $aksi = $request->aksi;
+        $user = $request->user;
+        $toko = $request->toko;
+        $status = ['diterima', 'ditolak'];
+        $penarikan = Penarikan::query()->find($id);
+
+        if (in_array($aksi, $status)) {
+            $penarikan->update(['status' => $aksi]);
+
+            if ($aksi == 'diterima') {
+                if ($jenis == 'user') {
+                    $user = User::query()->find($user);
+
+                    $user->update(['saldo' => $user->saldo - $penarikan->nominal]);
+                } else if ($jenis == 'toko') {
+                    $toko = Toko::query()->find($toko);
+                    $toko->update(['saldo' => $toko->saldo - $penarikan->nominal]);
+                }
+            }
+        }
+
+        return redirect()->back();
     }
 
     /**
