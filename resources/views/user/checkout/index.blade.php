@@ -14,7 +14,6 @@
         <div class="row">
           <div class="col-12">
             @if ($alamat)
-              {{-- {{ dd($alamat[0]['id']) }} --}}
               <input type="hidden" name="alamat" value="{{ $alamat[0]['id'] }}">
               <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button"
                 data-bs-toggle="modal" data-bs-target="#modalAlamats">
@@ -366,7 +365,7 @@
         fetch(route('user.checkout.alamats'))
           .then(res => res.text())
           // munculin isi modal dari controller ke modal
-          .then(html => $('.modal-body').html(html))
+          .then(html => $('.modal-body-inner').html(html))
           .finally(loading.hide());
       }
 

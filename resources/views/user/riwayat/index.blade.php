@@ -1,5 +1,5 @@
 @php
-  $tipes = [['tipe' => 'pembayaran', 'label' => 'Menunggu Pembayaran'], ['tipe' => 'konfirmasi', 'label' => 'Menunggu Konfirmasi'], ['tipe' => 'diproses', 'label' => 'Diproses'], ['tipe' => 'dikirim', 'label' => 'Dikirim'], ['tipe' => 'selesai', 'label' => 'Selesai'], ['tipe' => 'batal', 'label' => 'Dibatalkan'], ['tipe' => 'kembali', 'label' => 'Dikembalikan']];
+  $tipes = [['tipe' => 'menunggu pembayaran', 'label' => 'Menunggu Pembayaran'], ['tipe' => 'menunggu konfirmasi', 'label' => 'Menunggu Konfirmasi'], ['tipe' => 'diproses', 'label' => 'Diproses'], ['tipe' => 'dikirim', 'label' => 'Dikirim'], ['tipe' => 'selesai', 'label' => 'Selesai'], ['tipe' => 'batal', 'label' => 'Dibatalkan'], ['tipe' => 'dikembalikan', 'label' => 'Dikembalikan']];
   $currentTipe = request()->get('tipe') ?: 'semua';
 @endphp
 

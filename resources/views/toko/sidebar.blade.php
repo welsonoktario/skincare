@@ -39,6 +39,12 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{{ route('toko.ekspedisi.index') }}">
+            <i class="fas fa-address-card"></i>
+            <span>Ekspedisi</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{{ route('toko.rekening.index') }}">
             <i class="fas fa-address-card"></i>
             <span>Rekening</span>

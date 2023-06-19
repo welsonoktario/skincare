@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBara
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
+use App\Http\Controllers\Toko\EkspedisiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,8 @@ Route::group(['as' => 'user.'], function () {
 Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], function () {
     Route::middleware(['hasToko'])->group(function () {
         Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
+        Route::get('ekspedisi', [EkspedisiController::class, 'index'])->name('ekspedisi.index');
+        Route::put('ekspedisi', [EkspedisiController::class, 'update'])->name('ekspedisi.update');
 
         Route::resource('barang', TokoBarangController::class);
         Route::resource('akun', TokoAkunController::class);

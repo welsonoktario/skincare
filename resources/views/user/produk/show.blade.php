@@ -120,7 +120,7 @@
               <div class="col-12 col-md-5 text-md-center flex-grow-1">
                 <div class="d-flex flex-row d-md-inline align-items-center" style="column-gap: 1rem">
                   @if ($produk->toko->foto)
-                    <img class="rounded-circle mb-md-2" src="{{ $produk->toko->foto }}" alt="{{ $produk->toko->nama }}"
+                    <img class="rounded-circle mb-md-2" src="/storage/{{ $produk->toko->foto }}" alt="{{ $produk->toko->nama }}"
                       height="64" width="64">
                   @else
                     <div class="bg-white p-2 rounded-circle" style="width: 64; height: 64;">

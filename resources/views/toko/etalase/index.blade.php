@@ -2,7 +2,7 @@
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Etalsasase</h1>
+      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Etalase</h1>
       <button id="btnTambahEtalase" class="d-sm-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>
         <span class="ms-1 text-white">Tambah Etalase</span>
@@ -45,8 +45,7 @@
       </div>
     </div>
   </div>
-  </div>
-  </div>
+
   <div id="modalEtalase" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
