@@ -15,7 +15,6 @@
                 <th>Username</th>
                 <th>Alamat</th>
                 <th>No. HP</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -24,14 +23,8 @@
                   <td>{{ $u->id }}</td>
                   <td> {{ $u->nama }}</td>
                   <td> {{ $u->username }}</td>
-                  <td> {{ $a->alamatUtama[0]->alamat }}</td>
+                  <td> {{ count($u->alamatUtama) ? $u->alamatUtama[0]->alamat : '-' }}</td>
                   <td> {{ $u->no_hp }}</td>
-                  <td>
-                    <button id="btnEditMember" data-id="{{ $u->id }}"
-                      class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
-                    <button class="btnDetailMember btn btn-sm btn-primary text-white"
-                      data-id="{{ $u->id }}">Detail</button>
-                  </td>
                 </tr>
               @endforeach
             </tbody>
@@ -119,10 +112,6 @@
             name: 'No HP',
             orderable: true
           },
-          {
-            name: '',
-            orderable: false
-          }
         ]
       });
     });

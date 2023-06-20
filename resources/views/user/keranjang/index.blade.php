@@ -34,7 +34,7 @@
                 @foreach ($barangs as $barang)
                   <tr>
                     <td class="py-4">
-                      <img class="rounded" height="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
+                      <img class="rounded" width="125px" src="{{ $barang->placeholder }}" alt="{{ $barang->nama }}">
                       <p class="fw-semibold text-center">
                         {{ $barang->nama }}
                       </p>
@@ -49,18 +49,32 @@
                       </div>
                     </td>
                     <td class="text-right">
-                      @rupiah($barang->harga)
+                      @if ($barang->hargaDiskon)
+                        <span class="fw-normal text-decoration-line-through">@rupiah($barang->harga)</span>
+                        <span class="text-danger mx-1">@rupiah($barang->hargaDiskon)</span>
+                        <div class="badge badge-danger">
+                          @if ($barang->jenis_diskon == 'persen')
+                            &dash;{{ $barang->nominal_diskon }}%
+                          @else
+                            &dash; @rupiah($barang->nominal_diskon)
+                          @endif
+                        </div>
+                      @else
+                        @rupiah($barang->harga)
+                      @endif
                     </td>
                     <td class="text-center">
                       <div class="input-group mx-auto" style="width: 8rem;">
-                        <button data-id="{{ $barang->id }}" data-opr="min"
-                          class="btn btn-change btn-outline-primary">-</button>
-                        <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga }}"
+                        <button data-id="{{ $barang->id }}" data-opr="min" class="btn btn-change btn-outline-primary">
+                          &dash;
+                        </button>
+                        <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->hargaDiskon ?: $barang->harga }}"
                           data-id="{{ $barang->id }}" data-toko="{{ $barang->toko_id }}" type="number"
                           placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
                           max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
-                        <button data-id="{{ $barang->id }}" data-opr="plus"
-                          class="btn btn-change btn-outline-primary">+</button>
+                        <button data-id="{{ $barang->id }}" data-opr="plus" class="btn btn-change btn-outline-primary">
+                          &plus;
+                        </button>
                       </div>
                       <p class="text-stok text-small mt-2 @if ($barang->stok == 0 || !$barang->checkoutable) text-danger @else text-warning @endif"
                         data-id="{{ $barang->id }}">
@@ -74,7 +88,11 @@
                       </p>
                     </td>
                     <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
-                      @rupiah($barang->pivot->sub_total)
+                      @if ($barang->hargaDiskon)
+                        @rupiah($barang->hargaDiskon * $barang->pivot->jumlah)
+                      @else
+                        @rupiah($barang->harga * $barang->pivot->jumlah)
+                      @endif
                     </td>
                     <td>
                       <form action="{{ route('user.keranjang.destroy', ['keranjang' => $barang->id]) }}" method="POST">
@@ -90,7 +108,13 @@
                 <tr>
                   <td colspan="2"></td>
                   <td>Total Harga</td>
-                  <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(fn($barang) => $barang->pivot->sub_total))</td>
+                  <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(function ($barang) {
+                    if ($barang->hargaDiskon) {
+                      return $barang->hargaDiskon * $barang->pivot->jumlah;
+                    }
+
+                    return $barang->harga * $barang->pivot->jumlah;
+                  }))</td>
                   <td>
                     @php
                       $checkoutable = true;

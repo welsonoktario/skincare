@@ -15,7 +15,9 @@ class CreateKeranjangsTable extends Migration
     {
         Schema::create('keranjangs', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('barang_id')->constrained();
+            $table->foreignId('barang_id')
+                ->constrained()
+                ->cascadeOnDelete();
             $table->integer('sub_total')->default(0);
             $table->integer('jumlah')->default(1);
             $table->timestamps();

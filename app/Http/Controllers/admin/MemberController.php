@@ -18,7 +18,7 @@ class MemberController extends Controller
     public function index()
     {
 
-        $users = User::with('alamatUtama')->where('role', 'customer')->get();
+        $users = User::with('alamatUtama')->where('role', 'user')->get();
 
         return view('admin.member.index', compact('users'));
     }

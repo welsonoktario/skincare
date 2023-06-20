@@ -14,7 +14,7 @@
                   <th>ID Toko</th>
                   <th>Pemilik Toko</th>
                   <th>Nama Toko</th>
-                  <th>Alamat Toko</th>
+                  <th>Lokasi Toko</th>
                   <th>Deskripsi Toko</th>
                   <th></th>
                 </tr>
@@ -25,7 +25,7 @@
                     <td>{{ $t->id }}</td>
                     <td>{{ $t->user->nama }}</td>
                     <td>{{ $t->nama }}</td>
-                    <td>{{ $t->alamat }}</td>
+                    <td>{{ "{$t->kota->provinsi->nama}, {$t->kota->nama}" }}</td>
                     <td>{{ $t->deskripsi }}</td>
                     <td>
                     </td>

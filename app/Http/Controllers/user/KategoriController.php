@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Kategori;
 use DB;
+use Request;
 
 class KategoriController extends Controller
 {
@@ -15,13 +17,27 @@ class KategoriController extends Controller
         return view('user.kategori.index', compact('kategoris'));
     }
 
-    public function show(Kategori $kategori)
+    public function show($id)
     {
-        $barangs = $kategori
-            ->barangs()
+        $kategori = Kategori::query()
+                ->with('barangs')
+                ->find($id);
+
+        $barangs = $kategori->barangs()
             ->paginate(4)
             ->withQueryString();
 
         return view('user.kategori.show', compact('kategori', 'barangs'));
+    }
+
+    public function lainnya()
+    {
+        $kategori = null;
+        $barangs = Barang::query()
+            ->whereNull('kategori_id')
+            ->paginate(4)
+            ->withQueryString();
+
+        return view('user.kategori.show', compact('barangs', 'kategori'));
     }
 }

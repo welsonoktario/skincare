@@ -90,6 +90,7 @@
   <script>
     $(function() {
       $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
+
       $('#foto').filepond({
         name: 'foto',
         storeAsFile: true,

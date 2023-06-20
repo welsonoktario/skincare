@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
+use App\Models\BarangPengecekan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,13 +16,13 @@ class CekKandunganController extends Controller
      */
     public function index(Request $request)
     {
-        $barangs = Barang::all();
+        $barangs = BarangPengecekan::all();
         $hasilInteraksis = collect([]);
         $namaBarangs = collect([]);
 
         if ($request->has('barangs')) {
             // dd($request->barangs);
-            $barangCek = Barang::query()
+            $barangCek = BarangPengecekan::query()
                 ->whereIn('id', $request->barangs)
                 ->get();
             $namaBarangs->add($barangCek[0]->nama);
@@ -34,11 +34,26 @@ class CekKandunganController extends Controller
     }
 
     /**
-     * @param App\Models\Barang[] /$ids
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $barangPengecekan = BarangPengecekan::find($id);
+
+        return response()->json($barangPengecekan);
+    }
+
+    /**
+     * @param App\Models\BarangPengecekan[] /$ids
      */
     private function cekInteraksi($barangs)
     {
         $pasangan = collect([]);
+        $barangs = $barangs->sortBy('id');
+
         $kandunganBarang1 = $barangs[0]->kandungans;
         $kandunganBarang2 = $barangs[1]->kandungans;
 
@@ -92,13 +107,11 @@ class CekKandunganController extends Controller
                     "interaksi_kandungans AS ik
                     INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
                     INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
-                    INNER JOIN barangs AS b1 ON b1.id = ? OR b1.id = ?
-                    INNER JOIN barangs AS b2 ON b2.id = ? OR b2.id = ?",
+                    INNER JOIN barang_pengecekans AS b1 ON b1.id = ?
+                    INNER JOIN barang_pengecekans AS b2 ON b2.id = ?",
                     [
                         intval($barangs[0]->id),
                         intval($barangs[1]->id),
-                        intval($barangs[1]->id),
-                        intval($barangs[0]->id)
                     ]
                 )
                 ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")

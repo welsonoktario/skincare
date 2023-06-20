@@ -9,8 +9,15 @@
     <div class="row row-cols-1 row-cols-lg-2">
       <div class="col-12 col-md-5 col-lg-3 sticky-md-top align-self-md-start" style="top: 10%">
         <div class="bg-white p-4 rounded-4 shadow-sm">
-          <div class="section-profil">
-            <p class="fw-bold mb-0">{{ $toko->nama }}</p>
+          <div class="section-profil text-center">
+            <img class="rounded-circle" src="{{ "/storage/{$toko->foto}" }}" alt="{{ $toko->nama }}" width="100" height="100">
+            <p class="fw-bold mb-1 text-primary">{{ $toko->nama }}</p>
+            <p class="mb-0">{{ $toko->deskripsi }}</p>
+            <hr>
+            <div class="d-inline-flex align-items-center fw-bold text-dark">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              {{ $toko->kota->nama }}
+            </div>
           </div>
           <hr class="form-divider">
           <div class="section-menu">

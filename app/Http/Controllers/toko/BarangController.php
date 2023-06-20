@@ -67,7 +67,7 @@ class BarangController extends Controller
             'berat' => $request->berat,
             'jenis_diskon' => $request->jenis_diskon,
             'nominal_diskon' => $request->nominal_diskon,
-            'kategori_id' => $request->kategori,
+            'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
             'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);
 
@@ -140,7 +140,7 @@ class BarangController extends Controller
             'berat' => $request->berat,
             'jenis_diskon' => $request->jenis_diskon,
             'nominal_diskon' => $request->nominal_diskon,
-            'kategori_id' => $request->kategori,
+            'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
             'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);
 

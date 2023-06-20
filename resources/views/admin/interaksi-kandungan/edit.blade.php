@@ -15,7 +15,7 @@
     <select class="form-select" name="k1" required>
       <option value="0" selected disabled>Pilih kandungan 1</option>
       @foreach ($kandungans as $kandungan)
-        <option value="{{ $kandungan->id }}" selected="{{ $kandungan->id == $interaksi->k1_id }}">
+        <option value="{{ $kandungan->id }}" @if ($kandungan->id == $interaksi->k1_id) selected @endif>
           {{ $kandungan->nama }}
         </option>
       @endforeach
@@ -27,7 +27,7 @@
     <select class="form-select" name="k2" required>
       <option value="0" selected disabled>Pilih kandungan 2</option>
       @foreach ($kandungans as $kandungan)
-        <option value="{{ $kandungan->id }}" selected="{{ $kandungan->id == $interaksi->k2_id }}">{{ $kandungan->nama }}
+        <option value="{{ $kandungan->id }}" @if ($kandungan->id == $interaksi->k2_id) selected @endif>{{ $kandungan->nama }}
         </option>
       @endforeach
     </select>
@@ -37,14 +37,14 @@
     <label for="jenis" class="form-label">Hasil Interaksi</label>
     <select class="form-select" name="jenis" required>
       <option value="0" selected disabled>Pilih hasil interaksi</option>
-      <option value="baik" selected="{{ $interaksi->jenis == 'baik' }}">Baik</option>
-      <option value="buruk" selected="{{ $interaksi->jenis == 'buruk' }}">Buruk</option>
+      <option value="baik" @if ($interaksi->jenis == 'baik') selected @endif>Baik</option>
+      <option value="buruk" @if ($interaksi->jenis == 'buruk') selected @endif>Buruk</option>
     </select>
   </div>
 
   <div class="mb-3">
     <label for="deskripsi" class="form-label">Deskripsi Interaksi</label>
-    <textarea class="form-control" name="deskripsi" placeholder="Deskripsi interaksi" required>{{ $interaksi->deskripsi }}</textarea>
+    <textarea class="form-control h-100" name="deskripsi" placeholder="Deskripsi interaksi" required>{{ $interaksi->deskripsi }}</textarea>
   </div>
 
   <div class="mb-3">

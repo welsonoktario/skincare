@@ -43,7 +43,9 @@ class KeranjangController extends Controller
         // hitung total seluruh barang dan jumlah di keranjang user
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
-                return $barang->pivot->sub_total;
+                return $barang->hargaDiskon
+                    ? $barang->hargaDiskon * $barang->pivot->jumlah
+                    : $barang->harga * $barang->pivot->jumlah;
             });
         });
 
@@ -264,10 +266,12 @@ class KeranjangController extends Controller
                     )
                     // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
                     ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
+                    // ->whereRaw('b1.nama = ? AND b2.nama = ?', [$p['k1']['barang'], $p['k2']['barang']])
                     // ATAU yang dimana kandungan_satu_id = id dari k2 (dari $p) DAN kandungan_satu_id = id dari k1 (dari $p)
-                    // ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
+                    ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
+                    // ->orwhereRaw('b1.nama = ? AND b2.nama = ?', [$p['k2']['barang'], $p['k1']['barang']])
                     ->first();
-
+                // dd($hasilInteraksi);
                 /* HASIL QUERY DIATAS:
                     SELECT
                         ik.jenis_interaksi AS jenis_interaksi,

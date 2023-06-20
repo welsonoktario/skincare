@@ -39,7 +39,7 @@
                   <td> {{ $b->harga }}</td>
                   <td> {{ $b->stok }}</td>
                   <td> {{ $b->deskripsi }}</td>
-                  <td>{{ $b->kategori->nama }}</td>
+                  <td>{{ $b->kategori ? $b->kategori->nama : 'Lainnya' }}</td>
                   <td>
                     @if ($b->etalase)
                       {{ $b->etalase->nama }}

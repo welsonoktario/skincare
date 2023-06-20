@@ -61,7 +61,19 @@
                     <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
                   </td>
                   <td class="text-right">
-                    @rupiah($barang->harga)
+                    @if ($barang->hargaDiskon)
+                      <span class="fw-normal text-decoration-line-through">@rupiah($barang->harga)</span>
+                      <span class="text-danger mx-1">@rupiah($barang->hargaDiskon)</span>
+                      <div class="badge badge-danger">
+                        @if ($barang->jenis_diskon == 'persen')
+                          &dash;{{ $barang->nominal_diskon }}%
+                        @else
+                          &dash; @rupiah($barang->nominal_diskon)
+                        @endif
+                      </div>
+                    @else
+                      @rupiah($barang->harga)
+                    @endif
                   </td>
                   <td class="text-right fw-bold">
                     x{{ $barang->pivot->jumlah }}

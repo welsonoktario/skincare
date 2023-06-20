@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
 use App\Models\Rekening;
 use App\Models\Toko;
-use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PenarikanController extends Controller
 {
@@ -18,10 +19,15 @@ class PenarikanController extends Controller
      */
     public function index()
     {
-        $penarikans = Penarikan::where('asal_penarikan','toko')->where('user_id', Auth::user()->id)->get();
+        $penarikans = Penarikan::query()
+            ->where('asal_penarikan', 'toko')
+            ->whereHas('rekening', function(Builder $q) {
+                return $q->where('user_id', Auth::id());
+            })
+            ->get();
         $tokos = Toko::firstWhere('id', Auth::user()->toko->id);
         $rekenings = Rekening::with(['bank'])->where('user_id', Auth::user()->id)->get();
-        return view('toko.penarikan.index',compact('penarikans','tokos','rekenings'));
+        return view('toko.penarikan.index', compact('penarikans', 'tokos', 'rekenings'));
     }
 
     /**
@@ -31,9 +37,12 @@ class PenarikanController extends Controller
      */
     public function create()
     {
-        $penarikans = Penarikan::where('user_id', Auth::user()->id)->get();
-        $rekenings = Rekening::with(['bank'])->where('user_id', Auth::user()->id)->get();
-        return view('toko.penarikan.create',compact('penarikans','rekenings'));
+        $toko = Auth::user()->toko;
+        $rekenings = Rekening::with(['bank'])
+            ->where('user_id', Auth::id())
+            ->get();
+
+        return view('toko.penarikan.create', compact('rekenings'));
     }
 
     /**

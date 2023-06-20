@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Toko;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class HomeController extends Controller
@@ -21,19 +21,27 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $kategoris = Kategori::all();
-        $query =  Barang::query()
+
+        // barang terlaris
+        $terlaris = Barang::query()
+            ->withCount('transaksiDetails')
+            ->having('transaksi_details_count', '>', 0)
             // kalo user login dan punya toko, hanya tampilkan barang yang bukan punya toko dari user
             ->when($user && $user->toko && $user->toko->id, function ($q) use ($user) {
                 return $q->where('toko_id', '!=', $user->toko->id);
-            });
-
-        // barang terlaris
-        $terlaris = $query->withCount('transaksiDetails')
+            })
+            ->where('status', 'diterima')
             ->orderBy('transaksi_details_count', 'desc')
             ->get()
             ->take(10);
 
-        $terbaru = $query->orderBy('created_at', 'desc')
+        $terbaru = Barang::query()
+            // kalo user login dan punya toko, hanya tampilkan barang yang bukan punya toko dari user
+            ->when($user && $user->toko && $user->toko->id, function ($q) use ($user) {
+                return $q->where('toko_id', '!=', $user->toko->id);
+            })
+            ->where('status', 'diterima')
+            ->latest('created_at')
             ->get()
             ->take(10);
 

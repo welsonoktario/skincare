@@ -88,12 +88,12 @@ class InteraksiKandunganController extends Controller
      */
     public function update(Request $request, $k1, $k2)
     {
-        $query = DB::table('interaksi_kandungans')
+        DB::table('interaksi_kandungans')
             ->whereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$k1, $k2])
             ->limit(1)
             ->update([
-                'kandungan_satu_id' => $k1,
-                'kandungan_dua_id' => $k2,
+                'kandungan_satu_id' => $request->k1 < $request->k2 ? $request->k1 : $request->k2,
+                'kandungan_dua_id' => $request->k1 > $request->k2 ? $request->k1 : $request->k2,
                 'jenis_interaksi' => $request->jenis,
                 'deskripsi_interaksi' => $request->deskripsi,
                 'sumber' => $request->sumber

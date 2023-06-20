@@ -12,8 +12,8 @@
       <li class="breadcrumb-item"><a href="/">Home</a></li>
       <li class="breadcrumb-item"><a href="{{ route('user.kategori.index') }}">Kategori</a></li>
       <li class="breadcrumb-item">
-        <a href="{{ route('user.kategori.show', $produk->kategori_id) }}">
-          {{ $produk->kategori->nama }}
+        <a href="{{ $produk->kategori ? route('user.kategori.show', $produk->kategori_id) : route('user.kategori.lainnya') }}">
+          {{ $produk->kategori ? $produk->kategori->nama : 'Lainnya' }}
         </a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">{{ $produk->nama }}</li>
@@ -72,9 +72,9 @@
                 <span class="text-danger mx-1">@rupiah($produk->hargaDiskon)</span>
                 <div class="badge badge-danger">
                   @if ($produk->jenis_diskon == 'persen')
-                    -{{ $produk->nominal_diskon }}%
+                    &dash;{{ $produk->nominal_diskon }}%
                   @else
-                    - @rupiah($produk->nominal_diskon)
+                    &dash; @rupiah($produk->nominal_diskon)
                   @endif
                 </div>
               @else
@@ -93,8 +93,8 @@
                   Kategori:
                   <span>
                     <a class="link-primary text-decoration-none fw-semibold"
-                      href="{{ route('user.kategori.show', $produk->kategori_id) }}">
-                      {{ $produk->kategori->nama }}
+                      href="{{ route('user.kategori.show', $produk->kategori_id ?: 0) }}">
+                      {{ $produk->kategori ? $produk->kategori->nama : 'Lainnya' }}
                     </a>
                   </span>
                 </p>

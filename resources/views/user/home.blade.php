@@ -32,6 +32,17 @@
         </a>
       </li>
     @endforeach
+    <li style="min-width: 25%">
+      <a href="{{ route('user.kategori.lainnya') }}"
+        class="card text-bg-light text-decoration-none m-1 m-md-2">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+          <img src="{{ "/img/placeholder.jpeg" }}" alt="Lainnya" height="36">
+          <h6 class="text-title mt-4 mb-0 text-center">
+            Lainnya
+          </h6>
+        </div>
+      </a>
+    </li>
   </ul>
 
   <h5 class="mt-4">Produk Terbaru</h5>

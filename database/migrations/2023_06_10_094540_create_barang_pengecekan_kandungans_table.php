@@ -14,8 +14,12 @@ class CreateBarangPengecekanKandungansTable extends Migration
     public function up()
     {
         Schema::create('barang_pengecekan_kandungans', function (Blueprint $table) {
-            $table->foreignId('barang_pengecekan_id')->constrained();
-            $table->foreignId('kandungan_id')->constrained();
+            $table->foreignId('barang_pengecekan_id')
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->foreignId('kandungan_id')
+                ->constrained()
+                ->cascadeOnDelete();
         });
     }
 

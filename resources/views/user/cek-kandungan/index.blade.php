@@ -11,38 +11,56 @@
   <h4>Cek Kandungan</h4>
 
   <div class="card">
-    <form id="formCek" action="{{ route('user.cek-kandungan.cek') }}" class="card-body d-flex justify-content-center w-100 flex-wrap"
-      style="column-gap: 1rem;" method="POST">
+    <form id="formCek" action="{{ route('user.cek-kandungan.cek') }}" class="card-body" style="column-gap: 1rem;"
+      method="POST">
       @csrf
-      <div>
-        <label for="barangs[]" class="form-label">
-          Barang 1
-        </label>
-        <select class="form-select" name="barangs[]">
-          <option value="0" selected disabled>Pilih barang</option>
-          @foreach ($barangs as $barang)
-            <option value="{{ $barang->id }}" @if (old('barangs.0') == $barang->id) selected @endif>
-              {{ $barang->nama }}
-            </option>
-          @endforeach
-        </select>
-      </div>
+      <div class="row align-items-center">
+        <div id="img1" class="col-3">
+          <div class="d-none text-center">
+            <img class="mb-2" src="" alt="" width="50%">
+            <h6 class="mb-0 fw-semibold"></h6>
+          </div>
+        </div>
 
-      <div>
-        <label for="barangs[]" class="form-label">
-          Barang 2
-        </label>
-        <select class="form-select" name="barangs[]">
-          <option value="0" selected disabled>Pilih barang</option>
-          @foreach ($barangs as $barang)
-            <option value="{{ $barang->id }}" @if (old('barangs.1') == $barang->id) selected @endif>
-              {{ $barang->nama }}
-            </option>
-          @endforeach
-        </select>
+        <div class="col-3">
+          <label for="barangs[]" class="form-label">
+            Barang 1
+          </label>
+          <select id="barang1" class="form-select" name="barangs[]">
+            <option value="0" selected disabled>Pilih barang</option>
+            @foreach ($barangs as $barang)
+              <option value="{{ $barang->id }}" @if (old('barangs.0') == $barang->id) selected @endif>
+                {{ $barang->nama }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="col-3">
+          <label for="barangs[]" class="form-label">
+            Barang 2
+          </label>
+          <select id="barang2" class="form-select" name="barangs[]">
+            <option value="0" selected disabled>Pilih barang</option>
+            @foreach ($barangs as $barang)
+              <option value="{{ $barang->id }}" @if (old('barangs.1') == $barang->id) selected @endif>
+                {{ $barang->nama }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <div id="img2" class="col-3">
+          <div class="d-none text-center">
+            <img class="mb-3" src="" alt="" width="50%">
+            <h6 class="mb-0 fw-semibold"></h6>
+          </div>
+        </div>
+
+        <div class="col-5"></div>
+        <button id="btnCek" type="submit" class="col-2 btn btn-primary mt-4">Cek Kandungan</button>
+        <div class="col-5"></div>
       </div>
-      <div style="flex-basis: 100%; height: 0;"></div>
-      <button id="btnCek" type="submit" class="btn btn-primary mt-4">Cek Kandungan</button>
     </form>
   </div>
 
@@ -93,6 +111,26 @@
 @push('scripts')
   <script>
     $(function() {
+      $('#barang1').change(function() {
+        var id = $(this).val();
+
+        $.get(route('user.cek-kandungan.show', id), function(data) {
+          $('#img1 div').removeClass('d-none');
+          $('#img1 img').prop('src', `/storage/${data.foto}`);
+          $('#img1 h6').text(data.nama);
+        });
+      });
+
+      $('#barang2').change(function() {
+        var id = $(this).val();
+
+        $.get(route('user.cek-kandungan.show', id), function(data) {
+          $('#img2 div').removeClass('d-none');
+          $('#img2 img').prop('src', `/storage/${data.foto}`);
+          $('#img2 h6').text(data.nama);
+        });
+      });
+
       $('#btnCek').click(function(e) {
         e.preventDefault();
         var [barang1, barang2] = $('select[name="barangs[]').map((i, e) => e.value).get();

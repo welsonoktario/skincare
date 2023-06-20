@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Barang extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
     protected $appends = ['placeholder', 'hargaDiskon'];

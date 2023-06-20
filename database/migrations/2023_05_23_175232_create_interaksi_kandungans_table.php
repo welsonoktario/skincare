@@ -14,8 +14,12 @@ class CreateInteraksiKandungansTable extends Migration
     public function up()
     {
         Schema::create('interaksi_kandungans', function (Blueprint $table) {
-            $table->foreignId('kandungan_satu_id')->constrained('kandungans');
-            $table->foreignId('kandungan_dua_id')->constrained('kandungans');
+            $table->foreignId('kandungan_satu_id')
+                ->constrained('kandungans')
+                ->cascadeOnDelete();
+            $table->foreignId('kandungan_dua_id')
+                ->constrained('kandungans')
+                ->cascadeOnDelete();
             $table->enum('jenis_interaksi', ['baik', 'buruk']);
             $table->text('deskripsi_interaksi')->nullable();
             $table->text('sumber')->nullable();

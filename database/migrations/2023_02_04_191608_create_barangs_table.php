@@ -16,8 +16,14 @@ class CreateBarangsTable extends Migration
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('toko_id')->constrained();
-            $table->foreignId('etalase_id')->nullable()->constrained();
-            $table->foreignId('kategori_id')->constrained();
+            $table->foreignId('etalase_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+            $table->foreignId('kategori_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
             $table->string('nama');
             $table->text('deskripsi');
             $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
@@ -27,6 +33,7 @@ class CreateBarangsTable extends Migration
             $table->integer('stok')->default(0);
             $table->integer('berat')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

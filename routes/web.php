@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
 use App\Http\Controllers\Toko\EkspedisiController;
+use App\Models\Kategori;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,12 +52,8 @@ Route::group(['as' => 'user.'], function () {
     Route::get('/seller/{toko}', [TokoController::class, 'index'])->name('toko.index');
 
     Route::get('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.index');
+    Route::get('/cek-kandungan/{id}', [CekKandunganController::class, 'show'])->name('cek-kandungan.show');
     Route::post('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.cek');
-
-    Route::resources(([
-        'kategori' => KategoriController::class,
-        'produk' => BarangController::class,
-    ]));
 
     Route::middleware(['auth'])->group(function () {
         Route::group(['prefix' => 'checkout'], function () {
@@ -69,7 +66,8 @@ Route::group(['as' => 'user.'], function () {
             Route::get('pembayaran', [CheckoutController::class, 'pembayaran'])->name('checkout.pembayaran');
         });
 
-        Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('user.alamat.setUtama');
+        Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('alamat.setUtama');
+        Route::get('kategori/lainnya', [KategoriController::class, 'lainnya'])->name('kategori.lainnya');
 
         Route::prefix('profil')->group(function () {
             // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat
@@ -88,6 +86,8 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::resources([
+            'kategori' => KategoriController::class,
+            'produk' => BarangController::class,
             'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
             'profil' => ProfilController::class,
