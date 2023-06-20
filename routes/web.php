@@ -55,6 +55,11 @@ Route::group(['as' => 'user.'], function () {
     Route::get('/cek-kandungan/{id}', [CekKandunganController::class, 'show'])->name('cek-kandungan.show');
     Route::post('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.cek');
 
+    Route::resources([
+        'kategori' => KategoriController::class,
+        'produk' => BarangController::class,
+    ]);
+
     Route::middleware(['auth'])->group(function () {
         Route::group(['prefix' => 'checkout'], function () {
             Route::get('/', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -86,8 +91,6 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::resources([
-            'kategori' => KategoriController::class,
-            'produk' => BarangController::class,
             'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
             'profil' => ProfilController::class,
