@@ -51,7 +51,7 @@
     <input id="formVerifikasiAksi" name="aksi" />
   </form>
 
-  <div id="modalVerifikasiToko" class="modal fade" tabindex="-1">
+  <div id="modalToko" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
 
@@ -67,7 +67,7 @@
         </div>
 
         {{-- Content --}}
-        <div id="modalVerifikasiTokoContent"></div>
+        <div id="modalTokoContent"></div>
       </div>
     </div>
   </div>
@@ -77,23 +77,23 @@
     $(document).ready(function() {
       $('.listVerifikasiToko #btnVerifikasiToko').click(function() {
         const id = $(this).data('id');
-        $('#modalVerifikasiToko').modal('show');
-        $('#modalVerifikasiTokoContent').html('');
+        $('#modalToko').modal('show');
+        $('#modalTokoContent').html('');
         $('#modalLoading').show();
         $.get(`verifikasitoko/${id}/edit`, function(res) {
           $('#modalLoading').hide();
-          $('#modalMemberContent').html(res);
+          $('#modalTokoContent').html(res);
         });
       });
 
       $('.listVerifikasiToko .btnDetailVerifikasiToko').click(function() {
         const id = $(this).data('id');
-        $('#modalVerifikasiToko').modal('show');
-        $('#modalVerifikasiTokoContent').html('');
+        $('#modalToko').modal('show');
+        $('#modalTokoContent').html('');
         $('#modalLoading').show();
         $.get(`verifikasitoko/${id}`, function(res) {
           $('#modalLoading').hide();
-          $('#modalVerifikasiTokoContent').html(res);
+          $('#modalTokoContent').html(res);
         });
       });
 

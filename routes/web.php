@@ -54,6 +54,7 @@ Route::group(['as' => 'user.'], function () {
     Route::get('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.index');
     Route::get('/cek-kandungan/{id}', [CekKandunganController::class, 'show'])->name('cek-kandungan.show');
     Route::post('/cek-kandungan', [CekKandunganController::class, 'index'])->name('cek-kandungan.cek');
+    Route::get('kategori/lainnya', [KategoriController::class, 'lainnya'])->name('kategori.lainnya');
 
     Route::resources([
         'kategori' => KategoriController::class,
@@ -72,7 +73,11 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('alamat.setUtama');
-        Route::get('kategori/lainnya', [KategoriController::class, 'lainnya'])->name('kategori.lainnya');
+
+        Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function() {
+            Route::get('{transaksi}/ulas', [TransaksiController::class, 'ulasan'])->name('ulasan');
+            Route::get('{transaksi}/pengembalian', [TransaksiController::class, 'pengembalian'])->name('pengembalian');
+        });
 
         Route::prefix('profil')->group(function () {
             // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat

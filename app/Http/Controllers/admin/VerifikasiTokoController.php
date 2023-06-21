@@ -49,7 +49,11 @@ class VerifikasiTokoController extends Controller
      */
     public function show($id)
     {
-        //
+        $toko = Toko::query()
+            ->with(['kota.provinsi'])
+            ->find($id);
+
+        return view('admin.verifikasitoko.show', compact('toko'));
     }
 
     /**

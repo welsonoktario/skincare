@@ -20,11 +20,13 @@
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-end">
-        <a href="{{ route('toko.profil.index') }}" class="dropdown-item has-icon">
-          <i class="far fa-user"></i> Profil
-        </a>
+        @if (auth()->user()->toko && auth()->user()->toko->status == 'diterima')
+          <a href="{{ route('toko.profil.index') }}" class="dropdown-item has-icon">
+            <i class="far fa-user"></i> Profil Toko
+          </a>
+        @endif
         <a href="{{ route('user.home') }}" class="dropdown-item has-icon">
-          <i class="far fa-user"></i> BACK TO USER
+          <i class="fas fa-home"></i> Kembali
         </a>
         <div class="dropdown-divider"></div>
         <a href="{{ route('logout') }}"

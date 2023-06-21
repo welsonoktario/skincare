@@ -10,7 +10,7 @@
 @section('content')
   <div class="grid mt-md-0" style="margin-top: 22%">
     <div class="row row-cols-1 row-cols-lg-2">
-      <div class="col-12 col-md-5 col-lg-3 sticky-md-top align-self-md-start" style="top: 10%">
+      <div class="col-12 col-md-5 col-lg-3 sticky-md-top align-self-md-start" style="top: 10%; z-index: 1;">
         <div class="bg-white p-4 rounded-4 shadow-sm">
           <div class="section-profil">
             <p class="fw-bold mb-0">{{ $profil->nama }}</p>

@@ -19,8 +19,14 @@ class TransaksiController extends Controller
     {
         $tipe = $request->tipe ?: 'semua';
         $transaksis = Auth::user()->transaksis()
-            ->with(['transaksiDetails.barang', 'toko'])
-            ->when(($tipe != 'semua'), fn (Builder $q) => $q->where('status', $tipe))
+            ->with([
+                'toko',
+                'transaksiDetails.barang',
+                'transaksiDetails.ulasan',
+                'pengembalian'
+            ])
+            ->when(($tipe != 'semua' && $tipe != 'dikembalikan'), fn (Builder $q) => $q->where('status', $tipe))
+            ->when(($tipe == 'dikembalikan'), fn (Builder $q) => $q->has('pengembalian'))
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -36,7 +42,12 @@ class TransaksiController extends Controller
     public function show($id)
     {
         $transaksi = Transaksi::query()
-            ->with(['transaksiDetails.barang'])
+            ->with([
+                'transaksiDetails' => function ($q) {
+                    return $q->with('barang')->doesntHave('ulasan');
+                },
+                'pengembalian'
+            ])
             ->find($id);
 
         return view('user.riwayat.show', compact('transaksi'));
@@ -62,24 +73,71 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $pesananmasuk = Transaksi::find($id);
+        $transaksi = Transaksi::query()
+            ->with('transaksiDetails')
+            ->find($id);
         $status = ['selesai', 'dikembalikan'];
 
         if (in_array($request->aksi, $status)) {
-            $pesananmasuk->update(['status' => $request->aksi]);
+            $transaksi->update(['status' => $request->aksi]);
+        }
+
+        if ($request->has('ulasan')) {
+            // dd($request->all());
+            $ratings = $request->ratings;
+            $komentars = $request->komentars;
+
+            foreach ($transaksi->transaksiDetails as $i => $td) {
+                if (isset($ratings[$td->id])) {
+                    $td->ulasan()->create([
+                        'komentar' => $komentars[$td->id],
+                        'rating' => $ratings[$td->id]
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('pengembalian')) {
+            $fotos = $request->file('fotos');
+            $fotoPengembalians = [];
+
+            $pengembalian = $transaksi->pengembalian()->create([
+                'alasan' => $request->alasan,
+            ]);
+
+            foreach ($fotos as $foto) {
+                $path = $foto->store("img/pengembalian/{$pengembalian->id}", 'public');
+                $fotoPengembalians[] = [
+                    'pengembalian_id' => $pengembalian->id,
+                    'path' => $path,
+                ];
+            }
+
+            $pengembalian->fotoPengembalians()->createMany($fotoPengembalians);
         }
 
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function ulasan($id)
     {
-        //
+        $transaksi = Transaksi::query()
+            ->with([
+                'transaksiDetails' => function ($q) {
+                    return $q->with('barang')->doesntHave('ulasan');
+                }
+            ])
+            ->find($id);
+
+        return view('user.riwayat.ulasan', compact('transaksi'));
+    }
+
+    public function pengembalian($id)
+    {
+        $transaksi = Transaksi::query()
+            ->with('transaksiDetails.barang')
+            ->find($id);
+
+        return view('user.riwayat.pengembalian', compact('transaksi'));
     }
 }

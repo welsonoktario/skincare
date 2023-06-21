@@ -77,6 +77,23 @@
 @push('scripts')
   <script>
     $(document).ready(function() {
+      $(document).on('submit', '#formAddInteraksi', function(e) {
+        e.preventDefault();
+        var canSubmit = true;
+
+        $('#formAddInteraksi select').each(function(i, el) {
+          if (!$(el).val()) {
+            canSubmit = false;
+            alert('Lengkapi seluruh form');
+            return false;
+          }
+        });
+
+        if (canSubmit) {
+          e.currentTarget.submit();
+        }
+      });
+
       $('.btn-tambah').click(function() {
         $('#modalInteraksi').modal('show');
         $('#modalInteraksiContent').html('');

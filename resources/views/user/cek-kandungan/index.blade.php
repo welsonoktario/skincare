@@ -135,6 +135,11 @@
         e.preventDefault();
         var [barang1, barang2] = $('select[name="barangs[]').map((i, e) => e.value).get();
 
+        if (barang1 == '0' || barang2 == '0') {
+          alert('Pilih barang satu dan barang dua');
+          return
+        }
+
         if (barang1 == barang2) {
           alert('Barang tidak boleh sama');
           return

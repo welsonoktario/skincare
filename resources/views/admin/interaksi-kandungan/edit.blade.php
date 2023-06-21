@@ -4,7 +4,7 @@
     aria-label="Close"></button>
 </div>
 
-<form id="formAddInteraksi"
+<form id="formEditInteraksi"
   action="{{ route('admin.interaksi-kandungan.update', ['k1' => $interaksi->k1_id, 'k2' => $interaksi->k2_id]) }}"
   class="modal-body" method="POST">
   @csrf
@@ -58,5 +58,5 @@
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#modalInteraksi" aria-label>
     Batal
   </button>
-  <button form="formAddInteraksi" class="btn btn-primary btn-block">Ubah</button>
+  <button form="formEditInteraksi" class="btn btn-primary btn-block">Ubah</button>
 </div>

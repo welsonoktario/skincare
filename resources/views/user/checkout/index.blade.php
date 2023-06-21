@@ -13,7 +13,7 @@
         <h4>Alamat Pengiriman</h4>
         <div class="row">
           <div class="col-12">
-            @if ($alamat)
+            @if (count($alamat))
               <input type="hidden" name="alamat" value="{{ $alamat[0]['id'] }}">
               <a class="card text-decoration-none card-hover" style="cursor: pointer;" role="button"
                 data-bs-toggle="modal" data-bs-target="#modalAlamats">
@@ -133,7 +133,7 @@
         </table>
         <div class="w-100 text-end">
           <button type="button" class="btn btn-primary btn-pembayaran w-25" data-bs-toggle="modal"
-            data-bs-target="#modalPembayaran">
+            data-bs-target="#modalPembayaran" @if (!count($alamat)) disabled @endif>
             Pilih Pembayaran
           </button>
         </div>

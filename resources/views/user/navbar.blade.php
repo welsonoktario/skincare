@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg bg-primary-gradient shadow"
-  style="position: fixed; top: 0; left:0; right:0; z-index: 80">
+  style="position: fixed; top: 0; left:0; right:0; z-index: 999">
   <div class="container">
     <a href="{{ route('user.home') }}">
       <img src="/img/logo2.png" alt="Skincareku" height="40">

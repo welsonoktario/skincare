@@ -209,6 +209,12 @@
           $('#jenisDiskon').trigger('change');
 
           $('#kandungans').select2({
+            dropdownParent: $('#modalBarang'),
+            theme: 'bootstrap-5'
+          });
+
+          $('#kategori').select2({
+            dropdownParent: $('#modalBarang'),
             theme: 'bootstrap-5'
           });
 
@@ -216,8 +222,6 @@
             var files = res.map((path) => ({
               source: path,
             }))
-
-            console.log(files)
 
             $('input[name="fotos[]"]').filepond({
               storeAsFile: true,

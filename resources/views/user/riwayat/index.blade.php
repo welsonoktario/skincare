@@ -5,6 +5,12 @@
 
 @extends('user.profil.profil')
 @section('title', 'Daftar Transaksi • Skincare')
+
+@push('styles')
+  <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
+  <link rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" />
+@endpush
+
 @section('profil-content')
   <h6 class="mt-2 mx-0 mb-0 text-dark">Daftar Transaksi</h6>
 
@@ -17,7 +23,8 @@
 
   <ul class="nav nav-pills nav-fill mt-4">
     <li class="nav-item">
-      <a class="nav-link {{ $currentTipe == 'semua' ? 'active' : '' }}" href="{{ route('user.transaksi.index') }}">Semua</a>
+      <a class="nav-link {{ $currentTipe == 'semua' ? 'active' : '' }}"
+        href="{{ route('user.transaksi.index') }}">Semua</a>
     </li>
     @foreach ($tipes as $tipe)
       <li class="nav-item">
@@ -60,7 +67,13 @@
                   @break
 
                   @case('selesai')
-                    <span class="badge rounded-pill text-bg-success" style="font-size: 0.6rem">Selesai</span>
+                    <span @class([
+                        'badge rounded-pill text-capitalize',
+                        'text-bg-success' => !$transaksi->pengembalian,
+                        'text-bg-danger' => $transaksi->pengembalian,
+                    ]) style="font-size: 0.6rem">
+                      {{ $transaksi->pengembalian ? "Dikembalikan ({$transaksi->pengembalian->status})" : 'Selesai' }}
+                    </span>
                   @break
 
                   @case('batal')
@@ -98,15 +111,22 @@
             </div>
           </div>
           @if ($transaksi->status == 'dikirim')
-            <div class="d-flex mt-3">
-              <button class="btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
-                data-aksi="selesai">Barang Diterima</button>
-              <button class="ms-2 btn btn-aksi btn-secondary text-dark" data-transaksi="{{ $transaksi->id }}"
-                data-aksi="dikembalikan">Ajukan Pengembalian</button>
+            <div class="d-flex mt-3 justify-content-end">
+              <button class="btn btn-aksi btn-secondary text-white" data-transaksi="{{ $transaksi->id }}"
+                data-aksi="pengembalian">
+                Ajukan Pengembalian
+              </button>
+              <button class="ms-2 btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
+                data-aksi="selesai">
+                Barang Diterima
+              </button>
             </div>
-          @elseif ($transaksi->status == 'selesai')
-            <div class="d-flex mt-3">
-              <button class="btn btn-primary text-white" data-transaksi="{{ $transaksi->id }}">Ulas</button>
+          @elseif ($transaksi->status == 'selesai' && !$transaksi->pengembalian)
+            <div class="d-flex mt-3 justify-content-end">
+              <button class="btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
+                data-aksi="ulasan">
+                Berikan Ulasan
+              </button>
             </div>
           @endif
         </div>
@@ -137,11 +157,43 @@
 @endsection
 
 @push('scripts')
+  <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+  <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+  <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+  <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
   <script>
     $(document).ready(function() {
+      $.fn.filepond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+      var modalDetail = $('#modalDetail');
+
+      $(document).on('click', '.btn-rating', function() {
+        var rating = $(this).data('rating');
+        var val = $(this).find('input').val();
+        var icon = $(this).find('span');
+        $(`#${rating}`).val(val);
+
+        for (var i = 1; i <= 5; i++) {
+          if (i <= val) {
+            $(`.${rating}-${i}`)
+              .removeClass('far')
+              .removeClass('fas')
+              .addClass('fas');
+          } else {
+            $(`.${rating}-${i}`)
+              .removeClass('far')
+              .removeClass('fas')
+              .addClass('far');
+          }
+        }
+      });
+
       $('.btn-detail').click(function() {
-        const id = $(this).data('id');
-        $('#modalDetail').modal('show');
+        const {
+          id,
+          aksi
+        } = $(this).data();
+
+        modalDetail.modal('show');
         $('#modalDetailContent').html('');
         $('#modalLoading').show();
 
@@ -159,13 +211,37 @@
           aksi
         } = $(this).data();
 
-        $('#aksi').val(aksi);
+        if (aksi == 'ulasan') {
+          modalDetail.modal('show');
+          $('#modalDetailContent').html('');
+          $('#modalLoading').show();
 
-        $('#formPesanan').prop('action', route('user.transaksi.update', transaksi));
-        $('#formPesanan').submit();
+          $.get(route('user.transaksi.ulasan', transaksi), function(res) {
+            $('#modalLoading').hide();
+            $('#modalDetailContent').html(res);
+          });
+        } else if (aksi == 'pengembalian') {
+          modalDetail.modal('show');
+          $('#modalDetailContent').html('');
+          $('#modalLoading').show();
+
+          $.get(route('user.transaksi.pengembalian', transaksi), function(res) {
+            $('#modalLoading').hide();
+            $('#modalDetailContent').html(res);
+
+            $('input[name="fotos[]"]').filepond({
+              storeAsFile: true,
+              maxFiles: 3,
+              acceptedFileTypes: ['image/*'],
+            });
+          });
+        } else {
+          $('#aksi').val(aksi);
+
+          $('#formPesanan').prop('action', route('user.transaksi.update', transaksi));
+          $('#formPesanan').submit();
+        }
       });
-
-      $('#tableKandungan').DataTable();
     });
   </script>
 @endpush

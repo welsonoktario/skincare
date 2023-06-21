@@ -10,6 +10,7 @@ class Transaksi extends Model
     protected $casts = [
         'created_at' => 'datetime:Y-m-d',
     ];
+    protected $appends = ['ulasan_count'];
 
     public function user()
     {
@@ -39,5 +40,18 @@ class Transaksi extends Model
     public function pengembalian()
     {
         return $this->hasOne(Pengembalian::class);
+    }
+
+    public function getUlasanCountAttribute()
+    {
+        $ulasanCount = 0;
+
+        foreach ($this->transaksiDetails as $td) {
+            if ($td->ulasan) {
+                $ulasanCount++;
+            }
+        }
+
+        return $ulasanCount;
     }
 }

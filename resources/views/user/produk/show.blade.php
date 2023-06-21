@@ -12,7 +12,8 @@
       <li class="breadcrumb-item"><a href="/">Home</a></li>
       <li class="breadcrumb-item"><a href="{{ route('user.kategori.index') }}">Kategori</a></li>
       <li class="breadcrumb-item">
-        <a href="{{ $produk->kategori ? route('user.kategori.show', $produk->kategori_id) : route('user.kategori.lainnya') }}">
+        <a
+          href="{{ $produk->kategori ? route('user.kategori.show', $produk->kategori_id) : route('user.kategori.lainnya') }}">
           {{ $produk->kategori ? $produk->kategori->nama : 'Lainnya' }}
         </a>
       </li>
@@ -93,7 +94,7 @@
                   Kategori:
                   <span>
                     <a class="link-primary text-decoration-none fw-semibold"
-                      href="{{ route('user.kategori.show', $produk->kategori_id ?: 0) }}">
+                      href="{{ $produk->kategori ? route('user.kategori.show', $produk->kategori_id) : route('user.kategori.lainnya') }}">
                       {{ $produk->kategori ? $produk->kategori->nama : 'Lainnya' }}
                     </a>
                   </span>
@@ -102,7 +103,12 @@
                   Etalase:
                   <span>
                     <a class="link-primary text-decoration-none fw-semibold"
-                      href="{{ $produk->etalase_id ? '#' : '#' }}">
+                      href="{{ $produk->etalase_id
+                          ? route('user.toko.index', [
+                              'toko' => $produk->toko_id,
+                              'etalase' => $produk->etalase_id,
+                          ])
+                          : route('user.toko.index', $produk->toko_id) }}">
                       {{ $produk->etalase ? $produk->etalase->nama : 'Semua' }}
                     </a>
                   </span>
@@ -120,8 +126,8 @@
               <div class="col-12 col-md-5 text-md-center flex-grow-1">
                 <div class="d-flex flex-row d-md-inline align-items-center" style="column-gap: 1rem">
                   @if ($produk->toko->foto)
-                    <img class="rounded-circle mb-md-2" src="/storage/{{ $produk->toko->foto }}" alt="{{ $produk->toko->nama }}"
-                      height="64" width="64">
+                    <img class="rounded-circle mb-md-2" src="/storage/{{ $produk->toko->foto }}"
+                      alt="{{ $produk->toko->nama }}" height="64" width="64">
                   @else
                     <div class="bg-white p-2 rounded-circle" style="width: 64; height: 64;">
                       <svg class="m-auto" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24"

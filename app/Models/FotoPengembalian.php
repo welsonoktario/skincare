@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FotoPengembalian extends Model
 {
     use HasFactory;
+    protected $guarded = ['id'];
 
     public function pengembalian()
     {

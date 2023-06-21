@@ -27,7 +27,7 @@
         <div class="card-footer text-end">
           @if (!$alamat->is_utama)
             <div class="d-inline-flex align-items-center" style="column-gap: 0.5rem">
-              <form action="{{ route('user.user.alamat.setUtama', $alamat->id) }}" method="post">
+              <form action="{{ route('user.alamat.setUtama', $alamat->id) }}" method="post">
                 @csrf
                 @method('PATCH')
                 <button class="btn btn-primary">Jadikan Utama</button>

@@ -22,7 +22,7 @@ class BarangController extends Controller
             }
         }
 
-        $rating = $ulasans->avg('rating');
+        $rating = round($ulasans->avg('rating'), 2);
         $produk->load([
             'toko',
             'etalase',

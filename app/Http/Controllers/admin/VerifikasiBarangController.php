@@ -49,7 +49,11 @@ class VerifikasiBarangController extends Controller
      */
     public function show($id)
     {
-        //
+        $barang = Barang::query()
+            ->with(['etalase', 'kandungans', 'kategori'])
+            ->find($id);
+
+        return view('admin.verifikasibarang.show', compact('barang'));
     }
 
     /**

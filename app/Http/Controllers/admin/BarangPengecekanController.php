@@ -7,6 +7,7 @@ use App\Models\BarangPengecekan;
 use App\Models\Kandungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class BarangPengecekanController extends Controller
 {
@@ -93,7 +94,7 @@ class BarangPengecekanController extends Controller
     public function update(Request $request, $id)
     {
         $storage = Storage::disk('public');
-        $barangPengecekan = BarangPengecekan::find($id);
+        $barangPengecekan = BarangPengecekan::query()->find($id);
 
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
@@ -104,16 +105,14 @@ class BarangPengecekanController extends Controller
 
             $path = $foto->store('img/barang-pengecekan', 'public');
 
-            $barangPengecekan->update([
-                'name' => $request->nama,
-                'foto' => $path,
-            ]);
+            $barangPengecekan->nama = $request->nama;
+            $barangPengecekan->foto = $path;
             $barangPengecekan->kandungans()->sync($request->kandungans);
+            $barangPengecekan->save();
         } else {
-            $barangPengecekan->update([
-                'name' => $request->nama,
-            ]);
+            $barangPengecekan->nama = $request->nama;
             $barangPengecekan->kandungans()->sync($request->kandungans);
+            $barangPengecekan->save();
         }
 
         return redirect()->back();

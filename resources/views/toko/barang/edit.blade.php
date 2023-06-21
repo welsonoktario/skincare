@@ -92,8 +92,8 @@
 
     <div class="mb-3">
       <label class="form-label" for="kategori">Kategori:</label>
-      <select name="kategori" class="form-select" id="kategori" required>
-        <option disabled selected>Pilih kategori barang</option>
+      <select id="kategori" class="form-select select2" name="kategori" data-placeholder="Pilih kategori" required>
+        <option selected></option>
         @foreach ($kategoris as $ak)
           <option value="{{ $ak->id }}" @if ($barang->kategori_id == $ak->id) selected @endif>
             {{ $ak->nama }}
