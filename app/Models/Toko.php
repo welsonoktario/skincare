@@ -45,4 +45,19 @@ class Toko extends Model
     {
         return $this->belongsToMany(Ekspedisi::class, 'ekspedisi_tokos', 'toko_id', 'ekspedisi_id');
     }
+
+    public function getRatingAttribute()
+    {
+        $rating = collect([]);
+
+        foreach ($this->transaksis as $transaksi) {
+            foreach ($transaksi->transaksiDetails as $td) {
+                $rating->add($td->ulasan->rating);
+            }
+        }
+
+        return count($rating)
+            ? floatval(round($rating->avg(), 2))
+            : 0;
+    }
 }

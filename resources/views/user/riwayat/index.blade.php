@@ -110,7 +110,7 @@
               </div>
             </div>
           </div>
-          @if ($transaksi->status == 'dikirim')
+          @if ($transaksi->status == 'dikirim' && !$transaksi->pengembalian)
             <div class="d-flex mt-3 justify-content-end">
               <button class="btn btn-aksi btn-secondary text-white" data-transaksi="{{ $transaksi->id }}"
                 data-aksi="pengembalian">
@@ -211,20 +211,16 @@
           aksi
         } = $(this).data();
 
-        if (aksi == 'ulasan') {
-          modalDetail.modal('show');
-          $('#modalDetailContent').html('');
-          $('#modalLoading').show();
+        modalDetail.modal('show');
+        $('#modalDetailContent').html('');
+        $('#modalLoading').show();
 
+        if (aksi == 'ulasan') {
           $.get(route('user.transaksi.ulasan', transaksi), function(res) {
             $('#modalLoading').hide();
             $('#modalDetailContent').html(res);
           });
         } else if (aksi == 'pengembalian') {
-          modalDetail.modal('show');
-          $('#modalDetailContent').html('');
-          $('#modalLoading').show();
-
           $.get(route('user.transaksi.pengembalian', transaksi), function(res) {
             $('#modalLoading').hide();
             $('#modalDetailContent').html(res);

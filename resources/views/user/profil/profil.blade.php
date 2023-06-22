@@ -29,13 +29,21 @@
             <hr class="form-divider">
             <div class="list-group">
               <a href="{{ route('user.profil.index') }}"
-                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.index' ? 'active' : '' }}">Akun</a>
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.index' ? 'active' : '' }}">
+                Akun
+              </a>
               <a href="{{ route('user.profil.alamat.index') }}"
-                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.alamat.index' ? 'active' : '' }}">Daftar
-                Alamat</a>
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.alamat.index' ? 'active' : '' }}">
+                Daftar Alamat
+              </a>
               <a href="{{ route('user.transaksi.index') }}"
-                class="list-group-item list-group-item-action {{ $currentRoute == 'user.transaksi.index' ? 'active' : '' }}">Daftar
-                Transaksi</a>
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.transaksi.index' ? 'active' : '' }}">
+                Daftar Transaksi
+              </a>
+              <a href="{{ route('user.profil.penarikan.index') }}"
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.penarikan.index' ? 'active' : '' }}">
+                Daftar Penarikan
+              </a>
             </div>
           </div>
         </div>

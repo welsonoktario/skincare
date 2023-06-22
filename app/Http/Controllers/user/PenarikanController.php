@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
-use App\Models\Toko;
-use App\Models\User;
+use App\Models\Rekening;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PenarikanController extends Controller
 {
@@ -15,18 +15,15 @@ class PenarikanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $jenis = $request->jenis;
-        $penarikans = Penarikan::query()
-            ->with(['rekening.user.toko', 'rekening.bank'])
-            ->where('status', 'pending')
-            ->when($request->jenis, function ($q) use ($jenis) {
-                return $q->where('asal_penarikan', $jenis);
-            })
+        $user = Auth::user();
+        $penarikans = $user->penarikans()
+            ->with(['rekening.bank'])
+            ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
             ->get();
 
-        return view('admin.penarikan.index', compact('penarikans', 'jenis'));
+        return view('user.penarikan.index', compact('user', 'penarikans'));
     }
 
     /**
@@ -36,7 +33,10 @@ class PenarikanController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+        $rekenings = $user->rekenings;
+
+        return view('user.penarikan.create', compact('user', 'rekenings'));
     }
 
     /**
@@ -47,7 +47,14 @@ class PenarikanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Penarikan::query()
+            ->create([
+                'rekening_id' => $request->rekening,
+                'nominal' => $request->nominal,
+                'asal_penarikan' => 'user'
+            ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -69,7 +76,17 @@ class PenarikanController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = Auth::user();
+        $rekenings = $user->rekenings;
+        $penarikan = Penarikan::query()
+            ->with('rekening.bank')
+            ->find($id);
+
+        if ($penarikan->status == 'pending') {
+            return view('user.penarikan.edit', compact('rekenings', 'penarikan'));
+        } else {
+            return 'diterima';
+        }
     }
 
     /**
@@ -81,25 +98,12 @@ class PenarikanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $jenis = $request->jenis;
-        $aksi = $request->aksi;
-        $status = ['diterima', 'ditolak'];
-        $penarikan = Penarikan::query()->find($id);
-
-        if (in_array($aksi, $status)) {
-            $penarikan->update(['status' => $aksi]);
-
-            if ($aksi == 'diterima') {
-                if ($jenis == 'user') {
-                    $user = User::query()->find($penarikan->rekening->user_id);
-
-                    $user->update(['saldo' => $user->saldo - $penarikan->nominal]);
-                } elseif ($jenis == 'toko') {
-                    $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
-                    $toko->update(['saldo' => $toko->saldo - $penarikan->nominal]);
-                }
-            }
-        }
+        Rekening::query()
+            ->find($id)
+            ->update([
+                'rekening_id' => $request->rekening,
+                'nominal' => $request->nominal,
+            ]);
 
         return redirect()->back();
     }
@@ -112,6 +116,8 @@ class PenarikanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Penarikan::query()->destroy($id);
+
+        return redirect()->back();
     }
 }

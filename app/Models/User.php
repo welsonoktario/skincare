@@ -63,7 +63,7 @@ class User extends Authenticatable
 
     public function penarikans()
     {
-        return $this->morphMany(Penarikan::class, 'penarikanable');
+        return $this->hasManyThrough(Penarikan::class, Rekening::class);
     }
 
     public function keranjangs()

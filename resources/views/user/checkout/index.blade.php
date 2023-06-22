@@ -79,7 +79,11 @@
                     x{{ $barang->pivot->jumlah }}
                   </td>
                   <td class="text-right fw-bold">
-                    @rupiah($barang->pivot->sub_total)
+                    @if ($barang->hargaDiskon)
+                      @rupiah($barang->hargaDiskon * $barang->pivot->jumlah)
+                    @else
+                      @rupiah($barang->subtotal)
+                    @endif
                   </td>
                 </tr>
               @endforeach
@@ -229,9 +233,14 @@
 @push('scripts')
   <script>
     $(function() {
-      let selectedAlamat = @json($alamat).find((alamat) => alamat.is_utama == true);
-      let loading = $('.modal-loading');
-      let grandTotal = @json($total);
+      var alamats = @json($alamat);
+      if (alamats.length == 1) {
+        var selectedAlamat = alamats[0];
+      } else {
+        var selectedAlamat = alamats.find((alamat) => alamat.is_utama == true);
+      }
+      var loading = $('.modal-loading');
+      var grandTotal = @json($total);
 
       // pas modal dibuka, load alamat2 user yg lagi login
       $('#modalAlamats').on('show.bs.modal', function(e) {
@@ -242,7 +251,7 @@
 
       // ganti alamat pilihan, trus tutup modal
       $('#modalAlamats').on('click', '.card-alamat', function() {
-        let alamat = $(this).data('alamat');
+        var alamat = $(this).data('alamat');
         selectedAlamat = alamat;
         $('#modalAlamats').modal('hide');
       });
@@ -255,9 +264,9 @@
       $('.select-ekspedisi').change(function() {
         $('.btn-pembayaran').prop('disabled', true);
         var idEks = $(this).data('id')
-        let kurir = $(`.select-ekspedisi[data-id="${idEks}"] option:selected`).text();
+        var kurir = $(`.select-ekspedisi[data-id="${idEks}"] option:selected`).text();
 
-        let {
+        var {
           id,
           origin
         } = $(this).data();
@@ -267,9 +276,9 @@
 
       $('.select-jenis').change(function() {
         $('.btn-pembayaran').prop('disabled', false);
-        let id = $(this).data('id');
-        let totalToko = Number($(`.total[data-id="${id}"]`).data('total'));
-        let ongkir = Number($(this).val());
+        var id = $(this).data('id');
+        var totalToko = Number($(`.total[data-id="${id}"]`).data('total'));
+        var ongkir = Number($(this).val());
         var totalTokoOngkir = totalToko + ongkir;
         grandTotal = hitungGrandTotal();
 
@@ -288,7 +297,7 @@
 
       $('#formCheckout').submit(function(e) {
         e.preventDefault();
-        let metodePembayaran = $('input[type="radio"][name="pembayaran"]:checked').val();
+        var metodePembayaran = $('input[type="radio"][name="pembayaran"]:checked').val();
         $('input[name="metode"]').val(metodePembayaran);
 
         $(this).unbind('submit').submit();
@@ -353,18 +362,18 @@
       }
 
       function hitungGrandTotal() {
-        let totalOngkir = 0;
-        let grandTotal = 0;
-        let ongkirPerToko = $('.select-jenis').each(function(i, el) {
-          let ongkir = $(el).val();
+        var totalOngkir = 0;
+        var grandTotal = 0;
+        var ongkirPerToko = $('.select-jenis').each(function(i, el) {
+          var ongkir = $(el).val();
 
           if (!isNaN(ongkir)) {
             totalOngkir += Number(ongkir);
           }
         });
 
-        let totalPerToko = $('.total').each(function(i, el) {
-          let total = Number($(el).data('total'));
+        var totalPerToko = $('.total').each(function(i, el) {
+          var total = Number($(el).data('total'));
 
           grandTotal += total;
         });
@@ -406,16 +415,16 @@
           .then(res => res.json())
           .then(data => {
             console.log(data)
-            let ro = data.rajaongkir
-            let results = ro.results[0]
-            let jenis = results.costs
+            var ro = data.rajaongkir
+            var results = ro.results[0]
+            var jenis = results.costs
 
             updateJenisPengiriman(id, jenis)
           });
       }
 
       function updateJenisPengiriman(id, jenis) {
-        let selectJenis = $(`.select-jenis[data-id=${id}]`);
+        var selectJenis = $(`.select-jenis[data-id=${id}]`);
 
         selectJenis.html('');
         selectJenis.html('<option value="0" disabled selected>Pilih jenis pengiriman</option>');

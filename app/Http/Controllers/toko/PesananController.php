@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pengembalian;
 use App\Models\Transaksi;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,11 +18,19 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
+        $tipe = $request->tipe ?: 'semua';
         $toko = Auth::user()->toko;
 
         $pesanans = $toko->transaksis()
-            ->with(['user', 'transaksiDetails'])
-            ->when($request->tipe, fn ($q) => $q->where('status', $request->tipe))
+            ->with([
+                'toko',
+                'transaksiDetails.barang',
+                'transaksiDetails.ulasan',
+                'pengembalian'
+            ])
+            ->when(($tipe != 'semua' && $tipe != 'dikembalikan'), fn (Builder $q) => $q->where('status', $tipe))
+            ->when(($tipe == 'dikembalikan'), fn (Builder $q) => $q->has('pengembalian'))
+            ->orderBy('created_at', 'DESC')
             ->get();
 
         return view('toko.pesanan.index', compact('pesanans'));
@@ -82,11 +92,38 @@ class PesananController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $pesananmasuk = Transaksi::find($id);
-        $status = ['diproses', 'dikirim'];
+        $transaksi = Transaksi::query()
+            ->with('pengembalian')
+            ->find($id);
 
-        if (in_array($request->aksi, $status)) {
-            $pesananmasuk->update(['status' => $request->aksi]);
+        if ($request->has('pengembalian') || $request->aksi == 'pengembalian') {
+            if ($request->aksi == 'pengembalian') {
+                $aksiPengembalian = $request->aksiPengembalian;
+
+                $transaksi->pengembalian()
+                    ->update([
+                        'status' => $aksiPengembalian
+                    ]);
+
+                if ($aksiPengembalian == 'selesai') {
+                    $transaksi->user()
+                        ->update([
+                            'saldo' => $transaksi->user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                        ]);
+                }
+            } else {
+                $aksi = $request->aksi;
+
+                $transaksi->pengembalian()
+                    ->update([
+                        'status' => $aksi
+                    ]);
+            }
+        } else {
+            $status = ['diproses', 'dikirim'];
+            if (in_array($request->aksi, $status)) {
+                $transaksi->update(['status' => $request->aksi]);
+            }
         }
 
         return redirect()->back();
@@ -101,5 +138,14 @@ class PesananController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function pengembalian($id)
+    {
+        $pengembalian = Pengembalian::query()
+            ->with(['transaksi.transaksiDetails.barang'])
+            ->firstWhere('transaksi_id', $id);
+
+        return view('toko.pesanan.pengembalian', compact('pengembalian'));
     }
 }

@@ -101,6 +101,10 @@ class TransaksiController extends Controller
             $fotos = $request->file('fotos');
             $fotoPengembalians = [];
 
+            $transaksi->update([
+                'status' => 'selesai'
+            ]);
+
             $pengembalian = $transaksi->pengembalian()->create([
                 'alasan' => $request->alasan,
             ]);

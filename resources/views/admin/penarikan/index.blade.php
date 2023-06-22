@@ -1,5 +1,16 @@
 @extends('layouts.admin')
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+@endpush
 @section('content')
+  <form id="formPenarikan" class="d-none" method="POST">
+    @csrf
+    @method('PUT')
+
+    <input type="text" name="aksi" id="aksi" class="d-none">
+    <input type="text" name="jenis" value="{{ $jenis }}" class="d-none">
+  </form>
+
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
       <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
@@ -9,7 +20,7 @@
     <div class="card shadow mb-3">
       <div class="card-body">
         <div class="table-responsive">
-          <table id="tableVerifikasiBarang" class="table table-striped">
+          <table id="tablePenarikan" class="table table-striped">
             <thead>
               <tr>
                 <th>No.</th>
@@ -31,7 +42,7 @@
                   $toko = $user->toko;
                 @endphp
 
-                <tr class="listVerifikasiBarang">
+                <tr class="listPenarikan">
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ \Carbon\Carbon::parse($p->created_at)->format('d M Y H:i:s') }}</td>
                   <td>@rupiah($p->nominal)</td>
@@ -54,3 +65,59 @@
     </div>
   </div>
 @endsection
+
+@push('scripts')
+  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+  <script>
+    $(function() {
+      $('#tablePenarikan .listPenarikan .btn-aksi').click(function() {
+        var {
+          id,
+          aksi
+        } = $(this).data();
+
+        $('#aksi').val(aksi);
+        $('#formPenarikan').prop('action', route('admin.penarikan.update', id));
+        $('#formPenarikan').submit();
+      })
+
+      $('#tablePenarikan').DataTable({
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
+        },
+        columns: [{
+            name: 'No.',
+            orderable: true
+          },
+          {
+            name: 'Tanggal',
+            orderable: true
+          },
+          {
+            name: 'Nominal',
+            orderable: true
+          },
+          {
+            name: 'Nama {{ $jenis }}',
+            orderable: true
+          },
+          {
+            name: 'Bank',
+            orderable: true
+          },
+          {
+            name: 'Rekening',
+            orderable: true
+          },
+          {
+            name: 'Nama Penerima',
+            orderable: true
+          },
+          {
+            orderable: false
+          }
+        ]
+      });
+    });
+  </script>
+@endpush

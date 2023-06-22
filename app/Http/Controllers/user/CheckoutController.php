@@ -38,7 +38,9 @@ class CheckoutController extends Controller
             return [
                 'barangs' => $keranjang,
                 'total' => collect($keranjang)->sum(function ($barang) {
-                    return $barang->pivot->sub_total;
+                    return $barang->hargaDiskon
+                        ? $barang->hargaDiskon * $barang->pivot->jumlah
+                        : $barang->pivot->sub_total;
                 })
             ];
         });
@@ -191,9 +193,9 @@ class CheckoutController extends Controller
             DB::commit();
 
             if ($transaksi->status == 'menunggu pembayaran') {
-                return Redirect::route('user.transaksi.index', ['tipe' => 'pembayaran']);
+                return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu pembayaran']);
             } elseif ($transaksi->status == 'menunggu konfirmasi') {
-                return Redirect::route('user.transaksi.index', ['tipe' => 'konfirmasi']);
+                return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu konfirmasi']);
             } else {
                 return Redirect::route('user.transaksi.index');
             }

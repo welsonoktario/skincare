@@ -1,9 +1,3 @@
-{{--
-  TODO:
-
-  1. Link etalase
-  2. Link toko
- --}}
 @extends('layouts.app')
 @section('title', "{$produk->nama} • Skincare")
 @section('content')
@@ -21,13 +15,13 @@
     </ol>
   </nav>
 
-  @if (Session::has('success'))
+  @if (session()->has('success'))
     <div id="alertContainer">
       <div class="alert alert-primary alert-has-icon alert-dismissible show fade">
         <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
         <div class="alert-body">
           <div class="alert-title">Sukses</div>
-          <span>{{ Session::get('success') }}.</span>
+          <span>{{ session()->get('success') }}.</span>
           <a href="{{ route('user.keranjang.index') }}" class="alert-link">Lihat keranjang</a>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -42,19 +36,19 @@
         <div class="sticky-wrapper">
           <div class="w-100 overflow-hidden">
             <img id="fotoProduk" src="{{ $produk->placeholder }}" alt="{{ $produk->nama }}"
-              class="d-block w-100 rounded" />
+              class="d-block w-100 rounded object-fit-contain" style="aspect-ratio: 1 / 1;" />
           </div>
           <div class="d-flex flex-row overflow-auto mt-2">
             @foreach ($produk->fotos as $foto)
               @if ($loop->iteration === 1)
                 <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
-                  class="w-25 me-2 rounded thumbnail" />
+                  class="w-25 me-2 rounded thumbnail object-fit-contain" style="aspect-ratio: 1 / 1;" />
               @elseif($loop->iteration === count($produk->fotos))
                 <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
-                  class="w-25 ms-2 rounded thumbnail" />
+                  class="w-25 ms-2 rounded thumbnail object-fit-contain" style="aspect-ratio: 1 / 1;" />
               @else
                 <img src="{{ "/storage/{$foto->path}" }}" alt="{{ "{$produk->nama} {$foto->id}" }}" role="button"
-                  class="w-25 mx-2 rounded thumbnail" />
+                  class="w-25 mx-2 rounded thumbnail object-fit-contain" style="aspect-ratio: 1 / 1;" />
               @endif
             @endforeach
           </div>
@@ -82,6 +76,20 @@
                 @rupiah($produk->harga)
               @endif
             </div>
+            <p>
+              @if ($produk->rating)
+                @for ($i = 1; $i <= floor($produk->rating); $i++)
+                  <i class="fas fa-star text-primary"></i>
+                @endfor
+                <span class="ms-2">
+                  {{ $produk->rating }}
+                </span>
+              @else
+                <span class="text-black-50">
+                  Belum ada rating produk
+                </span>
+              @endif
+            </p>
 
             <hr>
 
@@ -152,10 +160,21 @@
                       href="{{ route('user.toko.index', $produk->toko_id) }}">
                       {{ $produk->toko->nama }}
                     </a>
-                    <p class="mb-0">
-                      <i class="fas fa-star fa-xs text-warning"></i>
-                      {{ $rating ?: 'Belum ada rating' }}
-                    </p>
+                    <div
+                      class="mt-1 d-inline-flex align-items-center justify-content-evenly bg-body-secondary w-100 p-2 rounded">
+                      <span class="d-inline-flex align-items-center fw-medium" style="column-gap: 0.5rem">
+                        <i class="fas fa-star text-warning" style="font-size: 1.25rem;"></i>
+                        {{ $produk->toko->rating ?: 'Belum ada rating' }}
+                      </span>
+
+                      <span class="fw-medium link-primary">
+                        <a href="{{ "https://wa.me/${noHp}" }}" target="_SEJ" rel=”noreferrer”
+                          class="d-inline-flex align-items-center" style="column-gap: 0.5rem; text-decoration: none;">
+                          <i class="fab fa-whatsapp" style="font-size: 1.25rem; color: #25d366;"></i>
+                          Hubungi
+                        </a>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

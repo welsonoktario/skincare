@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
 use App\Http\Controllers\Toko\EkspedisiController;
+use App\Http\Controllers\User\PenarikanController;
 use App\Models\Kategori;
 
 /*
@@ -79,7 +80,7 @@ Route::group(['as' => 'user.'], function () {
             Route::get('{transaksi}/pengembalian', [TransaksiController::class, 'pengembalian'])->name('pengembalian');
         });
 
-        Route::prefix('profil')->group(function () {
+        Route::group(['prefix' => 'profil', 'as' => 'profil.'], function () {
             // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat
             // Route::get('/alamat/{id}', [AlamatController::class, 'show']) => skincare.com/alamat/{alamat}
             // Route::get('/alamat/{id}/create', [AlamatController::class, 'create']) => skincare.com/alamat/{alamat}/create
@@ -87,7 +88,8 @@ Route::group(['as' => 'user.'], function () {
             // Route::put('/alamat/{id}', [AlamatController::class, 'update']) => skincare.com/alamat/{id}
             // Route::post('/alamat', [AlamatController::class, 'store']) => skincare.com/alamat
             // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
-            Route::resource('alamat', AlamatController::class, ['as' => 'profil']);
+            Route::resource('alamat', AlamatController::class);
+            Route::resource('penarikan', PenarikanController::class);
         });
 
         Route::group(['prefix' => 'topup'], function () {
@@ -106,6 +108,8 @@ Route::group(['as' => 'user.'], function () {
 });
 
 Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], function () {
+    Route::get('pesanan/{pesanan}/pengembalian', [TokoPesananController::class, 'pengembalian'])->name('pesanan.pengembalian');
+
     Route::middleware(['hasToko'])->group(function () {
         Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
         Route::get('ekspedisi', [EkspedisiController::class, 'index'])->name('ekspedisi.index');

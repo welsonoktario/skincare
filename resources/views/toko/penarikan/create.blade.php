@@ -1,5 +1,3 @@
-{{-- @extends('layouts.admin')
-@section('content') --}}
 <form action="{{ route('toko.penarikan.store') }}" method="POST" enctype="multipart/form-data">
   <div class="modal-header">
     <h5 class="modal-title">Tambah Nominal</h5>

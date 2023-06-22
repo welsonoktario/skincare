@@ -13,16 +13,6 @@ class BarangController extends Controller
 {
     public function show(Barang $produk)
     {
-        $toko = Toko::find($produk->toko_id);
-        $ulasans = collect([]);
-
-        foreach ($toko->transaksis as $transaksi) {
-            foreach ($transaksi->transaksiDetails as $td) {
-                $ulasans->add($td->ulasan);
-            }
-        }
-
-        $rating = round($ulasans->avg('rating'), 2);
         $produk->load([
             'toko',
             'etalase',
@@ -36,7 +26,10 @@ class BarangController extends Controller
                 ]);
             }
         ]);
+        $noHp = str_starts_with($produk->toko->no_telepon, '+')
+            ? str_replace('+', '', $produk->toko->no_telepon)
+            : '62' . substr($produk->toko->no_telepon, 1);
 
-        return view('user.produk.show', compact('produk', 'rating'));
+        return view('user.produk.show', compact('produk', 'noHp'));
     }
 }

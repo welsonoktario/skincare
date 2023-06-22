@@ -11,7 +11,8 @@ class Barang extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
     use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
     protected $appends = ['placeholder', 'hargaDiskon'];
@@ -79,5 +80,18 @@ class Barang extends Model
         if ($jenisDiskon == 'nominal') {
             return $this->harga - $nominalDiskon;
         }
+    }
+
+    public function getRatingAttribute()
+    {
+        $rating = collect([]);
+
+        foreach ($this->transaksiDetails as $td) {
+            $rating->add($td->ulasan->rating);
+        }
+
+        return count($rating)
+            ? floatval(round($rating->avg(), 2))
+            : 0;
     }
 }
