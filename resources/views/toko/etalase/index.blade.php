@@ -14,7 +14,7 @@
           <table id="tableEtalase" class="table table-striped">
             <thead>
               <tr>
-                <th>Id</th>
+                <th>No.</th>
                 <th>Nama Etalase</th>
                 <th></th>
               </tr>
@@ -22,12 +22,12 @@
             <tbody>
               @foreach ($etalases as $e)
                 <tr class="listEtalase">
-                  <th>{{ $e->id }}</th>
+                  <th>{{ $loop->iteration }}</th>
                   <td>{{ $e->nama }}</td>
-                  <td>
+                  <td class="d-inline-flex justify-content-center align-items-center w-100">
                     <button id="btnEditEtalase" data-id="{{ $e->id }}"
                       class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
-                    <button class="btnDetailEtalase btn btn-sm btn-primary text-white"
+                    <button class="btnDetailEtalase mx-2 btn btn-sm btn-primary text-white"
                       data-id="{{ $e->id }}">Detail</button>
                     <form action="{{ route('toko.etalase.destroy', $e->id) }}" method="POST"
                       class="w-auto d-inline-block">
@@ -106,7 +106,7 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
-            name: 'Id',
+            name: 'No.',
             orderable: true
           },
           {

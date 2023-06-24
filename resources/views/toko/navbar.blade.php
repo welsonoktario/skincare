@@ -6,11 +6,14 @@
 <nav class="navbar navbar-expand-lg main-navbar">
   <form class="form-inline me-auto">
     <div class="navbar-nav me-3">
-      <li><a href="#" data-bs-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+      <li>
+        <a href="#" data-bs-toggle="sidebar" class="nav-link nav-link-lg">
+          <i class="fas fa-bars"></i>
+        </a>
+      </li>
     </div>
   </form>
   <ul class="navbar-nav navbar-right">
-    </li>
     <li class="dropdown">
       <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
         <div class="d-sm-none d-lg-inline-block text-center">
@@ -20,11 +23,6 @@
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-end">
-        @if (auth()->user()->toko && auth()->user()->toko->status == 'diterima')
-          <a href="{{ route('toko.profil.index') }}" class="dropdown-item has-icon">
-            <i class="far fa-user"></i> Profil Toko
-          </a>
-        @endif
         <a href="{{ route('user.home') }}" class="dropdown-item has-icon">
           <i class="fas fa-home"></i> Kembali
         </a>

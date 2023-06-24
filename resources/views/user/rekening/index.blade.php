@@ -5,11 +5,11 @@
 @endpush
 @section('profil-content')
   <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h6 class="mt-2 mx-0 mb-0 text-dark">
         Daftar Rekening
-      </h1>
-      <button id="btnTambahRekening" class="d-sm-block btn btn-sm btn-primary shadow-sm">
+      </h6>
+      <button id="btnTambahRekening" class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>
         <span class="ms-1 text-white">Tambah Rekening</span>
       </button>
@@ -105,7 +105,7 @@
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
-        $.get(route('toko.rekening.edit', id), function(res) {
+        $.get(route('user.profil.rekening.edit', id), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
           $('#bank').select2({
@@ -120,7 +120,7 @@
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
-        $.get(rout('toko.rekening.edit', id), function(res) {
+        $.get(route('user.profil.rekening.edit', id), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
         });

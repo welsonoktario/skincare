@@ -22,6 +22,7 @@
           <table id="tableBarang" class="table table-striped">
             <thead>
               <tr>
+                <th>No.</th>
                 <th>Nama Barang</th>
                 <th>Harga</th>
                 <th>Stok</th>
@@ -35,6 +36,7 @@
             <tbody>
               @foreach ($barangs as $b)
                 <tr class="listBarang">
+                  <td>{{ $loop->iteration }}</td>
                   <td> {{ $b->nama }}</td>
                   <td> {{ $b->harga }}</td>
                   <td> {{ $b->stok }}</td>
@@ -47,12 +49,12 @@
                 @else
                   Tidak Masuk Etalase
               @endif
-              <td>{{ $b->status }}</td>
+              <td class="text-capitalize">{{ $b->status }}</td>
 
-              <td>
+              <td class="d-inline-flex justify-content-center align-items-center w-100">
                 <button id="btnEditBarang" data-id="{{ $b->id }}"
                   class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
-                <form action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
+                <form class="ms-1" action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
                   @csrf
                   @method('DELETE')
                   <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
@@ -67,8 +69,7 @@
       </div>
     </div>
   </div>
-  </div>
-  </div>
+
   <div id="modalBarang" class="modal fade" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable">
       {{-- Loading --}}
@@ -242,6 +243,10 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
+            name: 'No.',
+            orderable: true
+          },
+          {
             name: 'Nama Barang',
             orderable: true
           },

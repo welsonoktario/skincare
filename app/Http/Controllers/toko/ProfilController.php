@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kota;
+use App\Models\Provinsi;
 use App\Models\Toko;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfilController extends Controller
 {
@@ -16,8 +19,9 @@ class ProfilController extends Controller
      */
     public function index()
     {
-        $tokos = Toko::firstWhere('id', Auth::user()->toko->id);
-        return view('toko.profil.index',compact('tokos'));
+        $toko = Toko::firstWhere('id', Auth::user()->toko->id);
+
+        return view('toko.profil.index', compact('toko'));
     }
 
 
@@ -61,7 +65,13 @@ class ProfilController extends Controller
      */
     public function edit($id)
     {
-        //
+        $toko = Toko::query()
+            ->with('kota.provinsi')
+            ->find($id);
+        $provinsis = Provinsi::all();
+        $kotas = Kota::where('provinsi_id', $toko->kota->provinsi_id)->get();
+
+        return view('toko.profil.edit', compact('toko', 'kotas', 'provinsis'));
     }
 
     /**
@@ -73,7 +83,26 @@ class ProfilController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $toko = Toko::query()->find($id);
+        $toko->update([
+            'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+            'kota_id' => $request->kota,
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $storage = Storage::disk('public');
+
+            if ($storage->exists($toko->foto)) {
+                $storage->delete(($toko->foto));
+            }
+
+            $path = $foto->store('img/toko', 'public');
+            $toko->update(['foto' => $path]);
+        }
+
+        return redirect()->back();
     }
 
     /**

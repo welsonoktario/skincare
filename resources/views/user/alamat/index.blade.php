@@ -3,7 +3,7 @@
 @section('profil-content')
   <div class="d-flex flex-row justify-content-between align-items-center">
     <h6 class="m-0 text-dark">Daftar Alamat</h6>
-    <button class="btn btn-modal btn-primary float-end" data-action="add">
+    <button class="btn btn-sm btn-modal btn-primary float-end" data-action="add">
       Tambah Alamat
     </button>
   </div>

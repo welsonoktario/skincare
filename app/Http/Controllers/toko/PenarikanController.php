@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
-use App\Models\Rekening;
-use App\Models\Toko;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,6 +22,7 @@ class PenarikanController extends Controller
             ->with(['rekening.bank'])
             ->where('asal_penarikan', 'toko')
             ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('toko.penarikan.index', compact('user', 'toko', 'penarikans'));

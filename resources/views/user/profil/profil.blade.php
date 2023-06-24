@@ -19,7 +19,8 @@
               <p class="mb-0">Saldo</p>
               <div class="d-inline-flex" style="column-gap: 0.8rem">
                 <p class="mb-0">@rupiah($profil->saldo)</p>
-                <a href="{{ route('user.profil.topup.index') }}" class="btn btn-sm btn-outline-primary" role="button">Topup</a>
+                <a href="{{ route('user.profil.topup.index') }}" class="btn btn-sm btn-outline-primary"
+                  role="button">Topup</a>
               </div>
             </div>
           </div>
@@ -30,27 +31,45 @@
             <div class="list-group">
               <a href="{{ route('user.profil.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.index' ? 'active' : '' }}">
-                Akun
+                <i class="fas fa-user"></i>
+                <span class="ms-2">
+                  Akun
+                </span>
               </a>
               <a href="{{ route('user.profil.alamat.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.alamat.index' ? 'active' : '' }}">
-                Daftar Alamat
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="ms-2">
+                  Daftar Alamat
+                </span>
               </a>
               <a href="{{ route('user.transaksi.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.transaksi.index' ? 'active' : '' }}">
-                Daftar Transaksi
+                <i class="fas fa-clipboard-list"></i>
+                <span class="ms-2">
+                  Daftar Transaksi
+                </span>
               </a>
               <a href="{{ route('user.profil.topup.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.topup.index' ? 'active' : '' }}">
-                Daftar Topup
+                <i class="fas fa-search-dollar"></i>
+                <span class="ms-2">
+                  Daftar Topup
+                </span>
               </a>
               <a href="{{ route('user.profil.rekening.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.rekening.index' ? 'active' : '' }}">
-                Daftar Rekening
+                <i class="fas fa-credit-card"></i>
+                <span class="ms-2">
+                  Daftar Rekening
+                </span>
               </a>
               <a href="{{ route('user.profil.penarikan.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.penarikan.index' ? 'active' : '' }}">
-                Daftar Penarikan
+                <i class="fas fa-hand-holding-usd"></i>
+                <span class="ms-2">
+                  Daftar Penarikan
+                </span>
               </a>
             </div>
           </div>

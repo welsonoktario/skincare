@@ -74,12 +74,17 @@ class TransaksiController extends Controller
     public function update(Request $request, $id)
     {
         $transaksi = Transaksi::query()
-            ->with('transaksiDetails')
+            ->with(['transaksiDetails', 'toko'])
             ->find($id);
         $status = ['selesai', 'dikembalikan'];
 
         if (in_array($request->aksi, $status)) {
-            $transaksi->update(['status' => $request->aksi]);
+            if ($request->aksi == 'selesai') {
+                $transaksi->update(['status' => $request->aksi]);
+                $transaksi->toko()->update([
+                    'saldo' => $transaksi->toko->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                ]);
+            }
         }
 
         if ($request->has('ulasan')) {

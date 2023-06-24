@@ -6,9 +6,9 @@
 @section('profil-content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h3 class="mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
+      <h6 class="mt-2 mx-0 mb-0 text-dark">
         Daftar Penarikan
-      </h3>
+      </h6>
       <button id="btnTambahPenarikan" class="d-sm-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>
         <span class="ms-1 text-white">Tambah Penarikan</span>
@@ -80,7 +80,7 @@
   <script>
     $(document).ready(function() {
       $(document).on('change', '#nominal', function() {
-        var saldo = @json($toko->saldo);
+        var saldo = @json($user->saldo);
         var nominal = $(this).val();
         var msg = $('#nominalMsg');
 

@@ -1,5 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title">Tambah Penarikan</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
 <form id="formPenarikan" class="modal-body needs-validation" action="{{ route('user.profil.penarikan.store') }}" method="POST" novalidate>
@@ -17,8 +18,8 @@
 
   <div>
     <label class="form-label" for="nominal">Nominal</label>
-    <input type="number" class="form-control" id="nominal" placeholder="Nominal (maks: @rupiah($toko->saldo))"
-      name="nominal" max="{{ $toko->saldo }}" min="1" required>
+    <input type="number" class="form-control" id="nominal" placeholder="Nominal (maks: @rupiah($user->saldo))"
+      name="nominal" max="{{ $user->saldo }}" min="1" required>
     <div id="nominalMsg" class="invalid-feedback">
       Nominal tidak boleh melebihi saldo
     </div>

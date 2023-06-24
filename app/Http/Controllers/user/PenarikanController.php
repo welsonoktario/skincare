@@ -21,6 +21,7 @@ class PenarikanController extends Controller
         $penarikans = $user->penarikans()
             ->with(['rekening.bank'])
             ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('user.penarikan.index', compact('user', 'penarikans'));

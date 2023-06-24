@@ -3,15 +3,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
 @endpush
 @section('profil-content')
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item">Daftar Topup</li>
-    </ol>
-  </nav>
-
-  <div class="d-flex my-4 w-100 justify-content-between align-items-center">
-    <h4>Daftar Topup</h4>
+  <div class="d-flex mb-4 w-100 justify-content-between align-items-center">
+    <h6 class="mt-2 mx-0 mb-0 text-dark">Daftar Topup</h6>
 
     <button id="btnTambahTopUp" class="btn btn-sm btn-primary">
       Tambah Saldo

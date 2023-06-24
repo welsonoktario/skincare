@@ -44,7 +44,7 @@ class KategoriController extends Controller
             'public'
         );
 
-        $kategori = Kategori::create([
+        Kategori::create([
             'nama' => $request->nama,
             'icon' => $path,
         ]);

@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBara
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
+use App\Http\Controllers\Toko\ProfilController as TokoProfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,20 +75,14 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::patch('alamat/{alamat}/set-utama', [AlamatController::class, 'setUtama'])->name('alamat.setUtama');
+        Route::get('{profil}/password', [ProfilController::class, 'password'])->name('profil.password');
 
-        Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function() {
+        Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function () {
             Route::get('{transaksi}/ulas', [TransaksiController::class, 'ulasan'])->name('ulasan');
             Route::get('{transaksi}/pengembalian', [TransaksiController::class, 'pengembalian'])->name('pengembalian');
         });
 
         Route::group(['prefix' => 'profil', 'as' => 'profil.'], function () {
-            // Route::get('/alamat', [AlamatController::class, 'index']) => skincare.com/profil/alamat
-            // Route::get('/alamat/{id}', [AlamatController::class, 'show']) => skincare.com/alamat/{alamat}
-            // Route::get('/alamat/{id}/create', [AlamatController::class, 'create']) => skincare.com/alamat/{alamat}/create
-            // Route::get('/alamat/{id}/edit', [AlamatController::class, 'edit']) => skincare.com/alamat/{alamat}/edit
-            // Route::put('/alamat/{id}', [AlamatController::class, 'update']) => skincare.com/alamat/{id}
-            // Route::post('/alamat', [AlamatController::class, 'store']) => skincare.com/alamat
-            // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
             Route::resource('alamat', AlamatController::class);
             Route::resource('topup', TopupController::class);
             Route::resource('rekening', RekeningController::class);
