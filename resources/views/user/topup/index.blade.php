@@ -1,5 +1,8 @@
-@extends('layouts.app')
-@section('content')
+@extends('user.profil.profil')
+@push('styles')
+  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+@endpush
+@section('profil-content')
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -7,7 +10,7 @@
     </ol>
   </nav>
 
-  <div class="d-flex w-100 justify-content-between align-items-center">
+  <div class="d-flex my-4 w-100 justify-content-between align-items-center">
     <h4>Daftar Topup</h4>
 
     <button id="btnTambahTopUp" class="btn btn-sm btn-primary">
@@ -15,41 +18,36 @@
     </button>
   </div>
 
-  <div class="mt-4">
-    <div class="card shadow mb-3">
-      <div class="card-body">
-        <div class="table-responsive">
-          <table id="tableTopup" class="table table-striped">
-            <thead>
-              <tr>
-                <th>ID Topup</th>
-                <th>Tanggal</th>
-                <th>Nominal</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($topups as $u)
-                <tr class="listTopup">
-                  <td>{{ $u->id }}</td>
-                  <td>{{ $u->created_at }}</td>
-                  <td>@rupiah($u->nominal)</td>
-                  <td class="text-capitalize">
-                    {{ $u->dibayar ? 'Selesai' : 'Menunggu Pembayaran' }}
-                    @if (!$u->dibayar)
-                      <p data-id="{{ $u->id }}" class="btnBayar link-primary mb-0 ml-1" style="cursor: pointer">
-                        Bayar
-                      </p>
-                    @endif
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div class="table-responsive">
+    <table id="tableTopup" class="table table-striped">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Tanggal</th>
+          <th>Nominal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($topups as $u)
+          <tr class="listTopup">
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $u->created_at }}</td>
+            <td>@rupiah($u->nominal)</td>
+            <td class="text-capitalize">
+              {{ $u->dibayar ? 'Selesai' : 'Menunggu Pembayaran' }}
+              @if (!$u->dibayar)
+                <p data-id="{{ $u->id }}" class="btnBayar link-primary mb-0 ml-1" style="cursor: pointer">
+                  Bayar
+                </p>
+              @endif
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
   </div>
+
   <div id="modalTopup" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -71,7 +69,9 @@
     </div>
   </div>
 @endsection
+
 @push('scripts')
+  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
   <script>
     $(document).ready(function() {
       $(document).on('click', '.btn-nominal', function() {
@@ -164,10 +164,10 @@
 
       $('#tableTopup').DataTable({
         language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
+          url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
-            name: 'ID',
+            name: 'No.',
             orderable: true
           },
           {

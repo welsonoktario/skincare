@@ -123,3 +123,7 @@
 .rating:hover > input:checked ~ label:before {
     opacity: 0.4;
 }
+
+.page-item .page-link {
+    color: var(--bs-pagination-active-color);
+}

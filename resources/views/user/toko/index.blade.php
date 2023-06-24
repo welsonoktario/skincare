@@ -3,7 +3,7 @@
 @endphp
 
 @extends('layouts.app')
-@section('title', 'Toko • Skincare')
+@section('title', 'Toko • Skincareku')
 @section('content')
   <div class="grid mt-md-0" style="margin-top: 22%">
     <div class="row row-cols-1 row-cols-lg-2">

@@ -4,7 +4,7 @@
 @endphp
 
 @extends('user.profil.profil')
-@section('title', 'Daftar Transaksi • Skincare')
+@section('title', 'Daftar Transaksi • Skincareku')
 
 @push('styles')
   <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">

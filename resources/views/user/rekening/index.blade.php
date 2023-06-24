@@ -1,12 +1,9 @@
-@extends('layouts.toko')
-@section('title', 'Daftar Rekening • Skincareku Seller')
+@extends('user.profil.profil')
+@section('title', 'Rekening • Skincareku')
 @push('styles')
-  <link rel="stylesheet" href="https://www.unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
-  <link rel="stylesheet" href="https://www.unpkg.com/select2/dist/css/select2.min.css">
-  <link rel="stylesheet" href="https://www.unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+  <link rel="stylesheet" href="https://www.unpkg.com/datatables.net-bs5@1.13.4/css/dataTables.bootstrap5.min.css">
 @endpush
-
-@section('content')
+@section('profil-content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
       <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
@@ -18,52 +15,46 @@
       </button>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <table id="tableRekening" class="table table-striped">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Bank</th>
-              <th>No. Rekening</th>
-              <th>Nama Penerima</th>
-              <th></th>
+    <table id="tableRekening" class="table table-striped">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Bank</th>
+          <th>No. Rekening</th>
+          <th>Nama Penerima</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (count($rekenings))
+          @foreach ($rekenings as $r)
+            <tr class="listRekening">
+              <td>{{ $loop->iteration }}</td>
+              <td> {{ $r->bank->nama }}</td>
+              <td> {{ $r->nomor_rekening }}</td>
+              <td> {{ $r->nama_penerima }}</td>
+              <td>
+                <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white" data-id="{{ $r->id }}">
+                  Edit
+                </button>
+                <form action="{{ route('toko.etalase.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
+                  @csrf
+                  @method('DELETE')
+                  <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
+                    onclick="if(!confirm('Apakah anda yakin?')) return false"; />
+                </form>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            @if (count($rekenings))
-              @foreach ($rekenings as $r)
-                <tr class="listRekening">
-                  <td>{{ $loop->iteration }}</td>
-                  <td> {{ $r->bank->nama }}</td>
-                  <td> {{ $r->nomor_rekening }}</td>
-                  <td> {{ $r->nama_penerima }}</td>
-                  <td>
-                    <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white"
-                      data-id="{{ $r->id }}">
-                      Edit
-                    </button>
-                    <form action="{{ route('toko.etalase.destroy', $r->id) }}" method="POST"
-                      class="w-auto d-inline-block">
-                      @csrf
-                      @method('DELETE')
-                      <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
-                        onclick="if(!confirm('Apakah anda yakin?')) return false"; />
-                    </form>
-                  </td>
-                </tr>
-              @endforeach
-            @else
-              <tr>
-                <td colspan="5" class="text-center">
-                  Belum ada data
-                </td>
-              </tr>
-            @endif
-          </tbody>
-        </table>
-      </div>
-    </div>
+          @endforeach
+        @else
+          <tr>
+            <td colspan="5" class="text-center">
+              Belum ada data
+            </td>
+          </tr>
+        @endif
+      </tbody>
+    </table>
   </div>
 
   <div id="modalRekening" class="modal fade" tabindex="-1">
@@ -99,7 +90,7 @@
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
 
-        $.get(route('user.profil.rekening.create'), function(res) {
+        $.get(route('toko.rekening.create'), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
           $('#bank').select2({
@@ -110,11 +101,11 @@
       })
 
       $('.listRekening .btnEditRekening').click(function() {
-        var id = $(this).data('id');
+        const id = $(this).data('id');
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
-        $.get(route('user.profil.rekening.edit', id), function(res) {
+        $.get(route('toko.rekening.edit', id), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
           $('#bank').select2({
@@ -125,11 +116,11 @@
       });
 
       $('.listRekening .btnEditRekening').click(function() {
-        var id = $(this).data('id');
+        const id = $(this).data('id');
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
-        $.get(rout('user.profil.rekening.edit', id), function(res) {
+        $.get(rout('toko.rekening.edit', id), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
         });

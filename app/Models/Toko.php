@@ -52,7 +52,11 @@ class Toko extends Model
 
         foreach ($this->transaksis as $transaksi) {
             foreach ($transaksi->transaksiDetails as $td) {
-                $rating->add($td->ulasan->rating);
+                if ($td->ulasan) {
+                    $rating->add($td->ulasan->rating);
+                } else {
+                    $rating->add(null);
+                }
             }
         }
 

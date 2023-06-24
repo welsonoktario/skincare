@@ -239,7 +239,7 @@
       // });
       $('#tableBarang').DataTable({
         language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
+          url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
             name: 'Nama Barang',

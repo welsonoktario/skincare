@@ -1,5 +1,5 @@
 @extends('user.profil.profil')
-@section('title', 'Daftar Alamat • Skincare')
+@section('title', 'Daftar Alamat • Skincareku')
 @section('profil-content')
   <div class="d-flex flex-row justify-content-between align-items-center">
     <h6 class="m-0 text-dark">Daftar Alamat</h6>

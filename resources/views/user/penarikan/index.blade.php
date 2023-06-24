@@ -1,5 +1,5 @@
 @extends('user.profil.profil')
-@section('title', 'Daftar Penarikan • Skincare')
+@section('title', 'Daftar Penarikan • Skincareku')
 @push('styles')
   <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
 @endpush
@@ -79,6 +79,30 @@
   <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
   <script>
     $(document).ready(function() {
+      $(document).on('change', '#nominal', function() {
+        var saldo = @json($toko->saldo);
+        var nominal = $(this).val();
+        var msg = $('#nominalMsg');
+
+        if (nominal > saldo) {
+          msg.text('Nominal tidak boleh melebihi saldo');
+          msg.removeClass('d-none');
+          $('#btnSubmit').prop('disabled', true);
+        } else if (nominal <= saldo && nominal == 0) {
+          msg.text('Nominal tidak boleh 0');
+          msg.removeClass('d-none')
+          $('#btnSubmit').prop('disabled', true);
+        } else if (nominal < 0) {
+          msg.text('Nominal tidak boleh minus');
+          msg.removeClass('d-none')
+          $('#btnSubmit').prop('disabled', true);
+        } else {
+          msg.addClass('d-none')
+          $('#btnSubmit').prop('disabled', false);
+        }
+        $('#formPenarikan').addClass('was-validated');
+      });
+
       $('#btnTambahPenarikan').click(function() {
         $('#modalPenarikan').modal('show');
         $('#modalPenarikanContent').html('');
@@ -102,7 +126,7 @@
 
       $('#tablePenarikan').DataTable({
         language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json'
+          url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
             name: 'No.',

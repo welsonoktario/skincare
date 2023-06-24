@@ -19,15 +19,15 @@ class PenarikanController extends Controller
      */
     public function index()
     {
-        $penarikans = Penarikan::query()
+        $user = Auth::user()->load('toko');
+        $toko = $user->toko;
+        $penarikans = $user->penarikans()
+            ->with(['rekening.bank'])
             ->where('asal_penarikan', 'toko')
-            ->whereHas('rekening', function(Builder $q) {
-                return $q->where('user_id', Auth::id());
-            })
+            ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
             ->get();
-        $tokos = Toko::firstWhere('id', Auth::user()->toko->id);
-        $rekenings = Rekening::with(['bank'])->where('user_id', Auth::user()->id)->get();
-        return view('toko.penarikan.index', compact('penarikans', 'tokos', 'rekenings'));
+
+        return view('toko.penarikan.index', compact('user', 'toko', 'penarikans'));
     }
 
     /**
@@ -37,12 +37,11 @@ class PenarikanController extends Controller
      */
     public function create()
     {
-        $toko = Auth::user()->toko;
-        $rekenings = Rekening::with(['bank'])
-            ->where('user_id', Auth::id())
-            ->get();
+        $user = Auth::user()->load(['toko', 'rekenings.bank']);
+        $toko = $user->toko;
+        $rekenings = $user->rekenings;
 
-        return view('toko.penarikan.create', compact('rekenings'));
+        return view('toko.penarikan.create', compact('user', 'toko', 'rekenings'));
     }
 
     /**

@@ -2,7 +2,7 @@
   <h5 class="modal-title">Tambah Penarikan</h5>
 </div>
 
-<form id="formPenarikan" class="modal-body" action="{{ route('user.profil.penarikan.store') }}" method="POST">
+<form id="formPenarikan" class="modal-body needs-validation" action="{{ route('user.profil.penarikan.store') }}" method="POST" novalidate>
   @csrf
   <div class="mb-3">
     <label class="control-label" for="rekening">Rekening</label>
@@ -17,8 +17,11 @@
 
   <div>
     <label class="form-label" for="nominal">Nominal</label>
-    <input type="number" class="form-control" id="nominal" placeholder="Nominal (maks: @rupiah($user->saldo))"
-      name="nominal" max="{{ $user->saldo }}" required>
+    <input type="number" class="form-control" id="nominal" placeholder="Nominal (maks: @rupiah($toko->saldo))"
+      name="nominal" max="{{ $toko->saldo }}" min="1" required>
+    <div id="nominalMsg" class="invalid-feedback">
+      Nominal tidak boleh melebihi saldo
+    </div>
   </div>
 </form>
 

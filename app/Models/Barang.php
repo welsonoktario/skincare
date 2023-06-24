@@ -87,7 +87,11 @@ class Barang extends Model
         $rating = collect([]);
 
         foreach ($this->transaksiDetails as $td) {
-            $rating->add($td->ulasan->rating);
+            if ($td->ulasan) {
+                $rating->add($td->ulasan->rating);
+            } else {
+                $rating->add(null);
+            }
         }
 
         return count($rating)

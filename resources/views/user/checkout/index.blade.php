@@ -3,7 +3,7 @@
 @endphp
 
 @extends('layouts.app')
-@section('title', 'Checkout • Skincare')
+@section('title', 'Checkout • Skincareku')
 @section('content')
   <div class="container mx-auto bg-white p-4 rounded shadow-sm mt-md-0" style="margin-top: 22%">
     @if (count($keranjangs))

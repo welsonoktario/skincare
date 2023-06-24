@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $kategori ? $kategori->nama : 'Lainnya' . ' • Skincare')
+@section('title', $kategori ? $kategori->nama : 'Lainnya' . ' • Skincareku')
 @section('content')
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">

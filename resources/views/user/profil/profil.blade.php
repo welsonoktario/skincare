@@ -6,7 +6,7 @@
 @endphp
 
 @extends('layouts.app')
-@section('title', 'Profil • Skincare')
+@section('title', 'Profil • Skincareku')
 @section('content')
   <div class="grid mt-md-0" style="margin-top: 22%">
     <div class="row row-cols-1 row-cols-lg-2">
@@ -19,7 +19,7 @@
               <p class="mb-0">Saldo</p>
               <div class="d-inline-flex" style="column-gap: 0.8rem">
                 <p class="mb-0">@rupiah($profil->saldo)</p>
-                <a href="{{ route('user.topup.index') }}" class="btn btn-sm btn-outline-primary" role="button">Topup</a>
+                <a href="{{ route('user.profil.topup.index') }}" class="btn btn-sm btn-outline-primary" role="button">Topup</a>
               </div>
             </div>
           </div>
@@ -39,6 +39,14 @@
               <a href="{{ route('user.transaksi.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.transaksi.index' ? 'active' : '' }}">
                 Daftar Transaksi
+              </a>
+              <a href="{{ route('user.profil.topup.index') }}"
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.topup.index' ? 'active' : '' }}">
+                Daftar Topup
+              </a>
+              <a href="{{ route('user.profil.rekening.index') }}"
+                class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.rekening.index' ? 'active' : '' }}">
+                Daftar Rekening
               </a>
               <a href="{{ route('user.profil.penarikan.index') }}"
                 class="list-group-item list-group-item-action {{ $currentRoute == 'user.profil.penarikan.index' ? 'active' : '' }}">

@@ -1,30 +1,30 @@
-<form action="{{ route('toko.penarikan.store') }}" method="POST" enctype="multipart/form-data">
-  <div class="modal-header">
-    <h5 class="modal-title">Tambah Nominal</h5>
+<div class="modal-header">
+  <h5 class="modal-title">Tambah Penarikan</h5>
+</div>
 
+<form id="formPenarikan" class="modal-body needs-validation" action="{{ route('toko.penarikan.store') }}" method="POST"
+  novalidate>
+  @csrf
+  <div class="mb-3">
+    <label class="control-label" for="rekening">Rekening</label>
+    <select name="rekening" class="form-select" id="rekening" required>
+      <option selected disabled></option>
+      @foreach ($rekenings as $r)
+        <option value="{{ $r->id }}"> {{ $r->nomor_rekening }} - {{ $r->bank->nama }} - {{ $r->nama_penerima }}
+        </option>
+      @endforeach
+    </select>
   </div>
-  <div class="modal-body">
-    @csrf
-    <div class="form-group">
-      <label class="control-label" for="nama_etalase">Nominal :</label>
-      <input type="number" class="form-control" id="nominal" placeholder="Nominal" name="nominal" max="{{ $toko->saldo }}">
-    </div>
-    <div class="form-group">
-      <label class="control-label" for="kategoris">Nomor Rekening :</label>
-      <div class="col-sm-10">
-        <select name="nomor_rekening" class="form-control" id="nomor_rekening">
-          @foreach ($rekenings as $r)
-            <option value="{{ $r->id }}"> {{ $r->nomor_rekening }}</option>
-          @endforeach
-        </select>
-      </div>
-      <br>
-    </div>
-    <br>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Tutup</button>
+
+  <div>
+    <label class="form-label" for="nominal">Nominal</label>
+    <input type="number" class="form-control" id="nominal" placeholder="Nominal (maks: @rupiah($toko->saldo))"
+      name="nominal" max="{{ $toko->saldo }}" min="1" required>
+    <div id="nominalMsg" class="invalid-feedback"></div>
   </div>
 </form>
-{{-- @endsection --}}
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Tutup</button>
+  <button id="btnSubmit" type="submit" form="formPenarikan" class="btn btn-primary">Tambah</button>
+</div>

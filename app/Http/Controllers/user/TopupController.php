@@ -151,14 +151,13 @@ class TopupController extends Controller
 
     public function processTopup(Request $request)
     {
-        //
         $user = Auth::user();
         $getId = $user->id;
         $nominal = $request->nominal;
         // Bayar pake midtrans
         $json = json_decode($request->get('json'));
         $status = $json->transaction_status == 'settlement' ? true : false;
-        dd($json);
+
         DB::beginTransaction();
         try {
             $user->topups()
@@ -175,10 +174,9 @@ class TopupController extends Controller
 
             DB::commit();
 
-            return redirect()->route('user.topup.index');
+            return redirect()->route('user.profil.topup.index');
         } catch (Throwable $e) {
             DB::rollBack();
-            dd($json, $e->getMessage());
 
             return redirect()->back()->withException($e);
         }

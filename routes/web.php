@@ -11,11 +11,14 @@ use App\Http\Controllers\User\KategoriController;
 use App\Http\Controllers\User\ProfilController;
 use App\Http\Controllers\User\TopupController;
 use App\Http\Controllers\User\KeranjangController;
+use App\Http\Controllers\User\PenarikanController;
+use App\Http\Controllers\User\RekeningController;
 use App\Http\Controllers\User\TransaksiController;
 use App\Http\Controllers\User\TokoController;
 use App\Http\Controllers\User\WishlistController;
 
 use App\Http\Controllers\Toko\BarangController as TokoBarangController;
+use App\Http\Controllers\Toko\EkspedisiController as TokoEkspedisiController;
 use App\Http\Controllers\Toko\EtalaseController as TokoEtalaseController;
 use App\Http\Controllers\Toko\HomeController as TokoHomeController;
 use App\Http\Controllers\Toko\PenarikanController as TokoPenarikanController;
@@ -32,9 +35,6 @@ use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBara
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
-use App\Http\Controllers\Toko\EkspedisiController;
-use App\Http\Controllers\User\PenarikanController;
-use App\Models\Kategori;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +89,8 @@ Route::group(['as' => 'user.'], function () {
             // Route::post('/alamat', [AlamatController::class, 'store']) => skincare.com/alamat
             // Route::delete('/alamat/{id}', [AlamatController::class, 'destroy']) => skincare.com/alamat/{alamat}
             Route::resource('alamat', AlamatController::class);
+            Route::resource('topup', TopupController::class);
+            Route::resource('rekening', RekeningController::class);
             Route::resource('penarikan', PenarikanController::class);
         });
 
@@ -98,7 +100,6 @@ Route::group(['as' => 'user.'], function () {
         });
 
         Route::resources([
-            'topup' => TopupController::class,
             'keranjang' => KeranjangController::class,
             'profil' => ProfilController::class,
             'transaksi' => TransaksiController::class,
@@ -112,8 +113,8 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], func
 
     Route::middleware(['hasToko'])->group(function () {
         Route::get('/', [TokoHomeController::class, 'index'])->name('hometoko');
-        Route::get('ekspedisi', [EkspedisiController::class, 'index'])->name('ekspedisi.index');
-        Route::put('ekspedisi', [EkspedisiController::class, 'update'])->name('ekspedisi.update');
+        Route::get('ekspedisi', [TokoEkspedisiController::class, 'index'])->name('ekspedisi.index');
+        Route::put('ekspedisi', [TokoEkspedisiController::class, 'update'])->name('ekspedisi.update');
 
         Route::resource('barang', TokoBarangController::class);
         Route::resource('akun', TokoAkunController::class);
