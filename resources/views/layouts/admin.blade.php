@@ -36,6 +36,7 @@
   <script src="{{ asset('js/manifest.js') }}"></script>
   <script src="{{ asset('js/vendor.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
+  <script src="https://unpkg.com/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
   <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   @stack('scripts')

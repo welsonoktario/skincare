@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
+use App\Models\Toko;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,15 +52,19 @@ class PenarikanController extends Controller
      */
     public function store(Request $request)
     {
-        $penarikans = Penarikan::create([
-            'nominal' => $request->nominal,
-            'asal_penarikan' => 'toko',
-            'status' => 'pending',
-            'user_id' => Auth::id(),
-            'nomor_rekening' => $request->nomor_rekening
+        $user = User::query()->find(Auth::id());
+        $toko = $user->toko;
+        $user->penarikans()
+            ->create([
+                'rekening_id' => $request->rekening,
+                'nominal' => $request->nominal,
+                'asal_penarikan' => 'toko'
+            ]);
+        $user->toko()->update([
+            'saldo' => $toko->saldo - $request->nominal
         ]);
-        // Alert::success('Sukses');
-        return redirect()->route('toko.penarikan.index')->with('toast_success', 'Penarikan telah ditambah');
+
+        return redirect()->route('toko.penarikan.index');
     }
 
     /**

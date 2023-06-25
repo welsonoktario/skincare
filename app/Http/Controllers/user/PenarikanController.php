@@ -48,12 +48,16 @@ class PenarikanController extends Controller
      */
     public function store(Request $request)
     {
-        Penarikan::query()
+        $user = Auth::user();
+        $user->penarikans()
             ->create([
                 'rekening_id' => $request->rekening,
                 'nominal' => $request->nominal,
                 'asal_penarikan' => 'user'
             ]);
+        $user->update([
+            'saldo' => $user->saldo - $request->nominal
+        ]);
 
         return redirect()->back();
     }

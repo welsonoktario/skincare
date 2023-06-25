@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Toko;
 use App\Http\Controllers\Controller;
 use App\Models\Pengembalian;
 use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class PesananController extends Controller
 {
@@ -96,34 +99,47 @@ class PesananController extends Controller
             ->with('pengembalian')
             ->find($id);
 
-        if ($request->has('pengembalian') || $request->aksi == 'pengembalian') {
-            if ($request->aksi == 'pengembalian') {
-                $aksiPengembalian = $request->aksiPengembalian;
+        DB::beginTransaction();
+        try {
+            if ($request->has('pengembalian') || $request->aksi == 'pengembalian') {
+                if ($request->aksi == 'pengembalian') {
+                    $aksiPengembalian = $request->aksiPengembalian;
 
-                $transaksi->pengembalian()
-                    ->update([
-                        'status' => $aksiPengembalian
-                    ]);
-
-                if ($aksiPengembalian == 'selesai') {
-                    $transaksi->user()
+                    $transaksi->pengembalian()
                         ->update([
-                            'saldo' => $transaksi->user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                            'status' => $aksiPengembalian
+                        ]);
+
+                    if ($aksiPengembalian == 'selesai') {
+                        $transaksi->user()
+                            ->update([
+                                'saldo' => $transaksi->user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                            ]);
+                    }
+                } else {
+                    $aksi = $request->aksi;
+
+                    $transaksi->pengembalian()
+                        ->update([
+                            'status' => $aksi
                         ]);
                 }
             } else {
-                $aksi = $request->aksi;
-
-                $transaksi->pengembalian()
-                    ->update([
-                        'status' => $aksi
-                    ]);
+                $status = ['diproses', 'dikirim', 'batal'];
+                if (in_array($request->aksi, $status)) {
+                    if ($request->aksi == 'batal') {
+                        $user = User::query()->find($transaksi->user_id);
+                        $user->update([
+                            'saldo' => $user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                        ]);
+                    }
+                    $transaksi->update(['status' => $request->aksi]);
+                }
             }
-        } else {
-            $status = ['diproses', 'dikirim'];
-            if (in_array($request->aksi, $status)) {
-                $transaksi->update(['status' => $request->aksi]);
-            }
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            dd($e->getMessage());
         }
 
         return redirect()->back();

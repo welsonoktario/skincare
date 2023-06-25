@@ -23,12 +23,12 @@
 
   <ul class="nav nav-pills nav-fill mt-4">
     <li class="nav-item">
-      <a class="nav-link {{ $currentTipe == 'semua' ? 'active' : '' }}"
+      <a class="nav-link px-2 py-1 {{ $currentTipe == 'semua' ? 'active' : '' }}"
         href="{{ route('user.transaksi.index') }}">Semua</a>
     </li>
     @foreach ($tipes as $tipe)
       <li class="nav-item">
-        <a class="nav-link {{ $currentTipe == $tipe['tipe'] ? 'active' : '' }}"
+        <a class="nav-link px-2 py-1 {{ $currentTipe == $tipe['tipe'] ? 'active' : '' }}"
           href="?tipe={{ $tipe['tipe'] }}">{{ $tipe['label'] }}</a>
       </li>
     @endforeach

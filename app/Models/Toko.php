@@ -39,7 +39,7 @@ class Toko extends Model
 
     public function penarikans()
     {
-        return $this->morphMany(Penarikan::class, 'penarikanable');
+        return $this->hasMany(Penarikan::class);
     }
 
     public function ekspedisis()

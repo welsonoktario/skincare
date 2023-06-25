@@ -51,7 +51,7 @@ class RekeningController extends Controller
                 'nama_penerima' => $request->penerima
             ]);
 
-        return redirect()->back();
+        return redirect()->route('user.profil.rekening.index');
     }
 
     /**
@@ -87,7 +87,7 @@ class RekeningController extends Controller
             'nama_penerima' => $request->penerima,
         ]);
 
-        return redirect()->back();
+        return redirect()->route('user.profil.rekening.index');
     }
 
     /**
@@ -100,6 +100,6 @@ class RekeningController extends Controller
     {
         Rekening::query()->find($id)->delete();
 
-        return redirect()->back();
+        return redirect()->route('user.profil.rekening.index');
     }
 }

@@ -84,6 +84,20 @@
   <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   <script>
     $(document).ready(function() {
+      $(document).on('submit', '#formPenarikan', function(e) {
+        if (!$('#nominal').val() || !$('#rekening').val()) {
+          $('#nominalMsg').text('Nominal tidak boleh kosong');
+          $('#formPenarikan').addClass('was-validated');
+          return false;
+        }
+
+        if (Number($('#nominal').val()) > Number($('#nominal').prop('max'))) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+
       $(document).on('change', '#nominal', function() {
         var saldo = @json($toko->saldo);
         var nominal = $(this).val();
@@ -115,6 +129,16 @@
         $.get(route('toko.penarikan.create'), function(res) {
           $('#modalLoading').hide();
           $('#modalPenarikanContent').html(res);
+
+          $('#formPenarikan').submit(function(e) {
+            if (!$('#nominal').val()) {
+              $('#nominalMsg').text('Nominal tidak boleh kosong');
+              $('#formPenarikan').addClass('was-validated');
+              return false;
+            } else {
+              return true;
+            }
+          });
         });
       });
 

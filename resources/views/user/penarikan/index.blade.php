@@ -81,15 +81,18 @@
   <script>
     $(document).ready(function() {
       $(document).on('submit', '#formPenarikan', function(e) {
-        e.preventDefault();
-
-        if (!$('#nominal').val()) {
+        if (!$('#nominal').val() || !$('#rekening').val()) {
           $('#nominalMsg').text('Nominal tidak boleh kosong');
+          $('#formPenarikan').addClass('was-validated');
+          return false;
         }
-        $('#formPenarikan').addClass('was-validated');
 
-        $(this).unbind('submit').submit();
-      })
+        if (Number($('#nominal').val()) > Number($('#nominal').prop('max'))) {
+          return false;
+        } else {
+          return true;
+        }
+      });
 
       $(document).on('change', '#nominal', function() {
         var saldo = @json($user->saldo);

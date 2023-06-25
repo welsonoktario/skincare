@@ -35,16 +35,6 @@
         <div class="card-icon shadow-primary bg-primary">
           <i class="fas fa-archive"></i>
         </div>
-        <div class="card-wrap">
-          @foreach ($transaksis as $t)
-            <div class="card-header">
-              <h4>Total Orders</h4>
-            </div>
-            <div class="card-body">
-              {{ $t->count() }}
-            </div>
-          @endforeach
-        </div>
       </div>
     </div>
   @endif

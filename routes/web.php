@@ -23,6 +23,7 @@ use App\Http\Controllers\Toko\EtalaseController as TokoEtalaseController;
 use App\Http\Controllers\Toko\HomeController as TokoHomeController;
 use App\Http\Controllers\Toko\PenarikanController as TokoPenarikanController;
 use App\Http\Controllers\Toko\PesananController as TokoPesananController;
+use App\Http\Controllers\Toko\ProfilController as TokoProfilController;
 use App\Http\Controllers\Toko\RekeningController as TokoRekeningController;
 
 use App\Http\Controllers\Admin\BarangPengecekanController as AdminBarangPengecekanController;
@@ -35,7 +36,6 @@ use App\Http\Controllers\Admin\VerifikasiBarangController as AdminVerifikasiBara
 use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\admin\PenarikanController as AdminPenarikanController;
 use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoController;
-use App\Http\Controllers\Toko\ProfilController as TokoProfilController;
 
 /*
 |--------------------------------------------------------------------------

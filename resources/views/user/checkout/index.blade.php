@@ -306,11 +306,10 @@
       });
 
       $('#formCheckout').submit(function(e) {
-        e.preventDefault();
         var metodePembayaran = $('input[type="radio"][name="pembayaran"]:checked').val();
         $('input[name="metode"]').val(metodePembayaran);
 
-        $(this).unbind('submit').submit();
+        return true;
       });
 
       $('#modalPembayaran').on('show.bs.modal', function() {

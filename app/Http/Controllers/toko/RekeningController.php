@@ -44,7 +44,7 @@ class RekeningController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user()
+        Auth::user()
             ->rekenings()
             ->create([
                 'bank_id' => $request->bank,
@@ -52,7 +52,7 @@ class RekeningController extends Controller
                 'nama_penerima' => $request->penerima
             ]);
 
-        return redirect()->back();
+        return redirect()->route('toko.rekening.index');
     }
 
     /**
@@ -88,7 +88,7 @@ class RekeningController extends Controller
             'nama_penerima' => $request->penerima,
         ]);
 
-        return redirect()->back();
+        return redirect()->route('toko.rekening.index');
     }
 
     /**
@@ -99,6 +99,8 @@ class RekeningController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Rekening::query()->find($id)->delete();
+
+        return redirect()->route('toko.rekening.index');
     }
 }

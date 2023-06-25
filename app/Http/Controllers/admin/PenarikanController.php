@@ -92,11 +92,16 @@ class PenarikanController extends Controller
             if ($aksi == 'diterima') {
                 if ($jenis == 'user') {
                     $user = User::query()->find($penarikan->rekening->user_id);
-
-                    $user->update(['saldo' => $user->saldo - $penarikan->nominal]);
                 } elseif ($jenis == 'toko') {
                     $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
-                    $toko->update(['saldo' => $toko->saldo - $penarikan->nominal]);
+                }
+            } elseif ($aksi == 'ditolak') {
+                if ($jenis == 'user') {
+                    $user = User::query()->find($penarikan->rekening->user_id);
+                    $user->update(['saldo' => $user->saldo + $penarikan->nominal]);
+                } elseif ($jenis == 'toko') {
+                    $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
+                    $toko->update(['saldo' => $toko->saldo + $penarikan->nominal]);
                 }
             }
         }

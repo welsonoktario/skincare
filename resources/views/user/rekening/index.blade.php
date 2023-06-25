@@ -38,7 +38,7 @@
               <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white" data-id="{{ $r->id }}">
                 Edit
               </button>
-              <form action="{{ route('toko.etalase.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
+              <form action="{{ route('user.profil.rekening.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
                 @csrf
                 @method('DELETE')
                 <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
@@ -106,17 +106,6 @@
             dropdownParent: $('#modalRekening'),
             theme: 'bootstrap-5',
           });
-        });
-      });
-
-      $('.listRekening .btnEditRekening').click(function() {
-        var id = $(this).data('id');
-        $('#modalRekening').modal('show');
-        $('#modalRekeningContent').html('');
-        $('#modalLoading').show();
-        $.get(route('user.profil.rekening.edit', id), function(res) {
-          $('#modalLoading').hide();
-          $('#modalRekeningContent').html(res);
         });
       });
 

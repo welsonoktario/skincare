@@ -151,6 +151,14 @@
       let selectKota = $('select[name="kota"]');
       let formDelete = $('#formDelete');
 
+      $('#formAlamat').submit(function() {
+        if (!selectProvinsi.val() || !selectKota.val()) {
+          return false;
+        }
+
+        return true;
+      });
+
       $('.btn-modal').click(function() {
         let formAlamat = $('#formAlamat');
         let action = $(this).data('action');

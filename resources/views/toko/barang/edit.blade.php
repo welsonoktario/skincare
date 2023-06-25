@@ -99,7 +99,7 @@
             {{ $ak->nama }}
           </option>
         @endforeach
-        <option value="lainnya">Lainnya</option>
+        <option value="lainnya" @if (!$barang->kategori_id) selected @endif>Lainnya</option>
       </select>
     </div>
 

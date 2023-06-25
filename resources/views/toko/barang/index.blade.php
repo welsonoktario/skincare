@@ -116,11 +116,13 @@
       });
 
       $(document).on('change', '#isDiskon', function() {
-        $('.diskon-col').toggleClass('d-none');
         if (!$(this).is(':checked')) {
-          $('#nominalDiskon').val('');
-          $('#jenisDiskon').val('');
+          $('.diskon-col').addClass('d-none');
+        } else {
+          $('.diskon-col').removeClass('d-none');
         }
+        $('#nominalDiskon').val('');
+        $('#jenisDiskon').val('');
       });
 
       $(document).on('change', '#jenisDiskon', function() {
@@ -210,6 +212,7 @@
           $('#modalLoading').addClass('d-none');
           $('#modalBarangContent').removeClass('d-none');
           $('#harga').trigger('change');
+          $('#isDiskon').trigger('change');
 
           $('#kandungans').select2({
             dropdownParent: $('#modalBarang'),
