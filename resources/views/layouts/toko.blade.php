@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/components.css') }}">
-  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
   @stack('styles')
 </head>
 
@@ -43,9 +43,8 @@
   <script src="{{ asset('js/manifest.js') }}"></script>
   <script src="{{ asset('js/vendor.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   @stack('scripts')
 </body>
 

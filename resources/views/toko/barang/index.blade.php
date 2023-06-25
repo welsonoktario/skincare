@@ -1,8 +1,8 @@
 @extends('layouts.toko')
 
 @push('styles')
-  <link rel="stylesheet" href="https://www.unpkg.com/select2/dist/css/select2.min.css">
-  <link rel="stylesheet" href="https://www.unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
   <link rel="stylesheet" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" />
 @endpush

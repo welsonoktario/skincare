@@ -1,7 +1,9 @@
 @extends('user.profil.profil')
 @section('title', 'Rekening • Skincareku')
 @push('styles')
-  <link rel="stylesheet" href="https://www.unpkg.com/datatables.net-bs5@1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
 @endpush
 @section('profil-content')
   <div class="container-fluid">
@@ -26,33 +28,25 @@
         </tr>
       </thead>
       <tbody>
-        @if (count($rekenings))
-          @foreach ($rekenings as $r)
-            <tr class="listRekening">
-              <td>{{ $loop->iteration }}</td>
-              <td> {{ $r->bank->nama }}</td>
-              <td> {{ $r->nomor_rekening }}</td>
-              <td> {{ $r->nama_penerima }}</td>
-              <td>
-                <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white" data-id="{{ $r->id }}">
-                  Edit
-                </button>
-                <form action="{{ route('toko.etalase.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
-                  @csrf
-                  @method('DELETE')
-                  <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
-                    onclick="if(!confirm('Apakah anda yakin?')) return false"; />
-                </form>
-              </td>
-            </tr>
-          @endforeach
-        @else
-          <tr>
-            <td colspan="5" class="text-center">
-              Belum ada data
+        @foreach ($rekenings as $r)
+          <tr class="listRekening">
+            <td>{{ $loop->iteration }}</td>
+            <td> {{ $r->bank->nama }}</td>
+            <td> {{ $r->nomor_rekening }}</td>
+            <td> {{ $r->nama_penerima }}</td>
+            <td>
+              <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white" data-id="{{ $r->id }}">
+                Edit
+              </button>
+              <form action="{{ route('toko.etalase.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
+                @csrf
+                @method('DELETE')
+                <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
+                  onclick="if(!confirm('Apakah anda yakin?')) return false"; />
+              </form>
             </td>
           </tr>
-        @endif
+        @endforeach
       </tbody>
     </table>
   </div>
@@ -80,9 +74,9 @@
 @endsection
 
 @push('scripts')
-  <script src="https://www.unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="https://www.unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-  <script src="https://www.unpkg.com/select2/dist/js/select2.min.js"></script>
+  <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://unpkg.com/select2/dist/js/select2.min.js"></script>
   <script>
     $(function() {
       $('#btnTambahRekening').click(function() {
@@ -90,7 +84,7 @@
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
 
-        $.get(route('toko.rekening.create'), function(res) {
+        $.get(route('user.profil.rekening.create'), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
           $('#bank').select2({
@@ -101,7 +95,7 @@
       })
 
       $('.listRekening .btnEditRekening').click(function() {
-        const id = $(this).data('id');
+        var id = $(this).data('id');
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
@@ -116,7 +110,7 @@
       });
 
       $('.listRekening .btnEditRekening').click(function() {
-        const id = $(this).data('id');
+        var id = $(this).data('id');
         $('#modalRekening').modal('show');
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();

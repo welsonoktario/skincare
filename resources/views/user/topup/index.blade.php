@@ -1,6 +1,6 @@
 @extends('user.profil.profil')
 @push('styles')
-  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css" />
 @endpush
 @section('profil-content')
   <div class="d-flex mb-4 w-100 justify-content-between align-items-center">
@@ -64,7 +64,10 @@
 @endsection
 
 @push('scripts')
-  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
+  <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   <script>
     $(document).ready(function() {
       $(document).on('click', '.btn-nominal', function() {

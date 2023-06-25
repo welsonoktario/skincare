@@ -231,6 +231,8 @@
 @endsection
 
 @push('scripts')
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
   <script>
     $(function() {
       var alamats = @json($alamat);

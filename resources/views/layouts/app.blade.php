@@ -45,8 +45,6 @@
   <script src="{{ asset('js/manifest.js') }}"></script>
   <script src="{{ asset('js/vendor.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
-  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
   @stack('scripts')
 </body>
 

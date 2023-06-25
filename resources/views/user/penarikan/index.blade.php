@@ -1,7 +1,7 @@
 @extends('user.profil.profil')
 @section('title', 'Daftar Penarikan • Skincareku')
 @push('styles')
-  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css" />
 @endpush
 @section('profil-content')
   <div class="container-fluid">
@@ -76,9 +76,21 @@
 @endsection
 
 @push('scripts')
-  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   <script>
     $(document).ready(function() {
+      $(document).on('submit', '#formPenarikan', function(e) {
+        e.preventDefault();
+
+        if (!$('#nominal').val()) {
+          $('#nominalMsg').text('Nominal tidak boleh kosong');
+        }
+        $('#formPenarikan').addClass('was-validated');
+
+        $(this).unbind('submit').submit();
+      })
+
       $(document).on('change', '#nominal', function() {
         var saldo = @json($user->saldo);
         var nominal = $(this).val();

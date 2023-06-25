@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
 @push('styles')
-  <link rel="stylesheet" href="https://www.unpkg.com/select2/dist/css/select2.min.css">
-  <link rel="stylesheet" href="https://www.unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
 @endpush
 
 @section('content')
@@ -73,7 +73,7 @@
 @endsection
 
 @push('scripts')
-  <script src="https://www.unpkg.com/select2/dist/js/select2.min.js"></script>
+  <script src="https://unpkg.com/select2/dist/js/select2.min.js"></script>
   <script>
     $(document).ready(function() {
       $(document).on('click', '.btn-ganti', function() {

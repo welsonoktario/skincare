@@ -1,7 +1,7 @@
 @extends('layouts.toko')
 @section('title', 'Daftar Penarikan • Skincareku Seler')
 @push('styles')
-  <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
 @endpush
 @section('content')
   <div class="container-fluid">
@@ -80,7 +80,8 @@
 @endsection
 
 @push('scripts')
-  <script src="https://cdn.datatables.net/v/bs4/dt-1.11.3/datatables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="https://unpkg.com/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
   <script>
     $(document).ready(function() {
       $(document).on('change', '#nominal', function() {
