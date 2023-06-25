@@ -94,7 +94,7 @@
                           </span>
                         @endif
                       </p>
-                      <button class="btn btn-outline-primary" style="width: fit-content">Detail</button>
+                      <button class="btn btn-detail btn-outline-primary" data-id="{{ $transaksi->id }}" style="width: fit-content">Detail</button>
                     </div>
                   </div>
                 </div>
@@ -176,7 +176,7 @@
       });
 
       $('.btn-detail').click(function() {
-        const id = $(this).data('id');
+        var id = $(this).data('id');
         $('#modalDetail').modal('show');
         $('#modalDetailContent').html('');
         $('#modalLoading').show();

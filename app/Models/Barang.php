@@ -15,7 +15,7 @@ class Barang extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
-    protected $appends = ['placeholder', 'hargaDiskon'];
+    protected $appends = ['placeholder', 'harga_diskon'];
 
     public function transaksiDetails()
     {
@@ -57,6 +57,7 @@ class Barang extends Model
         return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
     }
 
+    // Mengambil foto pertama dari foto_barangs
     public function getPlaceholderAttribute()
     {
         return count($this->fotos)
@@ -64,6 +65,7 @@ class Barang extends Model
             : '/img/placeholder.jpeg';
     }
 
+    // Mengambil harga diskon barang jika ada diskon
     public function getHargaDiskonAttribute()
     {
         $jenisDiskon = $this->jenis_diskon;
@@ -82,6 +84,7 @@ class Barang extends Model
         }
     }
 
+    // Mengambil rating barang
     public function getRatingAttribute()
     {
         $rating = collect([]);

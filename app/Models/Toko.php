@@ -10,6 +10,7 @@ class Toko extends Model
     use HasFactory;
 
     protected $guarded = ['id', 'user_id'];
+    protected $appends = ['rating'];
 
     public function user()
     {
@@ -46,6 +47,7 @@ class Toko extends Model
         return $this->belongsToMany(Ekspedisi::class, 'ekspedisi_tokos', 'toko_id', 'ekspedisi_id');
     }
 
+    // Mengambil rating toko
     public function getRatingAttribute()
     {
         $rating = collect([]);

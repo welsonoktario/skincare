@@ -122,12 +122,14 @@
               </button>
             </div>
           @elseif ($transaksi->status == 'selesai' && !$transaksi->pengembalian)
-            <div class="d-flex mt-3 justify-content-end">
-              <button class="btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
-                data-aksi="ulasan">
-                Berikan Ulasan
-              </button>
-            </div>
+            @if ($transaksi->ulasan_count != count($transaksi->transaksiDetails))
+              <div class="d-flex mt-3 justify-content-end">
+                <button class="btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
+                  data-aksi="ulasan">
+                  Berikan Ulasan
+                </button>
+              </div>
+            @endif
           @endif
         </div>
       </div>

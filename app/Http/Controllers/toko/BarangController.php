@@ -138,8 +138,8 @@ class BarangController extends Controller
             'harga' => $request->harga,
             'stok' => $request->stok,
             'berat' => $request->berat,
-            'jenis_diskon' => $request->jenis_diskon,
-            'nominal_diskon' => $request->nominal_diskon,
+            'jenis_diskon' => $request->jenis_diskon ?: null,
+            'nominal_diskon' => $request->nominal_diskon ?: null,
             'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
             'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
         ]);

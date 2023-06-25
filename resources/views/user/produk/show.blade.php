@@ -62,9 +62,9 @@
           <div class="card-body">
             <h6 class="text-black">{{ $produk->nama }}</h6>
             <div class="d-inline-flex align-items-center fw-semibold h5">
-              @if ($produk->hargaDiskon)
+              @if ($produk->harga_diskon)
                 <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
-                <span class="text-danger mx-1">@rupiah($produk->hargaDiskon)</span>
+                <span class="text-danger mx-1">@rupiah($produk->harga_diskon)</span>
                 <div class="badge badge-danger">
                   @if ($produk->jenis_diskon == 'persen')
                     &dash;{{ $produk->nominal_diskon }}%
@@ -196,11 +196,11 @@
           @if (count($produk->ulasans))
             <div class="card-body">
               @foreach ($produk->ulasans as $ulasan)
-                <div>
-                  <p class="text-black fw-medium mb-0">
+                <div class="rounded bg-body-secondary py-2 px-4">
+                  <p class="text-black fw-semibold fw-medium mb-0">
                     {{ $ulasan->user->nama }}
                   </p>
-                  <p>
+                  <p class="mb-2">
                     @for ($i = 1; $i <= $ulasan->rating; $i++)
                       <i class="fas fa-star text-primary"></i>
                     @endfor
@@ -211,7 +211,6 @@
                     </p>
                   @endif
                 </div>
-
 
                 @if (!$loop->last)
                   <hr>

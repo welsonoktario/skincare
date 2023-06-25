@@ -30,7 +30,7 @@
       <div class="col-12">
         <label class="custom-switch">
           <input type="checkbox" id="isDiskon" class="custom-switch-input"
-            checked="{{ boolval($barang->nominal_diskon) }}" />
+            @if ($barang->nominal_diskon) checked @endif />
           <span class="custom-switch-indicator"></span>
           <span class="custom-switch-description">Tambah diskon barang</span>
         </label>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="kategori">Kategori:</label>
+      <label class="form-label" for="kategori">Kategori</label>
       <select id="kategori" class="form-select select2" name="kategori" data-placeholder="Pilih kategori" required>
         <option selected></option>
         @foreach ($kategoris as $ak)
@@ -104,7 +104,7 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label" for="etalase">Etalase:</label>
+      <label class="form-label" for="etalase">Etalase</label>
       <select name="etalase" class="form-select" id="etalase">
         @if (count($etalases))
           <option value="semua" selected>&dash;</option>

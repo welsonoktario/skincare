@@ -42,12 +42,7 @@ class TransaksiController extends Controller
     public function show($id)
     {
         $transaksi = Transaksi::query()
-            ->with([
-                'transaksiDetails' => function ($q) {
-                    return $q->with('barang')->doesntHave('ulasan');
-                },
-                'pengembalian'
-            ])
+            ->with(['transaksiDetails.barang', 'pengembalian', 'alamat.kota.provinsi'])
             ->find($id);
 
         return view('user.riwayat.show', compact('transaksi'));

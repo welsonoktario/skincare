@@ -52,8 +52,8 @@
               <td class="text-capitalize">{{ $b->status }}</td>
 
               <td class="d-inline-flex justify-content-center align-items-center w-100">
-                <button id="btnEditBarang" data-id="{{ $b->id }}"
-                  class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
+                <button data-id="{{ $b->id }}"
+                  class="btn btnEditBarang btn-sm btn-secondary ms-1 text-white">Edit</button>
                 <form class="ms-1" action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
                   @csrf
                   @method('DELETE')
@@ -117,6 +117,10 @@
 
       $(document).on('change', '#isDiskon', function() {
         $('.diskon-col').toggleClass('d-none');
+        if (!$(this).is(':checked')) {
+          $('#nominalDiskon').val('');
+          $('#jenisDiskon').val('');
+        }
       });
 
       $(document).on('change', '#jenisDiskon', function() {
@@ -197,7 +201,7 @@
         });
       });
 
-      $('.listBarang #btnEditBarang').click(function() {
+      $('.listBarang .btnEditBarang').click(function() {
         var id = $(this).data('id');
         $('#modalBarang').modal('show');
 
@@ -206,8 +210,6 @@
           $('#modalLoading').addClass('d-none');
           $('#modalBarangContent').removeClass('d-none');
           $('#harga').trigger('change');
-          $('#isDiskon').trigger('change');
-          $('#jenisDiskon').trigger('change');
 
           $('#kandungans').select2({
             dropdownParent: $('#modalBarang'),
@@ -233,11 +235,7 @@
           });
         });
       });
-      // $('#btnDeleteBarang').click(function(){
-      //   $('#modalBarang').modal('show');
-      //   $('#modalBarangContent').html('');
-      //   $('#modalLoading').show();
-      // });
+
       $('#tableBarang').DataTable({
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'

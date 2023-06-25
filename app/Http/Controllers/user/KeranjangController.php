@@ -43,8 +43,8 @@ class KeranjangController extends Controller
         // hitung total seluruh barang dan jumlah di keranjang user
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
-                return $barang->hargaDiskon
-                    ? $barang->hargaDiskon * $barang->pivot->jumlah
+                return $barang->harga_diskon
+                    ? $barang->harga_diskon * $barang->pivot->jumlah
                     : $barang->harga * $barang->pivot->jumlah;
             });
         });

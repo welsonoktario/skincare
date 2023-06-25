@@ -49,9 +49,9 @@
                       </div>
                     </td>
                     <td class="text-right">
-                      @if ($barang->hargaDiskon)
+                      @if ($barang->harga_diskon)
                         <span class="fw-normal text-decoration-line-through">@rupiah($barang->harga)</span>
-                        <span class="text-danger mx-1">@rupiah($barang->hargaDiskon)</span>
+                        <span class="text-danger mx-1">@rupiah($barang->harga_diskon)</span>
                         <div class="badge badge-danger">
                           @if ($barang->jenis_diskon == 'persen')
                             &dash;{{ $barang->nominal_diskon }}%
@@ -68,7 +68,7 @@
                         <button data-id="{{ $barang->id }}" data-opr="min" class="btn btn-change btn-outline-primary">
                           &dash;
                         </button>
-                        <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->hargaDiskon ?: $barang->harga }}"
+                        <input data-stok="{{ $barang->stok }}" data-harga="{{ $barang->harga_diskon ?: $barang->harga }}"
                           data-id="{{ $barang->id }}" data-toko="{{ $barang->toko_id }}" type="number"
                           placeholder="Jumlah" value="{{ $barang->pivot->jumlah }}" min="1"
                           max="{{ $barang->stok }}" class="input-qty form-control text-center" aria-label="Jumlah">
@@ -88,8 +88,8 @@
                       </p>
                     </td>
                     <td class="text-subtotal text-right fw-bold" data-id="{{ $barang->id }}">
-                      @if ($barang->hargaDiskon)
-                        @rupiah($barang->hargaDiskon * $barang->pivot->jumlah)
+                      @if ($barang->harga_diskon)
+                        @rupiah($barang->harga_diskon * $barang->pivot->jumlah)
                       @else
                         @rupiah($barang->harga * $barang->pivot->jumlah)
                       @endif
@@ -108,13 +108,15 @@
                 <tr>
                   <td colspan="2"></td>
                   <td>Total Harga</td>
-                  <td class="total-harga" data-id="{{ $barang->id }}">@rupiah($barangs->sum(function ($barang) {
-                    if ($barang->hargaDiskon) {
-                      return $barang->hargaDiskon * $barang->pivot->jumlah;
-                    }
+                  <td class="total-harga" data-id="{{ $barang->id }}">@rupiah(
+                      $barangs->sum(function ($barang) {
+                          if ($barang->harga_diskon) {
+                              return $barang->harga_diskon * $barang->pivot->jumlah;
+                          }
 
-                    return $barang->harga * $barang->pivot->jumlah;
-                  }))</td>
+                          return $barang->harga * $barang->pivot->jumlah;
+                      })
+                  )</td>
                   <td>
                     @php
                       $checkoutable = true;
@@ -159,7 +161,8 @@
             @endphp
 
             <a href="{{ route('user.checkout.index') }}"
-              class="btn btn-primary w-100 mt-4 @if (!$checkoutable) disabled @endif" role="button">
+              class="btn btn-checkout-all btn-primary w-100 mt-4 @if (!$checkoutable) disabled @endif"
+              role="button">
               Checkout Semua Barang
             </a>
           </div>
@@ -225,7 +228,7 @@
   <script>
     $(function() {
       // pas input quantity berubah perbarang
-      $('.input-qty').change(function() {
+      $('.input-qty').on('change', function() {
         let {
           id,
           harga,
@@ -245,6 +248,13 @@
             $(`.text-stok[data-id="${id}"]`).text(`Tersisa ${stok} produk tersedia`);
             $(`.text-stok[data-id="${id}"]`).removeClass('text-danger').addClass(
               'text-warning');
+            $('.btn-checkout-all').removeClass('disabled');
+          } else if (jumlah > stok) {
+            $(`.btn-checkout[data-id="${toko}"]`).addClass('disabled');
+            $(`.text-stok[data-id="${id}"]`).text('Jumlah produk di keranjang melebihi stok produk');
+            $(`.text-stok[data-id="${id}"]`).addClass('text-danger').removeClass(
+              'text-warning');
+            $('.btn-checkout-all').addClass('disabled');
           }
         }
 
@@ -282,6 +292,13 @@
             $(`.text-stok[data-id="${idBarang}"]`).text(`Tersisa ${stok} produk tersedia`);
             $(`.text-stok[data-id="${idBarang}"]`).removeClass('text-danger').addClass(
               'text-warning');
+            $('.btn-checkout-all').removeClass('disabled');
+          } else if (jumlah > stok) {
+            $(`.btn-checkout[data-id="${toko}"]`).addClass('disabled');
+            $(`.text-stok[data-id="${id}"]`).text('Jumlah produk di keranjang melebihi stok produk');
+            $(`.text-stok[data-id="${id}"]`).addClass('text-danger').removeClass(
+              'text-warning');
+            $('.btn-checkout-all').addClass('disabled');
           }
         }
 

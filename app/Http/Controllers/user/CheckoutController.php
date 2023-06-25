@@ -38,8 +38,8 @@ class CheckoutController extends Controller
             return [
                 'barangs' => $keranjang,
                 'total' => collect($keranjang)->sum(function ($barang) {
-                    return $barang->hargaDiskon
-                        ? $barang->hargaDiskon * $barang->pivot->jumlah
+                    return $barang->harga_diskon
+                        ? $barang->harga_diskon * $barang->pivot->jumlah
                         : $barang->pivot->sub_total;
                 })
             ];

@@ -61,9 +61,9 @@
                     <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
                   </td>
                   <td class="text-right">
-                    @if ($barang->hargaDiskon)
+                    @if ($barang->harga_diskon)
                       <span class="fw-normal text-decoration-line-through">@rupiah($barang->harga)</span>
-                      <span class="text-danger mx-1">@rupiah($barang->hargaDiskon)</span>
+                      <span class="text-danger mx-1">@rupiah($barang->harga_diskon)</span>
                       <div class="badge badge-danger">
                         @if ($barang->jenis_diskon == 'persen')
                           &dash;{{ $barang->nominal_diskon }}%
@@ -79,10 +79,10 @@
                     x{{ $barang->pivot->jumlah }}
                   </td>
                   <td class="text-right fw-bold">
-                    @if ($barang->hargaDiskon)
-                      @rupiah($barang->hargaDiskon * $barang->pivot->jumlah)
+                    @if ($barang->harga_diskon)
+                      @rupiah($barang->harga_diskon * $barang->pivot->jumlah)
                     @else
-                      @rupiah($barang->subtotal)
+                      @rupiah($barang->harga * $barang->pivot->jumlah)
                     @endif
                   </td>
                 </tr>
@@ -137,7 +137,7 @@
         </table>
         <div class="w-100 text-end">
           <button type="button" class="btn btn-primary btn-pembayaran w-25" data-bs-toggle="modal"
-            data-bs-target="#modalPembayaran" @if (!count($alamat)) disabled @endif>
+            data-bs-target="#modalPembayaran" @if (!count($alamat)) disabled @else disabled @endif>
             Pilih Pembayaran
           </button>
         </div>
@@ -275,7 +275,15 @@
       });
 
       $('.select-jenis').change(function() {
-        $('.btn-pembayaran').prop('disabled', false);
+        $('.select-jenis').each(function(i, el) {
+          if ($(el).val() == 'Pilih jenis pengiriman') {
+            $('.btn-pembayaran').prop('disabled', true);
+            return;
+          }
+
+          $('.btn-pembayaran').prop('disabled', false);
+        });
+
         var id = $(this).data('id');
         var totalToko = Number($(`.total[data-id="${id}"]`).data('total'));
         var ongkir = Number($(this).val());

@@ -66,7 +66,7 @@ class PesananController extends Controller
     public function show($id)
     {
         $transaksi = Transaksi::query()
-            ->with(['transaksiDetails.barang'])
+            ->with(['transaksiDetails.barang', 'pengembalian', 'alamat.kota.provinsi'])
             ->find($id);
 
         return view('toko.pesanan.show', compact('transaksi'));

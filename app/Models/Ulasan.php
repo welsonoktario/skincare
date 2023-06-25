@@ -19,9 +19,4 @@ class Ulasan extends Model
     {
         return $this->belongsToThrough(User::class, [Transaksi::class, TransaksiDetail::class]);
     }
-
-    public function fotos()
-    {
-        return $this->morphMany(Foto::class, 'fotoable');
-    }
 }

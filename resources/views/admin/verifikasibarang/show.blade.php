@@ -61,7 +61,7 @@
 
     <div class="col-12 mt-2 diskon-col d-none">
       <label for="harga_diskon" class="form-label">Harga Setelah Diskon</label>
-      <input type="number" class="form-control" value="{{ $barang->hargaDiskon }}" readonly />
+      <input type="number" class="form-control" value="{{ $barang->harga_diskon }}" readonly />
     </div>
   </div>
 

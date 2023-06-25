@@ -42,6 +42,7 @@ class Transaksi extends Model
         return $this->hasOne(Pengembalian::class);
     }
 
+    // Mengambil jumlah ulasan transaksi
     public function getUlasanCountAttribute()
     {
         $ulasanCount = 0;
