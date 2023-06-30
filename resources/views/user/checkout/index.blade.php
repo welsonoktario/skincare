@@ -10,6 +10,7 @@
       <form action="{{ route('user.checkout.checkout') }}" enctype="multipart/form-data" method="post" id="formPembayaran">
         @csrf
         <input type="hidden" name="json" id="json_callback">
+        <input type="hidden" name="token" id="token">
         <h4>Alamat Pengiriman</h4>
         <div class="row">
           <div class="col-12">
@@ -341,6 +342,7 @@
             })
             .then((res) => res.json())
             .then((data) => {
+              $('#token').val(data.snapToken);
               window.snap.pay(data.snapToken, {
                 onSuccess: function(result) {
                   send_response_to_form(result);
@@ -366,7 +368,7 @@
       });
 
       function send_response_to_form(result) {
-        document.getElementById('json_callback').value = JSON.stringify(result);
+        $('#json_callback').val(JSON.stringify(result));
         $('#formPembayaran').submit();
       }
 

@@ -82,6 +82,14 @@ class TransaksiController extends Controller
             }
         }
 
+        if ($request->has('lanjutkan')) {
+            $transaksi->update([
+                'status' => $request->status
+            ]);
+
+            return redirect()->route('user.transaksi.index', ['tipe' => 'menunggu konfirmasi']);
+        }
+
         if ($request->has('ulasan')) {
             // dd($request->all());
             $ratings = $request->ratings;

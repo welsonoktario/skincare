@@ -2,7 +2,7 @@
   <h5 class="modal-title">Edit Rekening</h5>
 </div>
 
-<form class="modal-body" id="formRekening" action="{{ route('toko.rekening.update', $rekening->id) }}" method="POST">
+<form class="modal-body" id="formRekening" action="{{ route('user.profil.rekening.update', $rekening->id) }}" method="POST">
   @csrf
   @method('PUT')
 

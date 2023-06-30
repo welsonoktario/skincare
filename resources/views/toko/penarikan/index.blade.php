@@ -37,7 +37,7 @@
             <tbody>
               @foreach ($penarikans as $p)
                 @php
-                  $rekening = $p->rekening;
+                  $rekening = $p->rekeningWithTrashed;
                   $bank = $rekening->bank;
                 @endphp
                 <tr class="listPenarikan">

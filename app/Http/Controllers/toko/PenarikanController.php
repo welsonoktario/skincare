@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penarikan;
-use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class PenarikanController extends Controller
 {
@@ -20,10 +21,10 @@ class PenarikanController extends Controller
     {
         $user = Auth::user()->load('toko');
         $toko = $user->toko;
-        $penarikans = $user->penarikans()
-            ->with(['rekening.bank'])
+        $penarikans = Penarikan::query()
+            ->with(['rekeningWithTrashed.bank'])
+            ->whereHas('rekeningWithTrashed', fn ($q) => $q->where('user_id', $user->id))
             ->where('asal_penarikan', 'toko')
-            ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -54,15 +55,25 @@ class PenarikanController extends Controller
     {
         $user = User::query()->find(Auth::id());
         $toko = $user->toko;
-        $user->penarikans()
-            ->create([
-                'rekening_id' => $request->rekening,
-                'nominal' => $request->nominal,
-                'asal_penarikan' => 'toko'
+
+        DB::beginTransaction();
+        try {
+            $user->penarikans()
+                ->create([
+                    'rekening_id' => $request->rekening,
+                    'nominal' => $request->nominal,
+                    'asal_penarikan' => 'toko'
+                ]);
+            $user->toko()->update([
+                'saldo' => $toko->saldo - $request->nominal
             ]);
-        $user->toko()->update([
-            'saldo' => $toko->saldo - $request->nominal
-        ]);
+
+            DB::commit();
+            alert()->success('Sukses', 'Data penarikan berhasil ditambahkan');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menambah penarikan');
+        }
 
         return redirect()->route('toko.penarikan.index');
     }

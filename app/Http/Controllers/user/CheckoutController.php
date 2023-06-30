@@ -132,8 +132,8 @@ class CheckoutController extends Controller
                     // Bayar pake midtrans
                     $json = json_decode($request->get('json'));
                     $pembayaran = $json->payment_type;
-                    $payment_code = isset($json->payment_code) ? $json->payment_code : null;
                     $status = $json->transaction_status == 'settlement' ? 'menunggu konfirmasi' : 'menunggu pembayaran';
+                    $payment_code = $request->token;
 
                     $transaksi = Auth::user()
                         ->transaksis()

@@ -45,10 +45,21 @@ class TopupController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
+        $json = json_decode($request->get('json'));
+        $pembayaran = $json->payment_type;
+        $dibayar = $json->transaction_status == 'settlement' ? true : false;
+        $payment_code = $request->token;
         $nominal = $request->nominal;
-        $topup = Auth::user()
+
+        Auth::user()
             ->topups()
-            ->create(compact('nominal'));
+            ->create([
+                'nominal' => $nominal,
+                'jenis_pembayaran' => $pembayaran,
+                'kode_pembayaran' => $payment_code,
+                'dibayar' => $dibayar,
+            ]);
 
         return redirect()->back();
     }
@@ -86,26 +97,19 @@ class TopupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $fileBuktiPembayaran = $request->file('bukti_pembayaran');
+        $user = Auth::user();
+        $topup = Topup::query()->find($id);
+        $dibayar = filter_var($request->status, FILTER_VALIDATE_BOOLEAN);
 
-        try {
-            $buktiPembayaran = Storage::disk('local')->putFileAs(
-                'topups',
-                $fileBuktiPembayaran,
-                "topup-{$id}.{$fileBuktiPembayaran->extension()}"
-            );
-            $topup = Topup::query()->find($id);
-            $topup->update([
-                'bukti_pembayaran' => $buktiPembayaran,
-                'status' => 'pending'
-            ]);
+        $topup->update([
+            'dibayar' => $dibayar,
+        ]);
 
-            return redirect()->back();
-        } catch (Throwable $e) {
-            return redirect()->back()->withErrors([
-                'msg' => 'Terjadi kesalahan memverifikasi pembayaran'
-            ]);
+        if ($dibayar) {
+            $user->update(['saldo' => $user->saldo + $topup->nominal]);
         }
+
+        return redirect()->back();
     }
 
     /**
@@ -151,12 +155,14 @@ class TopupController extends Controller
 
     public function processTopup(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
         $getId = $user->id;
         $nominal = $request->nominal;
         // Bayar pake midtrans
-        $json = json_decode($request->get('json'));
+        $json = json_decode($request->get('json_callback'));
         $status = $json->transaction_status == 'settlement' ? true : false;
+        $token = $request->token;
 
         DB::beginTransaction();
         try {
@@ -166,6 +172,7 @@ class TopupController extends Controller
                     'nominal' => $nominal,
                     'dibayar' => $status,
                     'jenis_pembayaran' => $json->payment_type,
+                    'kode_pembayaran' => $token
                 ]);
 
             if ($status) {

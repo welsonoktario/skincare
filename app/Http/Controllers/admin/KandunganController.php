@@ -38,10 +38,16 @@ class KandunganController extends Controller
      */
     public function store(Request $request)
     {
-        Kandungan::query()
+        $store = Kandungan::query()
             ->create([
                 'nama' => $request->nama
             ]);
+
+        if ($store) {
+            alert()->success('Sukses', 'Data kandungan berhasil ditambahkan');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah kandungan');
+        }
 
         return redirect()->back();
     }
@@ -80,9 +86,15 @@ class KandunganController extends Controller
     public function update(Request $request, $id)
     {
         $kandungan = Kandungan::find($id);
-        $kandungan->update([
+        $update = $kandungan->update([
             'nama' => $request->nama
         ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Data kandungan berhasil diubah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah data kandungan');
+        }
 
         return redirect()->back();
     }
@@ -95,9 +107,15 @@ class KandunganController extends Controller
      */
     public function destroy($id)
     {
-        Kandungan::query()
+        $delete = Kandungan::query()
             ->find($id)
             ->delete();
+
+        if ($delete) {
+            alert()->success('Sukses', 'Data kandungan berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus data kandungan');
+        }
 
         return redirect()->back();
     }

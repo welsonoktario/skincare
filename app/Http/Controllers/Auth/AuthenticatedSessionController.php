@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         // return redirect()->intended(RouteServiceProvider::HOME);
         if (Auth::user()->role == 'admin') {
-            return redirect()->route('admin.homeadmin');
+            return redirect()->route('admin.toko.index');
         }
 
         return redirect()->back();

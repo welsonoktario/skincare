@@ -5,12 +5,6 @@
     </div>
     <ul class="sidebar-menu">
       <li class="menu-header">Menu</li>
-      <li class="nav-item">
-        <a href="{{ route('admin.homeadmin') }}" class="nav-link">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-      <li>
       <li>
         <a href="{{ route('admin.kategori.index') }}" class="nav-link">
           <i class="fas fa-layer-group"></i>

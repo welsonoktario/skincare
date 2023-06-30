@@ -9,7 +9,9 @@ use App\Models\Kandungan;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class BarangController extends Controller
 {
@@ -59,28 +61,38 @@ class BarangController extends Controller
         $kandungans = $request->kandungans;
         $fotos = $request->file('fotos');
 
-        $barang = $toko->barangs()->create([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'jenis_diskon' => $request->jenis_diskon,
-            'nominal_diskon' => $request->nominal_diskon,
-            'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
-            'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
-        ]);
-
-        $barang->kandungans()->sync($kandungans);
-
-        foreach ($fotos as $foto) {
-            $path = $foto->store('img/barang', 'public');
-            $barang->fotos()->create([
-                'path' => $path
+        DB::beginTransaction();
+        try {
+            $barang = $toko->barangs()->create([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'harga' => $request->harga,
+                'stok' => $request->stok,
+                'berat' => $request->berat,
+                'jenis_diskon' => $request->jenis_diskon,
+                'nominal_diskon' => $request->nominal_diskon,
+                'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
+                'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
             ]);
+
+            $barang->kandungans()->sync($kandungans);
+
+            foreach ($fotos as $foto) {
+                $path = $foto->store('img/barang', 'public');
+                $barang->fotos()->create([
+                    'path' => $path
+                ]);
+            }
+
+            DB::commit();
+
+            alert()->success('Sukses', 'Barang berhasil ditambahkan');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Error', 'Terjadi kesalahan menambah barang');
         }
 
-        return redirect()->route('toko.barang.index')->with('toast_success', 'Barang telah ditambah');
+        return redirect()->route('toko.barang.index');
     }
 
 
@@ -132,34 +144,43 @@ class BarangController extends Controller
         $kandungans = $request->kandungans;
         $fotos = $request->file('fotos');
 
-        $barang->update([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'jenis_diskon' => $request->jenis_diskon ?: null,
-            'nominal_diskon' => $request->nominal_diskon ?: null,
-            'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
-            'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
-        ]);
+        DB::beginTransaction();
+        try {
+            $barang->update([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'harga' => $request->harga,
+                'stok' => $request->stok,
+                'berat' => $request->berat,
+                'jenis_diskon' => $request->jenis_diskon ?: null,
+                'nominal_diskon' => $request->nominal_diskon ?: null,
+                'kategori_id' => $request->kategori != 'lainnya' ? $request->kategori : null,
+                'etalase_id' => $request->etalase == 'semua' ? null : $request->etalase,
+            ]);
 
-        $barang->kandungans()->sync($kandungans);
+            $barang->kandungans()->sync($kandungans);
 
-        if ($fotos) {
-            foreach ($barang->fotos as $foto) {
-                if ($storage->exists($foto->path)) {
-                    $storage->delete($foto->path);
-                    $foto->delete();
+            if ($fotos) {
+                foreach ($barang->fotos as $foto) {
+                    if ($storage->exists($foto->path)) {
+                        $storage->delete($foto->path);
+                        $foto->delete();
+                    }
+                }
+
+                foreach ($fotos as $foto) {
+                    $path = $foto->store('img/barang', 'public');
+                    $barang->fotos()->create([
+                        'path' => $path
+                    ]);
                 }
             }
+            DB::commit();
 
-            foreach ($fotos as $foto) {
-                $path = $foto->store('img/barang', 'public');
-                $barang->fotos()->create([
-                    'path' => $path
-                ]);
-            }
+            alert()->success('Sukses', 'Barang berhasil ditambahkan');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menambah barang');
         }
 
         return redirect()->route('toko.barang.index');
@@ -174,10 +195,15 @@ class BarangController extends Controller
     public function destroy($id)
     {
         $barangs = Barang::whereId($id)->firstOrFail();
-        $namaBarangs = $barangs->nama;
-        $barangs->delete();
+        $delete = $barangs->delete();
 
-        return redirect()->route('toko.barang.index')->with('success', 'Barang dengan nama ' . $namaBarangs . ' telah dihapus');
+        if ($delete) {
+            alert()->success('Sukses', 'Barang berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus barang');
+        }
+
+        return redirect()->route('toko.barang.index');
     }
 
     public function loadFotos($id)

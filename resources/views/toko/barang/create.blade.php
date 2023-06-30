@@ -65,7 +65,7 @@
 
     <div class="mb-3">
       <label class="form-label" for="deskripsi">Deskripsi Barang</label>
-      <textarea class="form-control h-100" placeholder="Deskripsi barang" name="deskripsi"></textarea>
+      <textarea class="form-control h-100" placeholder="Deskripsi barang" name="deskripsi" required></textarea>
     </div>
 
     <div class="mb-3">

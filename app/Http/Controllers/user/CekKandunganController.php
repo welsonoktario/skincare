@@ -119,7 +119,7 @@ class CekKandunganController extends Controller
 
             if ($hasilInteraksi) {
                 // tambah nama pasangan barang ex: "nivea + vaseline"
-                $hasilInteraksi->nama = $hasilInteraksi->barang_satu. ' + ' . $hasilInteraksi->barang_dua;
+                $hasilInteraksi->nama = collect([$hasilInteraksi->barang_satu, $hasilInteraksi->barang_dua])->sort()->join(' + ');
                 // hasil interaksi ditambah ke array $hasilInteraksis
                 if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
 

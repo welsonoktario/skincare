@@ -7,6 +7,7 @@ use App\Models\Penarikan;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenarikanController extends Controller
 {
@@ -19,7 +20,7 @@ class PenarikanController extends Controller
     {
         $jenis = $request->jenis;
         $penarikans = Penarikan::query()
-            ->with(['rekening.user.toko', 'rekening.bank'])
+            ->with(['rekeningWithTrashed.user.toko', 'rekeningWithTrashed.bank'])
             ->where('status', 'pending')
             ->when($request->jenis, function ($q) use ($jenis) {
                 return $q->where('asal_penarikan', $jenis);
@@ -86,24 +87,27 @@ class PenarikanController extends Controller
         $status = ['diterima', 'ditolak'];
         $penarikan = Penarikan::query()->find($id);
 
-        if (in_array($aksi, $status)) {
-            $penarikan->update(['status' => $aksi]);
+        DB::beginTransaction();
 
-            if ($aksi == 'diterima') {
-                if ($jenis == 'user') {
-                    $user = User::query()->find($penarikan->rekening->user_id);
-                } elseif ($jenis == 'toko') {
-                    $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
+        try {
+            if (in_array($aksi, $status)) {
+                $penarikan->update(['status' => $aksi]);
+
+                if ($aksi == 'ditolak') {
+                    if ($jenis == 'user') {
+                        $user = User::query()->find($penarikan->rekening->user_id);
+                        $user->update(['saldo' => $user->saldo + $penarikan->nominal]);
+                    } elseif ($jenis == 'toko') {
+                        $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
+                        $toko->update(['saldo' => $toko->saldo + $penarikan->nominal]);
+                    }
                 }
-            } elseif ($aksi == 'ditolak') {
-                if ($jenis == 'user') {
-                    $user = User::query()->find($penarikan->rekening->user_id);
-                    $user->update(['saldo' => $user->saldo + $penarikan->nominal]);
-                } elseif ($jenis == 'toko') {
-                    $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
-                    $toko->update(['saldo' => $toko->saldo + $penarikan->nominal]);
-                }
+                DB::commit();
+                alert()->success('Sukses', 'Data penarikan berhasil diubah');
             }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah data penarikan');
         }
 
         return redirect()->back();

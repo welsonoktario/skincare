@@ -20,6 +20,7 @@ class CreateRekeningsTable extends Migration
             $table->string('nomor_rekening');
             $table->string('nama_penerima');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

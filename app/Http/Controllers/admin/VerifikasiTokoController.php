@@ -82,16 +82,20 @@ class VerifikasiTokoController extends Controller
             try {
                 $verifikasitokos->update(['status' => 'ditolak']);
                 Toko::destroy($verifikasitokos->id);
-                return redirect()->route('admin.verifikasitoko.index')->with('success', "Verifikasi Toko  '{$verifikasitokos->nama}' berhasil ditolak");
+                alert()->success('Sukses', "Verifikasi Toko  '{$verifikasitokos->nama}' berhasil ditolak");
+                return redirect()->route('admin.verifikasitoko.index');
             } catch (Throwable $e) {
-                return redirect()->route('admin.verifikasitoko.index')->with('fail', 'Terjadi kesalahan sistem');
+                alert()->success('Sukses', 'Terjadi kesalahan sistem');
+                return redirect()->route('admin.verifikasitoko.index');
             }
         } elseif ($request->aksi == 'diterima') {
             try {
                 $verifikasitokos->update(['status' => 'diterima']);
-                return redirect()->route('admin.verifikasitoko.index')->with('success', "Verifikasi Toko  '{$verifikasitokos->user->nama}' berhasil diterima");
+                alert()->success('Sukses', "Verifikasi Toko  '{$verifikasitokos->user->nama}' berhasil diterima");
+                return redirect()->route('admin.verifikasitoko.index');
             } catch (Throwable $e) {
-                return redirect()->route('admin.verifikasitoko.index')->with('fail', 'Terjadi kesalahan sistem');
+                alert()->success('Sukses', 'Terjadi kesalahan sistem');
+                return redirect()->route('admin.verifikasitoko.index');
             }
         }
     }

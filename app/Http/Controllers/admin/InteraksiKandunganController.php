@@ -45,14 +45,28 @@ class InteraksiKandunganController extends Controller
      */
     public function store(Request $request)
     {
-        DB::table('interaksi_kandungans')
+        $k1 = $request->k1;
+        $k2 = $request->k2;
+
+        if ($k1 > $k2) {
+            $k1 = $request->k2;
+            $k2 = $request->k1;
+        }
+
+        $insert = DB::table('interaksi_kandungans')
             ->insert([
-                'kandungan_satu_id' => $request->k1,
-                'kandungan_dua_id' => $request->k2,
+                'kandungan_satu_id' => $k1,
+                'kandungan_dua_id' => $k2,
                 'jenis_interaksi' => $request->jenis,
                 'deskripsi_interaksi' => $request->deskripsi,
                 'sumber' => $request->sumber,
             ]);
+
+        if ($insert) {
+            alert()->success('Sukses', 'Data interaksi kandungan berhasil ditambahkan');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah interaksi kandungan');
+        }
 
         return redirect()->back();
     }
@@ -88,7 +102,7 @@ class InteraksiKandunganController extends Controller
      */
     public function update(Request $request, $k1, $k2)
     {
-        DB::table('interaksi_kandungans')
+        $update = DB::table('interaksi_kandungans')
             ->whereRaw('kandungan_satu_id = ? AND kandungan_dua_id = ?', [$k1, $k2])
             ->limit(1)
             ->update([
@@ -98,6 +112,12 @@ class InteraksiKandunganController extends Controller
                 'deskripsi_interaksi' => $request->deskripsi,
                 'sumber' => $request->sumber
             ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Data interaksi kandungan berhasil diubah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah interaksi kandungan');
+        }
 
         return redirect()->back();
     }
@@ -111,12 +131,18 @@ class InteraksiKandunganController extends Controller
      */
     public function destroy($k1, $k2)
     {
-        DB::table('interaksi_kandungans')
+        $delete = DB::table('interaksi_kandungans')
             ->where([
                 ['kandungan_satu_id', $k1],
                 ['kandungan_dua_id', $k2],
             ])
             ->delete();
+
+        if ($delete) {
+            alert()->success('Sukses', 'Data interaksi kandungan berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah interaksi kandungan');
+        }
 
         return redirect()->back();
     }

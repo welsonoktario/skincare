@@ -16,7 +16,11 @@ class VerifikasiBarangController extends Controller
      */
     public function index()
     {
-        $verifikasibarangs = Barang::where('status', 'pending')->get();
+        $verifikasibarangs = Barang::query()
+            ->where('status', 'pending')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
         return view('admin.verifikasibarang.index', compact('verifikasibarangs'));
     }
 
@@ -82,16 +86,20 @@ class VerifikasiBarangController extends Controller
             try {
                 $verifikasibarangs->update(['status' => 'ditolak']);
                 Barang::destroy($verifikasibarangs->id);
-                return redirect()->route('admin.verifikasibarang.index')->with('success', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil ditolak");
+                alert()->success('Sukses', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil ditolak");
+                return redirect()->route('admin.verifikasibarang.index');
             } catch (Throwable $e) {
-                return redirect()->route('admin.verifikasibarang.index')->with('fail', 'Terjadi kesalahan sistem');
+                alert()->error('Gagal', 'Terjadi kesalahan sistem');
+                return redirect()->route('admin.verifikasibarang.index');
             }
         } elseif ($request->aksi == 'diterima') {
             try {
                 $verifikasibarangs->update(['status' => 'diterima']);
-                return redirect()->route('admin.verifikasibarang.index')->with('success', "Verifikasi Barang  '{$verifikasibarangs->user->nama}' berhasil diterima");
+                alert()->success('Sukses', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil diterima");
+                return redirect()->route('admin.verifikasibarang.index');
             } catch (Throwable $e) {
-                return redirect()->route('admin.verifikasibarang.index')->with('fail', 'Terjadi kesalahan sistem');
+                alert()->error('Gagal', 'Terjadi kesalahan sistem');
+                return redirect()->route('admin.verifikasibarang.index');
             }
         }
     }

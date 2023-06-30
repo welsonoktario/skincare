@@ -179,25 +179,52 @@
 
                 @foreach ($hasil as $k)
                   <div @class([
-                      'alert',
-                      'alert-success' => $k->jenis_interaksi == 'baik',
-                      'alert-danger' => $k->jenis_interaksi == 'buruk',
+                      'alert text-dark border',
+                      'border-success' => $k->jenis_interaksi == 'baik',
+                      'border-danger' => $k->jenis_interaksi == 'buruk',
                   ])>
-                    <div class="alert-title text-capitalize">
+                    <div @class([
+                        'alert-title text-capitalize',
+                        'text-success' => $k->jenis_interaksi == 'baik',
+                        'text-danger' => $k->jenis_interaksi == 'buruk',
+                    ])>
                       Interaksi {{ $k->jenis_interaksi }}
                     </div>
-                    <p class="fw-semibold">
-                      <span class="fw-semibold">{{ "{$k->barang_satu} ({$k->kandungan_satu})" }}</span> dan <span
-                        class="fw-semibold">{{ "{$k->barang_dua} ({$k->kandungan_dua})" }}</span>
-                      @if ($k->jenis_interaksi == 'baik')
-                        dapat digunakan dengan bersamaan
-                      @elseif ($k->jenis_interaksi == 'buruk')
-                        tidak dapat digunakan bersamaan
-                      @else
-                        tidak memiliki interaksi apapun
-                      @endif
+                    <p class="mb-2" style="line-height: 1.2">
+                      <span @class([
+                          'fw-semibold',
+                          'text-success' => $k->jenis_interaksi == 'baik',
+                          'text-danger' => $k->jenis_interaksi == 'buruk',
+                      ])>
+                        {{ $k->barang_satu }}
+                      </span>
+                      dengan kandungan
+                      <span @class([
+                          'fw-semibold',
+                          'text-success' => $k->jenis_interaksi == 'baik',
+                          'text-danger' => $k->jenis_interaksi == 'buruk',
+                      ])>
+                        {{ $k->kandungan_satu }}
+                      </span>
+                      dan
+                      <span @class([
+                          'fw-semibold',
+                          'text-success' => $k->jenis_interaksi == 'baik',
+                          'text-danger' => $k->jenis_interaksi == 'buruk',
+                      ])>
+                        {{ $k->barang_dua }}
+                      </span>
+                      dengan kandungan
+                      <span @class([
+                          'fw-semibold',
+                          'text-success' => $k->jenis_interaksi == 'baik',
+                          'text-danger' => $k->jenis_interaksi == 'buruk',
+                      ])>
+                        {{ $k->kandungan_dua }}
+                      </span>
                     </p>
-                    {{ $k->deskripsi_interaksi }} ({{ $k->sumber }})
+                    <p class="fw-light" style="line-height: 1.2">{{ $k->deskripsi_interaksi }}</p>
+                    <p class="mb-0 mt-1 text-small fst-italic text-black-50">Sumber: {{ $k->sumber }}</p>
                   </div>
                 @endforeach
               @endforeach

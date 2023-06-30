@@ -17,9 +17,10 @@ class RekeningController extends Controller
      */
     public function index()
     {
-        $rekenings = Rekening::with(['bank'])->where('user_id', Auth::user()->id)->get();
+        $rekenings = Rekening::with(['bank'])
+            ->where('user_id', Auth::user()->id)
+            ->get();
 
-        // dd($rekenings);
         return view('toko.rekening.index', compact('rekenings'));
 
     }
@@ -44,13 +45,19 @@ class RekeningController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()
+        $store = Auth::user()
             ->rekenings()
             ->create([
                 'bank_id' => $request->bank,
                 'nomor_rekening' => $request->rekening,
                 'nama_penerima' => $request->penerima
             ]);
+
+        if ($store) {
+            alert()->success('Sukses', 'Data rekening berhasil ditambah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah data rekening');
+        }
 
         return redirect()->route('toko.rekening.index');
     }
@@ -82,11 +89,17 @@ class RekeningController extends Controller
     {
         $rekening = Rekening::query()->find($id);
 
-        $rekening->update([
+        $update = $rekening->update([
             'bank_id' => $request->bank,
             'nomor_rekening' => $request->rekening,
             'nama_penerima' => $request->penerima,
         ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Data rekening berhasil diubah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah data rekening');
+        }
 
         return redirect()->route('toko.rekening.index');
     }
@@ -99,7 +112,13 @@ class RekeningController extends Controller
      */
     public function destroy($id)
     {
-        Rekening::query()->find($id)->delete();
+        $delete = Rekening::query()->find($id)->delete();
+
+        if ($delete) {
+            alert()->success('Sukses', 'Data rekening berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus data rekening');
+        }
 
         return redirect()->route('toko.rekening.index');
     }

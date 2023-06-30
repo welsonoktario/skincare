@@ -8,7 +8,9 @@ use App\Models\Provinsi;
 use App\Models\Toko;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ProfilController extends Controller
 {
@@ -84,22 +86,32 @@ class ProfilController extends Controller
     public function update(Request $request, $id)
     {
         $toko = Toko::query()->find($id);
-        $toko->update([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'kota_id' => $request->kota,
-        ]);
 
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $storage = Storage::disk('public');
+        DB::beginTransaction();
+        try {
+            $toko->update([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'kota_id' => $request->kota,
+            ]);
 
-            if ($storage->exists($toko->foto)) {
-                $storage->delete(($toko->foto));
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $storage = Storage::disk('public');
+
+                if ($storage->exists($toko->foto)) {
+                    $storage->delete(($toko->foto));
+                }
+
+                $path = $foto->store('img/toko', 'public');
+                $toko->update(['foto' => $path]);
             }
 
-            $path = $foto->store('img/toko', 'public');
-            $toko->update(['foto' => $path]);
+            DB::commit();
+            alert()->success('Sukses', 'Profil toko berhasl diubah');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah profil toko');
         }
 
         return redirect()->back();

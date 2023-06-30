@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Ekspedisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class EkspedisiController extends Controller
 {
@@ -34,8 +36,17 @@ class EkspedisiController extends Controller
         $toko = Auth::user()->toko;
         $ekspedisis = $request->ekspedisis;
 
-        $toko->ekspedisis()->sync($ekspedisis);
+        DB::beginTransaction();
+        try {
+            $toko->ekspedisis()->sync($ekspedisis);
+            DB::commit();
 
-        return redirect()->back();
+            alert()->success('Sukses', 'Pengaturan ekspedisi berhasil disimpan');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menyimpan pengaturan ekspedisi');
+        }
+
+        return redirect()->route('toko.ekspedisi.index');
     }
 }

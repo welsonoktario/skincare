@@ -10,11 +10,9 @@
           <table id="tableVerifikasiToko" class="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No.</th>
                 <th>Nama Toko</th>
-                <th>Alamat</th>
                 <th>No. HP</th>
-                <th>Deskripsi</th>
                 <th>Nama Pemilik Toko</th>
                 <th></th>
               </tr>
@@ -22,11 +20,9 @@
             <tbody>
               @foreach ($verifikasitokos as $vt)
                 <tr class="listVerifikasiToko">
-                  <td>{{ $vt->id }}</td>
+                  <td>{{ $loop->iteration }}</td>
                   <td>{{ $vt->nama }}</td>
-                  <td>{{ $vt->alamat }}</td>
                   <td>{{ $vt->no_telepon }}</td>
-                  <td>{{ $vt->telepon }}</td>
                   <td>{{ $vt->user->nama }}</td>
                   <td class="d-inline-flex justify-content-center w-100">
                     <button class="btnDetailVerifikasiToko btn btn-sm btn-secondary text-white"
@@ -112,7 +108,7 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
-            name: 'ID',
+            name: 'No.',
             orderable: true
           },
           {
@@ -120,15 +116,7 @@
             orderable: true
           },
           {
-            name: 'Alamat',
-            orderable: true
-          },
-          {
-            name: 'No HP',
-            orderable: true
-          },
-          {
-            name: 'Deskripsi',
+            name: 'No. HP',
             orderable: true
           },
           {

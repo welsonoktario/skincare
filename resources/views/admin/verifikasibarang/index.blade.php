@@ -10,7 +10,7 @@
           <table id="tableVerifikasiBarang" class="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No.</th>
                 <th>Nama Barang</th>
                 <th>Harga</th>
                 <th>Stok</th>
@@ -22,7 +22,7 @@
             <tbody>
               @foreach ($verifikasibarangs as $b)
                 <tr class="listVerifikasiBarang">
-                  <td>{{ $b->id }}</td>
+                  <td>{{ $loop->iteration }}</td>
                   <td>{{ $b->nama }}</td>
                   <td>{{ $b->harga }}</td>
                   <td>{{ $b->stok }}</td>
@@ -112,7 +112,7 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
-            name: 'ID',
+            name: 'No.',
             orderable: true
           },
           {

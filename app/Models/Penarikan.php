@@ -12,4 +12,9 @@ class Penarikan extends Model
     {
         return $this->belongsTo(Rekening::class);
     }
+
+    public function rekeningWithTrashed()
+    {
+        return $this->belongsTo(Rekening::class, 'rekening_id')->withTrashed();
+    }
 }

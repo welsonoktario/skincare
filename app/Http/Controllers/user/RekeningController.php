@@ -87,7 +87,7 @@ class RekeningController extends Controller
             'nama_penerima' => $request->penerima,
         ]);
 
-        return redirect()->route('user.profil.rekening.index');
+        return redirect()->back();
     }
 
     /**

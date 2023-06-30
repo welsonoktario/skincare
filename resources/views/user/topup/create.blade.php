@@ -1,13 +1,16 @@
 <form id="formTopup" action="{{ route('user.topup.process') }}" method="POST" enctype="multipart/form-data">
+  @csrf
+
+  <input type="hidden" name="token" id="token" hidden>
   <div class="modal-header">
     <h5 class="modal-title">Tambah Saldo</h5>
   </div>
   <div class="modal-body">
     @csrf
-    <input type="hidden" name="json" id="json_callback">
+    <input type="hidden" name="json_callback" id="json_callback">
     <div class="form-group">
       <label class="control-label" for="nominal">Nominal</label>
-      <input type="number" class="form-control" id="nominal" placeholder="Masukkan Nominal" name="nominal">
+      <input type="number" class="form-control" id="nominal" placeholder="Masukkan Nominal" name="nominal" required>
     </div>
 
     <div class="row row-cols-3">

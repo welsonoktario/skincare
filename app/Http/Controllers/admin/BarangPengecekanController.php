@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BarangPengecekan;
 use App\Models\Kandungan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -55,15 +56,21 @@ class BarangPengecekanController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        $foto = $request->file('foto')->store('img/barang-pengecekan', 'public');
+        try {
+            $foto = $request->file('foto')->store('img/barang-pengecekan', 'public');
 
-        $barangPengecekan = BarangPengecekan::query()
-            ->create([
-                'nama' => $request->nama,
-                'foto' => $foto,
-            ]);
-        $barangPengecekan->kandungans()->attach($request->kandungans);
+            $barangPengecekan = BarangPengecekan::query()
+                ->create([
+                    'nama' => $request->nama,
+                    'foto' => $foto,
+                ]);
+            $barangPengecekan->kandungans()->attach($request->kandungans);
+
+            DB::commit();
+            alert()->success('Sukses', 'Data barang pengecekan berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return redirect()->back();
     }
@@ -114,6 +121,8 @@ class BarangPengecekanController extends Controller
             $barangPengecekan->kandungans()->sync($request->kandungans);
             $barangPengecekan->save();
         }
+        DB::commit();
+        alert()->success('Sukses', 'Data barang pengecekan berhasil ditambahkan');
 
         return redirect()->back();
     }
@@ -126,11 +135,22 @@ class BarangPengecekanController extends Controller
      */
     public function destroy($id)
     {
-        $barangPengecekan = BarangPengecekan::query()
-            ->findOrFail($id);
+        $barangPengecekan = BarangPengecekan::query()->find($id);
 
-        $barangPengecekan->kandungans()->detach();
-        $barangPengecekan->delete();
+        DB::beginTransaction();
+        try {
+            $barangPengecekan->kandungans()->detach();
+            if (Storage::disk('public')->exists($barangPengecekan->foto)) {
+                Storage::disk('public')->delete($barangPengecekan->foto);
+            }
+            $barangPengecekan->delete();
+
+            DB::commit();
+            alert()->success('Sukses', 'Data barang pengecekan berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus data barang pengecekan');
+        }
 
         return redirect()->back();
     }

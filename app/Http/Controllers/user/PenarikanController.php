@@ -18,9 +18,10 @@ class PenarikanController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $penarikans = $user->penarikans()
-            ->with(['rekening.bank'])
-            ->whereHas('rekening', fn ($q) => $q->where('user_id', $user->id))
+        $penarikans = Penarikan::query()
+            ->with(['rekeningWithTrashed.bank'])
+            ->whereHas('rekeningWithTrashed', fn ($q) => $q->where('user_id', $user->id))
+            ->where('asal_penarikan', 'user')
             ->orderBy('created_at', 'desc')
             ->get();
 

@@ -21,6 +21,15 @@
     <input type="text" name="aksi" id="aksi" hidden>
   </form>
 
+  <form id="formPembayaran" class="d-none" method="POST">
+    @csrf
+    @method('PUT')
+
+    <input type="text" name="lanjutkan" hidden>
+    <input type="text" name="json_callback" id="json_callback" hidden>
+    <input type="text" name="status" id="status" hidden>
+  </form>
+
   <ul class="nav nav-pills nav-fill mt-4">
     <li class="nav-item">
       <a class="nav-link px-2 py-1 {{ $currentTipe == 'semua' ? 'active' : '' }}"
@@ -110,7 +119,14 @@
               </div>
             </div>
           </div>
-          @if ($transaksi->status == 'dikirim' && !$transaksi->pengembalian)
+          @if ($transaksi->status == 'menunggu pembayaran')
+            <div class="d-flex mt-3 justify-content-end">
+              <button class="btn btn-aksi btn-secondary text-white" data-transaksi="{{ $transaksi->id }}"
+                data-aksi="bayar" data-token="{{ $transaksi->kode_pembayaran }}">
+                Lanjutkan Pembayaran
+              </button>
+            </div>
+          @elseif ($transaksi->status == 'dikirim' && !$transaksi->pengembalian)
             <div class="d-flex mt-3 justify-content-end">
               <button class="btn btn-aksi btn-secondary text-white" data-transaksi="{{ $transaksi->id }}"
                 data-aksi="pengembalian">
@@ -163,6 +179,8 @@
   <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
   <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
   <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-h7gacNDsOHUce4L3"></script>
   <script>
     $(document).ready(function() {
       $.fn.filepond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
@@ -210,8 +228,40 @@
 
         var {
           transaksi,
-          aksi
+          aksi,
+          token
         } = $(this).data();
+
+        if (aksi == 'bayar') {
+          window.snap.pay(token, {
+            onSuccess: function(result) {
+              $('#status').val('menunggu konfirmasi');
+              send_response_to_form(transaksi, result);
+            },
+            onPending: function(result) {
+              alert(
+                'Harap menyelesaikan pembayaran dalam waktu 24 Jam'
+              );
+              $('#status').val('menunggu pembayaran');
+              send_response_to_form(transaksi, result);
+            },
+            onError: function(result) {
+              alert('Pembayaran gagal.');
+
+            },
+            onClose: function() {
+              alert('Batalkan pembayaran?');
+            }
+          });
+
+          function send_response_to_form(id, result) {
+            $('#json_callback').val(JSON.stringify(result));
+            $('#formPembayaran').prop('action', route('user.transaksi.update', id));
+            $('#formPembayaran').submit();
+          }
+
+          return;
+        }
 
         modalDetail.modal('show');
         $('#modalDetailContent').html('');

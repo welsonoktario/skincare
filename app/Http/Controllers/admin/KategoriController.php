@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class KategoriController extends Controller
@@ -39,15 +40,23 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        $path = $request->file('icon')->store(
-            'img/kategori',
-            'public'
-        );
+        try {
+            $path = $request->file('icon')->store(
+                'img/kategori',
+                'public'
+            );
 
-        Kategori::create([
-            'nama' => $request->nama,
-            'icon' => $path,
-        ]);
+            Kategori::create([
+                'nama' => $request->nama,
+                'icon' => $path,
+            ]);
+
+            DB::commit();
+            alert()->success('Sukses', 'Data kategori berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menambah kategori');
+        }
 
         return redirect()->back();
     }
@@ -88,21 +97,30 @@ class KategoriController extends Controller
         $storage = Storage::disk('public');
         $kategori = Kategori::find($id);
 
-        if ($request->hasFile('icon')) {
-            $icon = $request->file('icon');
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('icon')) {
+                $icon = $request->file('icon');
 
-            if ($storage->exists($kategori->icon)) {
-                $storage->delete($kategori->icon);
+                if ($storage->exists($kategori->icon)) {
+                    $storage->delete($kategori->icon);
+                }
+
+                $path = $icon->store('img/kategori', 'public'); // img/kategori/fjbfoafboa.png/jpg
+
+                $kategori->nama = $request->nama;
+                $kategori->icon = $path; // img/kategori/fjbfoafboa.png/jpg
+                $kategori->save();
+            } else {
+                $kategori->nama = $request->nama;
+                $kategori->save();
             }
 
-            $path = $icon->store('img/kategori', 'public'); // img/kategori/fjbfoafboa.png/jpg
-
-            $kategori->nama = $request->nama;
-            $kategori->icon = $path; // img/kategori/fjbfoafboa.png/jpg
-            $kategori->save();
-        } else {
-            $kategori->nama = $request->nama;
-            $kategori->save();
+            DB::commit();
+            alert()->success('Sukses', 'Data kategori berhasil diubah');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah data kategori');
         }
 
         return redirect()->back();

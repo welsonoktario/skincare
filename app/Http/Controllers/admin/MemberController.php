@@ -78,13 +78,15 @@ class MemberController extends Controller
     {
         $members = User::find($id);
 
-        $members->update([
+        $update = $members->update([
             'nama' => $request->nama,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat,
         ]);
 
-        return redirect()->route('admin.member.index');
+        return $update
+            ? redirect()->route('admin.member.index')->with('errors', 'Terjadi kesalahan mengubah data member')
+            : redirect()->route('admin.member.index')->with('success', 'Data member berhasil diubah');
     }
 
     /**

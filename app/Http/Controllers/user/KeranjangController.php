@@ -238,6 +238,8 @@ class KeranjangController extends Controller
                         ]
                     ],
                 */
+
+
                 $hasilInteraksi = DB::table('interaksi_kandungans', 'ik') // FROM interaksi_kandungans AS ik
                     ->selectRaw(
                         'ik.jenis_interaksi AS jenis_interaksi,
@@ -254,14 +256,12 @@ class KeranjangController extends Controller
                         "interaksi_kandungans AS ik
                         INNER JOIN kandungans AS k1 ON k1.id = ik.kandungan_satu_id
                         INNER JOIN kandungans AS k2 ON k2.id = ik.kandungan_dua_id
-                        INNER JOIN barangs AS b1 ON b1.id = ? OR b1.id = ?
-                        INNER JOIN barangs AS b2 ON b2.id = ? OR b2.id = ?",
+                        INNER JOIN barangs AS b1 ON b1.id = ?
+                        INNER JOIN barangs AS b2 ON b2.id = ?",
                         [
                             //mengambil id barang dari pasangan
                             intval($p['k1']['id_barang']), // "1" ubah jadi 1
                             intval($p['k2']['id_barang']), // "2" ubah jadi 2
-                            intval($p['k2']['id_barang']),
-                            intval($p['k1']['id_barang'])
                         ]
                     )
                     // yang dimana kandungan_satu_id = id dari k1 (dari $p) DAN kandungan_satu_id = id dari k2 (dari $p)
@@ -309,7 +309,7 @@ class KeranjangController extends Controller
                 // kalo hasil interaksi ada di tabel interaksi_kandungans
                 if ($hasilInteraksi) {
                     // tambah nama pasangan barang ex: "nivea + vaseline"
-                    $hasilInteraksi->nama = $hasilInteraksi->barang_satu. ' + ' . $hasilInteraksi->barang_dua;
+                    $hasilInteraksi->nama = collect([$hasilInteraksi->barang_satu, $hasilInteraksi->barang_dua])->sort()->join(' + ');
                     // hasil interaksi ditambah ke array $hasilInteraksis
                     if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
 

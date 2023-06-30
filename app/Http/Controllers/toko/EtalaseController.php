@@ -42,15 +42,18 @@ class EtalaseController extends Controller
      */
     public function store(Request $request)
     {
-        // $etalases = Auth::user()->toko->etalase::create([
-
-        // ])
-        $etalases = Etalase::create([
+        $create = Etalase::create([
             'nama' => $request->nama_etalase,
             'toko_id' => Auth::user()->toko->id,
         ]);
-        // Alert::success('Sukses');
-        return redirect()->route('toko.etalase.index')->with('toast_success', 'Barang telah ditambah');
+
+        if ($create) {
+            alert()->success('Sukses', 'Etalase berhasil ditambahkan');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah etalase');
+        }
+
+        return redirect()->route('toko.etalase.index');
     }
 
     /**
@@ -89,10 +92,16 @@ class EtalaseController extends Controller
     {
         $etalases = Etalase::find($id);
 
-        $etalases->update([
+        $update = $etalases->update([
             //'nama' -> dipanggil di view edit (id, label), sedangkan $request->nama ini diambil dari nama database
             'nama' => $request->nama,
         ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Data etalase berhasil diubah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah data etalase');
+        }
 
         return redirect()->route('toko.etalase.index');
     }
@@ -107,8 +116,12 @@ class EtalaseController extends Controller
     {
         $etalases = Etalase::whereId($id)->firstOrFail();
         $etalases->barangs()->update(['etalase_id' => null]);
-        $namaEtalases = $etalases->nama;
-        $etalases->delete();
+
+        if ($etalases->delete()) {
+            alert()->success('Sukses', 'Etalase berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus data etalase');
+        }
 
         return redirect()->back();
     }

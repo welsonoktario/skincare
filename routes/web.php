@@ -48,6 +48,7 @@ use App\Http\Controllers\Admin\VerifikasiTokoController as AdminVerifikasiTokoCo
 |
 */
 
+// Route User
 Route::group(['as' => 'user.'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/search', [HomeController::class, 'search'])->name('home.search');
@@ -103,6 +104,7 @@ Route::group(['as' => 'user.'], function () {
     });
 });
 
+// Route Toko
 Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], function () {
     Route::get('pesanan/{pesanan}/pengembalian', [TokoPesananController::class, 'pengembalian'])->name('pesanan.pengembalian');
 
@@ -129,6 +131,7 @@ Route::group(['prefix' => 'toko', 'as' => 'toko.', 'middleware' => 'auth'], func
     Route::get('/barang/{id}/foto', [TokoBarangController::class, 'loadFotos'])->name('barang.foto');
 });
 
+// Route Admin
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth.admin']], function () {
     Route::group(['prefix' => 'interaksi-kandungan', 'as' => 'interaksi-kandungan.'], function () {
         Route::get('/', [AdminInteraksiKandunganController::class, 'index'])->name('index');
@@ -139,7 +142,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth.admi
         Route::delete('/{k1}/{k2}', [AdminInteraksiKandunganController::class, 'destroy'])->name('destroy');
     });
 
-    Route::get('home', [AdminHomeController::class, 'index'])->name('homeadmin');
     Route::resource('toko', AdminTokoController::class);
     Route::resource('member', AdminMemberController::class);
     Route::resource('verifikasibarang', AdminVerifikasiBarangController::class);

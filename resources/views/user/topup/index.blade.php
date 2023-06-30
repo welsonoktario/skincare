@@ -3,6 +3,14 @@
   <link rel="stylesheet" href="https://unpkg.com/datatables.net-bs5/css/dataTables.bootstrap5.min.css" />
 @endpush
 @section('profil-content')
+  <form id="formBayar" method="POST" class="d-none">
+    @csrf
+    @method('PUT')
+
+    <input type="hidden" name="json_callback" id="json_callback2" hidden>
+    <input type="hidden" name="status" id="status" hidden>
+  </form>
+
   <div class="d-flex mb-4 w-100 justify-content-between align-items-center">
     <h6 class="mt-2 mx-0 mb-0 text-dark">Daftar Topup</h6>
 
@@ -30,7 +38,8 @@
             <td class="text-capitalize">
               {{ $u->dibayar ? 'Selesai' : 'Menunggu Pembayaran' }}
               @if (!$u->dibayar)
-                <p data-id="{{ $u->id }}" class="btnBayar link-primary mb-0 ml-1" style="cursor: pointer">
+                <p data-id="{{ $u->id }}" data-token="{{ $u->kode_pembayaran }}"
+                  class="btnBayar link-primary mb-0 ml-1" style="cursor: pointer">
                   Bayar
                 </p>
               @endif
@@ -94,9 +103,11 @@
           .then((data) => {
             window.snap.pay(data.snapToken, {
               onSuccess: function(result) {
+                $('#token').val(data.snapToken);
                 send_response_to_form(result);
               },
               onPending: function(result) {
+                $('#token').val(data.snapToken);
                 alert(
                   'Harap menyelesaikan pembayaran dalam waktu 24 Jam'
                 );
@@ -109,7 +120,7 @@
               onClose: function() {
                 alert('Batalkan pembayaran?');
               }
-            })
+            });
           });
 
         function send_response_to_form(result) {
@@ -131,25 +142,33 @@
 
       $('.btnBayar').click(function() {
         var id = $(this).data('id');
-        $('#modalTopup').modal('show');
-        $('#modalTopupContent').html('');
-        $('#modalLoading').show();
+        var token = $(this).data('token');
 
-        $.get(`topup/${id}/edit`, function(res) {
-          $('#modalLoading').hide();
-          $('#modalTopupContent').html(res);
-        });
-      });
+        window.snap.pay(token, {
+          onSuccess: function(result) {
+            $('#status').val(true);
+            send_response_to_form(id, result);
+          },
+          onPending: function(result) {
+            alert(
+              'Harap menyelesaikan pembayaran dalam waktu 24 Jam'
+            );
+          },
+          onError: function(result) {
+            alert('Pembayaran gagal');
 
-      $('.listTopup #btnEdittopup').click(function() {
-        const id = $(this).data('id');
-        $('#modalTopup').modal('show');
-        $('#modalTopupContent').html('');
-        $('#modalLoading').show();
-        $.get(`topup/${id}/edit`, function(res) {
-          $('#modalLoading').hide();
-          $('#modalTopupContent').html(res);
+          },
+          onClose: function() {
+            alert('Batalkan pembayaran?');
+          }
         });
+
+        function send_response_to_form(id, result) {
+          $('#json_callback2').val(JSON.stringify(result));
+
+          $('#formBayar').prop('action', route('user.profil.topup.update', id));
+          $('#formBayar').submit();
+        }
       });
 
       $('#btnDeletetopup').click(function() {

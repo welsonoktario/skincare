@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('css/components.css') }}">
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+  @include('sweetalert::alert')
   @stack('styles')
 </head>
 
@@ -41,6 +42,7 @@
     </div>
   </div>
 
+  @include('sweetalert::alert')
   @routes
   <script src="{{ asset('js/manifest.js') }}"></script>
   <script src="{{ asset('js/vendor.js') }}"></script>
