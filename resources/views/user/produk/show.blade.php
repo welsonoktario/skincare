@@ -62,7 +62,7 @@
           <div class="card-body">
             <h6 class="text-black">{{ $produk->nama }}</h6>
             <div class="d-inline-flex align-items-center fw-semibold h5">
-              @if ($produk->harga_diskon)
+              @if ($produk->nominal_diskon && $produk->harga_diskon >= 0)
                 <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
                 <span class="text-danger mx-1">@rupiah($produk->harga_diskon)</span>
                 <div class="badge badge-danger">
@@ -236,7 +236,13 @@
           <p class="text-center text-warning text-small mt-1">Tersisa {{ $produk->stok }} produk tersedia</p>
           <div class="d-flex flex-row w-100 justify-content-between align-items-center">
             <p class="fw-semibold m-0">Subtotal</p>
-            <h6 id="subtotal" class="m-0">@rupiah($produk->harga)</h6>
+            <h6 id="subtotal" class="m-0">
+              @if ($produk->nominal_diskon && $produk->harga_diskon >= 0)
+                @rupiah($produk->harga_diskon)
+              @else
+                @rupiah($produk->harga)
+              @endif
+            </h6>
           </div>
 
           @guest
@@ -353,7 +359,8 @@
 
       // ubah nilai subtotal
       function updateSubtotal(val) {
-        subtotal.text(Number(val * produk.harga).toLocaleString('id-ID', {
+        var harga = produk.jenis_diskon && produk.harga_diskon >= 0 ? produk.harga_diskon : produk.harga;
+        subtotal.text(Number(val * harga).toLocaleString('id-ID', {
           style: 'currency',
           currency: 'IDR',
           maximumFractionDigits: 0

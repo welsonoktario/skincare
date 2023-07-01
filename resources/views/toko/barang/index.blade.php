@@ -25,6 +25,7 @@
                 <th>No.</th>
                 <th>Nama Barang</th>
                 <th>Harga</th>
+                <th>Harga Diskon</th>
                 <th>Stok</th>
                 <th>Deskripsi</th>
                 <th>Kategori</th>
@@ -36,32 +37,47 @@
             <tbody>
               @foreach ($barangs as $b)
                 <tr class="listBarang">
-                  <td>{{ $loop->iteration }}</td>
-                  <td> {{ $b->nama }}</td>
-                  <td> {{ $b->harga }}</td>
-                  <td> {{ $b->stok }}</td>
-                  <td> {{ $b->deskripsi }}</td>
-                  <td>{{ $b->kategori ? $b->kategori->nama : 'Lainnya' }}</td>
-                  <td>
+                  <td style="vertical-align: middle;">{{ $loop->iteration }}</td>
+                  <td style="vertical-align: middle;">{{ $b->nama }}</td>
+                  <td style="vertical-align: middle;">@rupiah($b->harga)</td>
+                  <td style="vertical-align: middle;">
+                    @if ($b->nominal_diskon && $b->hargaDiskon >= 0)
+                      @rupiah($b->hargaDiskon)
+                      <p class="my-0">
+                        @if ($b->jenis_diskon == 'persen')
+                          (&dash;{{ $b->nominal_diskon }}%)
+                        @else
+                          (&dash;@rupiah($b->nominal_diskon))
+                        @endif
+                      </p>
+                    @else
+                      -
+                    @endif
+                  </td>
+                  <td style="vertical-align: middle;">{{ $b->stok }}</td>
+                  <td style="vertical-align: middle;">{{ $b->deskripsi }}</td>
+                  <td style="vertical-align: middle;">{{ $b->kategori ? $b->kategori->nama : 'Lainnya' }}</td>
+                  <td style="vertical-align: middle;">
                     @if ($b->etalase)
                       {{ $b->etalase->nama }}
+                    @else
+                      Tidak Masuk Etalase
+                    @endif
                   </td>
-                @else
-                  Tidak Masuk Etalase
-              @endif
-              <td class="text-capitalize">{{ $b->status }}</td>
-
-              <td class="d-inline-flex justify-content-center align-items-center w-100">
-                <button data-id="{{ $b->id }}"
-                  class="btn btnEditBarang btn-sm btn-secondary ms-1 text-white">Edit</button>
-                <form class="ms-1" action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
-                  @csrf
-                  @method('DELETE')
-                  <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
-                    onclick="if(!confirm('Apakah anda yakin?')) return false"; />
-                </form>
-              </td>
-              </tr>
+                  <td class="text-capitalize" style="vertical-align: middle;">{{ $b->status }}</td>
+                  <td style="vertical-align: middle;">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <button data-id="{{ $b->id }}"
+                        class="btn btnEditBarang btn-sm btn-secondary ms-1 text-white">Edit</button>
+                      <form class="ms-1" action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <input type="submit" value="Hapus" class="btn btn-sm btn-danger text-white"
+                          onclick="if(!confirm('Apakah anda yakin?')) return false"; />
+                      </form>
+                    </div>
+                  </td>
+                </tr>
               @endforeach
             </tbody>
           </table>
@@ -133,7 +149,7 @@
           $('#igPersen').removeClass('d-none');
           $('#igNominal').addClass('d-none');
           $('#nominalDiskon').prop('max', 100);
-        } else {
+        } else if (jenis == 'nominal') {
           $('#igPersen').addClass('d-none');
           $('#igNominal').removeClass('d-none');
           $('#nominalDiskon').prop('max', $('#harga').val());
@@ -142,8 +158,8 @@
 
       $(document).on('change', '#nominalDiskon', function() {
         var jenis = $('#jenisDiskon').val();
-        var harga = $('#harga').val();
-        var nominal = $(this).val(); // 100
+        var harga = Number($('#harga').val());
+        var nominal = Number($(this).val()); // 100
         var hargaDiskon;
 
         if (jenis == 'persen') {
@@ -157,7 +173,7 @@
           $(this).val(nominal);
 
           hargaDiskon = harga - (harga * (nominal / 100));
-        } else {
+        } else if (jenis == 'nominal') {
           $(this).prop('max', harga);
           if (nominal > harga) {
             nominal = harga;
@@ -253,6 +269,10 @@
           },
           {
             name: 'Harga',
+            orderable: true
+          },
+          {
+            name: 'Harga Diskon',
             orderable: true
           },
           {

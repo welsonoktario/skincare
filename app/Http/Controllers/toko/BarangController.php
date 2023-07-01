@@ -177,10 +177,10 @@ class BarangController extends Controller
             }
             DB::commit();
 
-            alert()->success('Sukses', 'Barang berhasil ditambahkan');
+            alert()->success('Sukses', 'Barang berhasil diubah');
         } catch (Throwable $e) {
             DB::rollBack();
-            alert()->error('Gagal', 'Terjadi kesalahan menambah barang');
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah barang');
         }
 
         return redirect()->route('toko.barang.index');

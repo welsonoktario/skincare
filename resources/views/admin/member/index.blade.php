@@ -2,7 +2,9 @@
 @section('content')
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
-      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">Daftar Member</h1>
+      <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
+        Daftar User
+      </h1>
     </div>
     <div class="card shadow mb-3">
       <div class="card-body">
@@ -10,7 +12,7 @@
           <table id="tableMember" class="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No.</th>
                 <th>Nama Member</th>
                 <th>Username</th>
                 <th>Alamat</th>
@@ -20,11 +22,11 @@
             <tbody>
               @foreach ($users as $u)
                 <tr class="listMember">
-                  <td>{{ $u->id }}</td>
-                  <td> {{ $u->nama }}</td>
-                  <td> {{ $u->username }}</td>
-                  <td> {{ count($u->alamatUtama) ? $u->alamatUtama[0]->alamat : '-' }}</td>
-                  <td> {{ $u->no_hp }}</td>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $u->nama }}</td>
+                  <td>{{ $u->username }}</td>
+                  <td>{{ count($u->alamatUtama) ? "{$u->alamatUtama[0]->provinsi->nama}, {$u->alamatUtama[0]->kota->nama}, {$u->alamatUtama[0]->alamat}" : '-' }}</td>
+                  <td>{{ $u->no_hp }}</td>
                 </tr>
               @endforeach
             </tbody>
@@ -93,7 +95,7 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json'
         },
         columns: [{
-            name: 'ID',
+            name: 'No.',
             orderable: true
           },
           {

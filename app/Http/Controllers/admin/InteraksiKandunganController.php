@@ -53,6 +53,11 @@ class InteraksiKandunganController extends Controller
             $k2 = $request->k1;
         }
 
+        if ($k1 == $k2) {
+            alert()->error('Gagal', 'Kandungan tidak boleh sama');
+            return redirect()->back();
+        }
+
         $insert = DB::table('interaksi_kandungans')
             ->insert([
                 'kandungan_satu_id' => $k1,

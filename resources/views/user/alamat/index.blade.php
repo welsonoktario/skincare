@@ -72,7 +72,7 @@
         <form id="formAlamat" class="modal-body" method="POST">
           @csrf
           <div class="form-group">
-            <label for="nama">Nama</label>
+            <label for="nama">Label Alamat (cth: Rumah, Kost, dll)</label>
             <input name="nama" type="text" class="form-control" required>
           </div>
           <div class="form-group">

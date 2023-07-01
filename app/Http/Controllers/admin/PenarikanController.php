@@ -85,7 +85,7 @@ class PenarikanController extends Controller
         $jenis = $request->jenis;
         $aksi = $request->aksi;
         $status = ['diterima', 'ditolak'];
-        $penarikan = Penarikan::query()->find($id);
+        $penarikan = Penarikan::query()->with(['rekeningWithTrashed'])->find($id);
 
         DB::beginTransaction();
 
@@ -95,10 +95,10 @@ class PenarikanController extends Controller
 
                 if ($aksi == 'ditolak') {
                     if ($jenis == 'user') {
-                        $user = User::query()->find($penarikan->rekening->user_id);
+                        $user = User::query()->find($penarikan->rekeningWithTrashed->user_id);
                         $user->update(['saldo' => $user->saldo + $penarikan->nominal]);
                     } elseif ($jenis == 'toko') {
-                        $toko = Toko::query()->firstWhere('user_id', $penarikan->rekening->user_id);
+                        $toko = Toko::query()->firstWhere('user_id', $penarikan->rekeningWithTrashed->user_id);
                         $toko->update(['saldo' => $toko->saldo + $penarikan->nominal]);
                     }
                 }
@@ -107,6 +107,7 @@ class PenarikanController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th);
             alert()->error('Gagal', 'Terjadi kesalahan mengubah data penarikan');
         }
 

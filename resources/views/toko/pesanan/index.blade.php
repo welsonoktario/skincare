@@ -15,7 +15,6 @@
     @method('PUT')
 
     <input type="text" name="aksi" id="aksi" hidden>
-    <input type="text" name="aksiPengembalian" id="aksiPengembalian" hidden>
   </form>
 
   <div class="card">
@@ -129,7 +128,7 @@
                     </button>
                     @if ($transaksi->pengembalian->status == 'diterima')
                       <button class="ms-2 btn btn-aksi btn-primary text-white" data-transaksi="{{ $transaksi->id }}"
-                        data-aksi="pengembalian" data-aksi-pengembalian="selesai">
+                        data-aksi="pengembalian-selesai" data-aksi-pengembalian="selesai">
                         Selesai
                       </button>
                     @endif

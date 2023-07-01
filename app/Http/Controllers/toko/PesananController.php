@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Toko;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Pengembalian;
 use App\Models\Transaksi;
 use App\Models\User;
@@ -101,37 +102,47 @@ class PesananController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($request->has('pengembalian') || $request->aksi == 'pengembalian') {
-                if ($request->aksi == 'pengembalian') {
-                    $aksiPengembalian = $request->aksiPengembalian;
 
-                    $transaksi->pengembalian()
-                        ->update([
-                            'status' => $aksiPengembalian
-                        ]);
+            if ($request->has('pengembalian')) {
+                $transaksi->pengembalian()
+                    ->update([
+                        'status' => $request->aksi
+                    ]);
 
-                    if ($aksiPengembalian == 'selesai') {
-                        $transaksi->user()
-                            ->update([
-                                'saldo' => $transaksi->user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
-                            ]);
-                    }
-                } else {
-                    $aksi = $request->aksi;
+                if ($request->aksi == 'ditolak') {
+                    $transaksi->toko()->update([
+                        'saldo' => $transaksi->toko->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                    ]);
+                }
+            } elseif ($request->aksi == 'pengembalian-selesai') {
+                $transaksi->pengembalian()
+                    ->update([
+                        'status' => 'selesai'
+                    ]);
 
-                    $transaksi->pengembalian()
-                        ->update([
-                            'status' => $aksi
-                        ]);
+                $transaksi->user()->update([
+                    'saldo' => $transaksi->user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
+                ]);
+
+                foreach ($transaksi->transaksiDetails as $td) {
+                    $td->barang()->update([
+                        'stok' => $td->barang->stok + $td->jumlah,
+                    ]);
                 }
             } else {
                 $status = ['diproses', 'dikirim', 'batal'];
                 if (in_array($request->aksi, $status)) {
                     if ($request->aksi == 'batal') {
-                        $user = User::query()->find($transaksi->user_id);
+                        $user = $transaksi->user;
                         $user->update([
                             'saldo' => $user->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
                         ]);
+
+                        foreach ($transaksi->transaksiDetails as $td) {
+                            $td->barang()->update([
+                                'stok' => $td->barang->stok + $td->jumlah,
+                            ]);
+                        }
                     }
                     $transaksi->update(['status' => $request->aksi]);
                 }

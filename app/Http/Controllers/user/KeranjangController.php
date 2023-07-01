@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,37 +19,27 @@ class KeranjangController extends Controller
      */
     public function index()
     {
-        // ngambil barang2 di keranjang dari user yang lagi login
         $keranjangs = Auth::user()
             ->keranjangs()
             ->get();
 
-        // cek kandungan
-        $kandungans = self::cekInteraksi($keranjangs);
+        $kandungans = $this->cekInteraksi($keranjangs);
 
-        // cek tiap barang di keranjang user
-        // apakah stoknya cukup atau kurang dari stok barang yang dijual
         foreach ($keranjangs as $barang) {
-            // kasih tanda tiap barang yang ada di keranjang apakah dapat di-checkout
-            $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok; // hasilnya true atau false
-            // $barang['checkoutable'] = true
-            // atau $barang['checkoutable'] = false
+            $barang['checkoutable'] = $barang->pivot->jumlah <= $barang->stok;
         }
 
-        // kelompokkan barang2 di keranjang berdasarkan nama toko
         $keranjangs = $keranjangs->groupBy('toko.nama');
 
-        // hitung total seluruh barang dan jumlah di keranjang user
         $total = $keranjangs->sum(function ($keranjang) {
             return $keranjang->sum(function ($barang) {
-                return $barang->harga_diskon
+                return $barang->nominal_diskon &&  $barang->harga_diskon >= 0
                     ? $barang->harga_diskon * $barang->pivot->jumlah
                     : $barang->harga * $barang->pivot->jumlah;
             });
         });
 
         return view('user.keranjang.index', compact('keranjangs', 'total', 'kandungans'));
-        // return view('user.keranjang.index', compact('keranjangs', 'total'));
     }
 
     /**

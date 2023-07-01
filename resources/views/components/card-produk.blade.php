@@ -8,7 +8,7 @@
         class="link-info text-decoration-none">{{ $produk->kategori ? $produk->kategori->nama : 'Lainnya' }}</a>
       <p class="fw-medium fs-6">{{ $produk->nama }}</p>
       <div class="d-inline-flex align-items-center fw-semibold h6">
-        @if ($produk->harga_diskon)
+        @if ($produk->nominal_diskon && $produk->harga_diskon >= 0)
           <span class="fw-normal text-decoration-line-through">@rupiah($produk->harga)</span>
           <span class="text-danger mx-1">@rupiah($produk->harga_diskon)</span>
           <div class="badge badge-danger">

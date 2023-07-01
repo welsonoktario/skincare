@@ -62,7 +62,7 @@
                     <label class="ms-2 fw-semibold">{{ $barang->nama }}</label>
                   </td>
                   <td class="text-right">
-                    @if ($barang->harga_diskon)
+                    @if ($barang->nominal_diskon && $barang->harga_diskon >= 0)
                       <span class="fw-normal text-decoration-line-through">@rupiah($barang->harga)</span>
                       <span class="text-danger mx-1">@rupiah($barang->harga_diskon)</span>
                       <div class="badge badge-danger">
@@ -80,7 +80,7 @@
                     x{{ $barang->pivot->jumlah }}
                   </td>
                   <td class="text-right fw-bold">
-                    @if ($barang->harga_diskon)
+                    @if ($barang->nominal_diskon && $barang->harga_diskon >= 0)
                       @rupiah($barang->harga_diskon * $barang->pivot->jumlah)
                     @else
                       @rupiah($barang->harga * $barang->pivot->jumlah)

@@ -89,7 +89,7 @@
         $('#modalRekeningContent').html('');
         $('#modalLoading').show();
 
-        $.get(route('user.profil.rekening.create'), function(res) {
+        $.get(route('toko.rekening.create'), function(res) {
           $('#modalLoading').hide();
           $('#modalRekeningContent').html(res);
           $('#bank').select2({
@@ -111,17 +111,6 @@
             dropdownParent: $('#modalRekening'),
             theme: 'bootstrap-5',
           });
-        });
-      });
-
-      $('.listRekening .btnEditRekening').click(function() {
-        var id = $(this).data('id');
-        $('#modalRekening').modal('show');
-        $('#modalRekeningContent').html('');
-        $('#modalLoading').show();
-        $.get(route('toko.rekening.edit', id), function(res) {
-          $('#modalLoading').hide();
-          $('#modalRekeningContent').html(res);
         });
       });
 

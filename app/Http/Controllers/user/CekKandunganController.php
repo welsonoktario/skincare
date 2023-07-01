@@ -51,6 +51,7 @@ class CekKandunganController extends Controller
      */
     private function cekInteraksi($barangs)
     {
+        // Start langkah pertama
         $pasangan = collect([]);
         $barangs = $barangs->sortBy('id');
 
@@ -60,34 +61,46 @@ class CekKandunganController extends Controller
         if (count($kandunganBarang1) == 0 || count($kandunganBarang2) == 0) {
             return $pasangan;
         }
+        // End langkah pertama
 
+        // Start langkah kedua
         foreach ($kandunganBarang1 as $kb1) {
             foreach ($kandunganBarang2 as $kb2) {
                 if ($kb1->id == $kb2->id) {
                     continue;
                 }
 
+                // Start langkah ketiga
                 $tmp = collect([
                     [
-                        'barang' => $barangs[0]->nama,
-                        'id_barang' => $barangs[0]->id,
                         'kandungan' => $kb1->id
                     ],
                     [
-                        'barang' => $barangs[1]->nama,
-                        'id_barang' => $barangs[1]->id,
                         'kandungan' => $kb2->id
                     ]
                 ]);
                 $tmp = $tmp->sortBy('kandungan');
+                $tmp[0] = [
+                    'barang' => $barangs[0]->nama,
+                    'id_barang' => $barangs[0]->id,
+                    'kandungan' => $tmp[0]['kandungan'],
+                ];
+                $tmp[1] = [
+                    'barang' => $barangs[1]->nama,
+                    'id_barang' => $barangs[1]->id,
+                    'kandungan' => $tmp[1]['kandungan'],
+                ];
                 $tmp = collect(["k1", "k2"])->combine($tmp);
 
                 if (!str_contains($pasangan->toJson(), $tmp->toJson())) {
                     $pasangan->add($tmp);
                 }
+                // End langkah ketiga
             }
         }
+        // End langkah kedua
 
+        // Start langkah keempat
         $hasilInteraksis = collect([]);
 
         foreach($pasangan as $p) {
@@ -110,21 +123,19 @@ class CekKandunganController extends Controller
                     INNER JOIN barang_pengecekans AS b1 ON b1.id = ?
                     INNER JOIN barang_pengecekans AS b2 ON b2.id = ?",
                     [
-                        intval($barangs[0]->id),
-                        intval($barangs[1]->id),
+                        intval($p['k1']['id_barang']),
+                        intval($p['k2']['id_barang']),
                     ]
                 )
                 ->whereRaw("ik.kandungan_satu_id = {$p['k1']['kandungan']} AND ik.kandungan_dua_id = {$p['k2']['kandungan']}")
+                ->orWhereRaw("ik.kandungan_satu_id = {$p['k2']['kandungan']} AND ik.kandungan_dua_id = {$p['k1']['kandungan']}")
                 ->first();
 
+            // Start langkah kelima
+            // dd($hasilInteraksi);
             if ($hasilInteraksi) {
-                // tambah nama pasangan barang ex: "nivea + vaseline"
                 $hasilInteraksi->nama = collect([$hasilInteraksi->barang_satu, $hasilInteraksi->barang_dua])->sort()->join(' + ');
-                // hasil interaksi ditambah ke array $hasilInteraksis
                 if (!str_contains($hasilInteraksis->toJson(), json_encode($hasilInteraksi))) {
-
-                    // cek jika sebelumnya sudah ada hasil interaksi yang kandungan_satu_id dan kandungan_dua_id
-                    // sama seperti hasil query yang didapatkan
                     $contains = $hasilInteraksis->contains(function ($hi) use ($hasilInteraksi) {
                         return $hi->k1 == $hasilInteraksi->k1 && $hi->k2 == $hasilInteraksi->k2 && $hi->barang_satu == $hasilInteraksi->barang_satu && $hi->barang_dua == $hasilInteraksi->barang_dua;
                     });
@@ -134,14 +145,16 @@ class CekKandunganController extends Controller
                     }
                 }
             }
+            // End langkah kelima
         }
+        // End langkah keempat
+
+        // Start langkah keenam/terakhir
         $hasil = collect([]);
         $hasilNama = $hasilInteraksis->groupBy('nama');
 
         foreach ($hasilNama as $i => $group) {
-            // jika tiap kelompok nama gabungan barang ada interaksi buruk
             if ($group->contains('jenis_interaksi', 'buruk')) {
-                // ambil/tampilkan yang buruk aja
                 $hasilNama[$i] = $group->filter(function ($hi) {
                     return $hi->jenis_interaksi == 'buruk';
                 });
@@ -155,6 +168,7 @@ class CekKandunganController extends Controller
         }
 
         $hasilInteraksis = $hasil->groupBy('jenis_interaksi');
+        // End langkah keenam/terakhir
 
         return $hasilInteraksis;
     }

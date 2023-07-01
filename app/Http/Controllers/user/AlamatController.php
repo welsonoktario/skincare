@@ -92,14 +92,15 @@ class AlamatController extends Controller
      * @param  \App\Models\Alamat  $alamat
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Alamat $alamat)
+    public function update(Request $request, $id)
     {
         if ($request->has('isUtama')) {
             Auth::user()->alamats()
                 ->update(['is_utama' => false]);
         }
 
-        $alamat->query()
+        Alamat::query()
+            ->find($id)
             ->update([
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,

@@ -9,7 +9,7 @@
     @csrf
     <div class="mb-3">
       <label for="nama" class="form-label">Nama</label>
-      <input type="text" name="nama" class="form-control" id="nama" value="{{ $etalases->nama }}">
+      <input type="text" name="nama" class="form-control" id="nama" value="{{ $etalases->nama }}" required>
     </div>
   </div>
   <div class="modal-footer">

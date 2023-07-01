@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Alamat;
 use App\Models\Kota;
 use App\Models\Provinsi;
 use App\Models\Transaksi;
@@ -19,15 +18,12 @@ class CheckoutController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $userId = Auth::user()->id;
         $provinsis = Provinsi::all();
-        // $alamat = $user->alamats()
-        //     ->with(['kota', 'provinsi'])
-        //     ->firstWhere('is_utama', true);
-        $alamat = Alamat::whereUserId($userId)
+
+        $alamat = $user->alamats()
             ->with(['kota', 'provinsi'])
             ->get();
-        // return dd($alamat);
+
         $keranjangs = $user->keranjangsWithTokoEskpedisi()
             ->when($request->toko, function ($q) use ($request) {
                 return $q->where('toko_id', $request->toko);
@@ -38,7 +34,7 @@ class CheckoutController extends Controller
             return [
                 'barangs' => $keranjang,
                 'total' => collect($keranjang)->sum(function ($barang) {
-                    return $barang->harga_diskon
+                    return $barang->nominal_diskon && $barang->harga_diskon >= 0
                         ? $barang->harga_diskon * $barang->pivot->jumlah
                         : $barang->pivot->sub_total;
                 })
@@ -135,8 +131,7 @@ class CheckoutController extends Controller
                     $status = $json->transaction_status == 'settlement' ? 'menunggu konfirmasi' : 'menunggu pembayaran';
                     $payment_code = $request->token;
 
-                    $transaksi = Auth::user()
-                        ->transaksis()
+                    $transaksi = $user->transaksis()
                         ->create([
                             'toko_id' => $idToko,
                             'ekspedisi_id' => $ekspedisis,
@@ -149,8 +144,8 @@ class CheckoutController extends Controller
                             'created_at' => $date
                         ]);
                 } elseif ($metode == 'saldo') {
-                    $transaksi = Auth::user()
-                        ->transaksis()
+                    $status = 'menunggu konfirmasi';
+                    $transaksi = $user->transaksis()
                         ->create([
                             'toko_id' => $idToko,
                             'ekspedisi_id' => $ekspedisis,
@@ -190,17 +185,24 @@ class CheckoutController extends Controller
                 $user->keranjangs()->detach($request->barangs);
             }
 
+            foreach ($transaksis as $id) {
+                Transaksi::query()->find($id)->update([
+                    'transaksi_ids' => json_encode($transaksis, JSON_NUMERIC_CHECK)
+                ]);
+            }
+
             DB::commit();
 
-            if ($transaksi->status == 'menunggu pembayaran') {
+            if ($status == 'menunggu pembayaran') {
                 return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu pembayaran']);
-            } elseif ($transaksi->status == 'menunggu konfirmasi') {
+            } elseif ($status == 'menunggu konfirmasi') {
                 return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu konfirmasi']);
             } else {
                 return Redirect::route('user.transaksi.index');
             }
         } catch (Throwable $e) {
             DB::rollBack();
+            dd($e);
 
             return Redirect::back()->withException($e);
         }

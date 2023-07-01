@@ -83,9 +83,9 @@ class TransaksiController extends Controller
         }
 
         if ($request->has('lanjutkan')) {
-            $transaksi->update([
-                'status' => $request->status
-            ]);
+            foreach (json_decode($transaksi->transaksi_ids) as $id) {
+                Transaksi::query()->find($id)->update(['status' => 'menunggu konfirmasi']);
+            }
 
             return redirect()->route('user.transaksi.index', ['tipe' => 'menunggu konfirmasi']);
         }
