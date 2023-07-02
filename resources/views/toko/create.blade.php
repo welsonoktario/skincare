@@ -127,7 +127,7 @@
       });
 
       $('#kota').change(function() {
-        $('#btnSubmit').prop('disabled', true);
+        $('#btnSubmit').prop('disabled', false);
       });
     });
   </script>
