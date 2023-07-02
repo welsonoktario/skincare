@@ -4,11 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Topup;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class TopupController extends Controller
@@ -52,7 +50,7 @@ class TopupController extends Controller
         $payment_code = $request->token;
         $nominal = $request->nominal;
 
-        Auth::user()
+        $create = Auth::user()
             ->topups()
             ->create([
                 'nominal' => $nominal,
@@ -60,6 +58,16 @@ class TopupController extends Controller
                 'kode_pembayaran' => $payment_code,
                 'dibayar' => $dibayar,
             ]);
+
+        if ($create) {
+            if ($dibayar) {
+                alert()->success('Sukses', 'Saldo berhasil ditambah');
+            } else {
+                alert()->warning('Peringatan', 'Mohon segera melakukan pembayaran');
+            }
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan topup');
+        }
 
         return redirect()->back();
     }

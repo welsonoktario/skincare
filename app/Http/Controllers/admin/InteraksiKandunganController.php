@@ -121,7 +121,7 @@ class InteraksiKandunganController extends Controller
         if ($update) {
             alert()->success('Sukses', 'Data interaksi kandungan berhasil diubah');
         } else {
-            alert()->error('Gagal', 'Terjadi kesalahan menambah interaksi kandungan');
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah interaksi kandungan');
         }
 
         return redirect()->back();
@@ -146,7 +146,7 @@ class InteraksiKandunganController extends Controller
         if ($delete) {
             alert()->success('Sukses', 'Data interaksi kandungan berhasil dihapus');
         } else {
-            alert()->error('Gagal', 'Terjadi kesalahan menambah interaksi kandungan');
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus interaksi kandungan');
         }
 
         return redirect()->back();

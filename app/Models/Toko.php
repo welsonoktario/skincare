@@ -37,6 +37,11 @@ class Toko extends Model
         return $this->hasMany(Barang::class);
     }
 
+    public function barangsTrashed()
+    {
+        return $this->hasMany(Barang::class)->withTrashed();
+    }
+
     public function penarikans()
     {
         return $this->hasMany(Penarikan::class);

@@ -12,12 +12,12 @@
 
   <div class="mb-3">
     <label for="nama" class="form-label">Nama Barang</label>
-    <input class="form-control" type="text" name="nama" value="{{ $barangPengecekan->nama }}" required>
+    <input class="form-control" type="text" name="nama" value="{{ $barangPengecekan->nama }}" placeholder="Nama barang" required>
   </div>
 
   <div class="mb-3">
-    <label for="nama" class="form-label">Kandungan Barang</label>
-    <select id="kandungans" class="form-select select2" name="kandungans[]" data-placeholder="Pilih kandungan" multiple
+    <label for="nama" class="form-label">Zat Aktif Barang</label>
+    <select id="kandungans" class="form-select select2" name="kandungans[]" data-placeholder="Pilih zat aktif" multiple
       required>
       @foreach ($kandungans as $kandungan)
         <option value="{{ $kandungan->id }}" @if (boolval($barangPengecekan->kandungans->contains('id', $kandungan->id))) selected @endif>

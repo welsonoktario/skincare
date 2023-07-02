@@ -82,26 +82,22 @@ class VerifikasiBarangController extends Controller
     {
         $verifikasibarangs = Barang::find($id);
 
-        if ($request->aksi == 'ditolak') {
-            try {
+        try {
+            if ($request->aksi == 'ditolak') {
                 $verifikasibarangs->update(['status' => 'ditolak']);
                 Barang::destroy($verifikasibarangs->id);
-                alert()->success('Sukses', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil ditolak");
-                return redirect()->route('admin.verifikasibarang.index');
-            } catch (Throwable $e) {
-                alert()->error('Gagal', 'Terjadi kesalahan sistem');
-                return redirect()->route('admin.verifikasibarang.index');
-            }
-        } elseif ($request->aksi == 'diterima') {
-            try {
+
+                alert()->success('Sukses', "Verifikasi Barang '{$verifikasibarangs->nama}' berhasil ditolak");
+            } elseif($request->aksi == 'diterima') {
                 $verifikasibarangs->update(['status' => 'diterima']);
-                alert()->success('Sukses', "Verifikasi Barang  '{$verifikasibarangs->nama}' berhasil diterima");
-                return redirect()->route('admin.verifikasibarang.index');
-            } catch (Throwable $e) {
-                alert()->error('Gagal', 'Terjadi kesalahan sistem');
-                return redirect()->route('admin.verifikasibarang.index');
+
+                alert()->success('Sukses', "Verifikasi Barang '{$verifikasibarangs->nama}' berhasil diterima");
             }
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Terjadi kesalahan memproses ');
         }
+
+        return redirect()->route('admin.verifikasibarang.index');
     }
 
     /**

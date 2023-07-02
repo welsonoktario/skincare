@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Cek Kandungan • Skincareku')
+@section('title', 'Cek Interaksi Zat Aktif • Skincareku')
 @section('content')
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -8,7 +8,7 @@
     </ol>
   </nav>
 
-  <h4>Cek Kandungan</h4>
+  <h4>Cek Interaksi Zat Aktif</h4>
 
   <div class="card">
     <form id="formCek" action="{{ route('user.cek-kandungan.cek') }}" class="card-body" style="column-gap: 1rem;"
@@ -58,7 +58,7 @@
         </div>
 
         <div class="col-5"></div>
-        <button id="btnCek" type="submit" class="col-2 btn btn-primary mt-4">Cek Kandungan</button>
+        <button id="btnCek" type="submit" class="col-2 btn btn-primary mt-4">Cek Interaksi</button>
         <div class="col-5"></div>
       </div>
     </form>
@@ -69,7 +69,7 @@
     <div class="card">
       <div class="card-header">
         <h6 class="card-title mb-0">
-          Hasil Pengecekan Kandungan {{ $namaBarangs[0] }} dan {{ $namaBarangs[1] }}
+          Hasil Pengecekan Zat Aktif {{ $namaBarangs[0] }} dan {{ $namaBarangs[1] }}
         </h6>
       </div>
       <div class="card-body row w-100 mt-2">
@@ -98,7 +98,7 @@
                     ])>
                       {{ $h->barang_satu }}
                     </span>
-                    dengan kandungan
+                    dengan zat aktif
                     <span @class([
                         'fw-semibold',
                         'text-success' => $h->jenis_interaksi == 'baik',
@@ -114,7 +114,7 @@
                     ])>
                       {{ $h->barang_dua }}
                     </span>
-                    dengan kandungan
+                    dengan zat aktif
                     <span @class([
                         'fw-semibold',
                         'text-success' => $h->jenis_interaksi == 'baik',

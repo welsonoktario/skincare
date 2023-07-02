@@ -194,15 +194,15 @@ class CheckoutController extends Controller
             DB::commit();
 
             if ($status == 'menunggu pembayaran') {
+                alert()->warning('Menunggu Pembayaran', 'Mohon lakukan pembayaran pesanan anda');
                 return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu pembayaran']);
             } elseif ($status == 'menunggu konfirmasi') {
+                alert()->success('Pembayaran Terkonfirmasi', 'Pembayaran anda berhasil dikonfirmasi. Mohon menunggu konfirmasi dari toko');
                 return Redirect::route('user.transaksi.index', ['tipe' => 'menunggu konfirmasi']);
-            } else {
-                return Redirect::route('user.transaksi.index');
             }
         } catch (Throwable $e) {
             DB::rollBack();
-            dd($e);
+            alert()->error('Checkout Gagal', 'Terjadi kesalahan membuat pesanan anda');
 
             return Redirect::back()->withException($e);
         }

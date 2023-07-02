@@ -69,8 +69,8 @@
     </div>
 
     <div class="mb-3">
-      <label for="nama" class="form-label">Kandungan Barang</label>
-      <select id="kandungans" class="form-select select2" name="kandungans[]" data-placeholder="Pilih kandungan"
+      <label for="nama" class="form-label">Zat Aktif Barang</label>
+      <select id="kandungans" class="form-select select2" name="kandungans[]" data-placeholder="Pilih zat aktif"
         multiple>
         @foreach ($kandungans as $kandungan)
           <option value="{{ $kandungan->id }}">{{ $kandungan->nama }}</option>

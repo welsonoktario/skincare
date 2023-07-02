@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title">Tambah Kandungan</h5>
+  <h5 class="modal-title">Tambah Zat Aktif</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#modalKandungan" aria-label="Close"></button>
 </div>
 
@@ -8,7 +8,7 @@
 
   <div>
     <label for="nama" class="form-label">Nama</label>
-    <input type="text" name="nama" class="form-control" placeholder="Nama kandungan" required>
+    <input type="text" name="nama" class="form-control" placeholder="Nama zat aktif" required>
   </div>
 </form>
 

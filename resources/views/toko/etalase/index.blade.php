@@ -26,7 +26,7 @@
                   <td>{{ $e->nama }}</td>
                   <td class="d-inline-flex justify-content-center align-items-center w-100">
                     <button id="btnEditEtalase" data-id="{{ $e->id }}"
-                      class="btn btn-sm btn-secondary ms-1 text-white">Edit</button>
+                      class="btn btn-sm btn-secondary ms-1 text-white">Ubah</button>
                     <button class="btnDetailEtalase mx-2 btn btn-sm btn-primary text-white"
                       data-id="{{ $e->id }}">Detail</button>
                     <form action="{{ route('toko.etalase.destroy', $e->id) }}" method="POST"

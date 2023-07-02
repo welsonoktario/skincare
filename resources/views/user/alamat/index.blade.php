@@ -113,7 +113,7 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
             Batal
           </button>
-          <button type="submit" form="formAlamat" class="btn btn-primary">
+          <button id="btnSubmit" type="submit" form="formAlamat" disabled="true" class="btn btn-primary">
             Simpan
           </button>
         </div>
@@ -217,7 +217,14 @@
               selectKota.append(opt);
             });
           })
-          .finally(() => selectKota.prop('disabled', false));
+          .finally(() => {
+            $('#btnSubmit').prop('disabled', true);
+            selectKota.prop('disabled', false)
+          });
+      });
+
+      selectKota.change(function() {
+        $('#btnSubmit').prop('disabled', false);
       });
 
       function loadAlamat(el) {

@@ -6,7 +6,7 @@
 @endpush
 
 @section('content')
-  <form action="{{ route('toko.store') }}" method="POST" enctype="multipart/form-data">
+  <form id="formToko" action="{{ route('toko.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <h3 class="text-gray mb-4" class="text-center">Buka Toko</h3>
     <div class="card" style="border-radius: 15px;">
@@ -75,7 +75,7 @@
         <hr class="mx-n3">
 
         <div class="float-end py-4">
-          <button type="submit" class="btn btn-primary btn-lg">Buka Toko</button>
+          <button id="btnSubmit" type="submit" class="btn btn-primary btn-lg">Buka Toko</button>
         </div>
       </div>
     </div>
@@ -90,6 +90,14 @@
   <script>
     $(function() {
       $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
+
+      $('#formToko').submit(function() {
+        if (!$('#provinsi').val() || !$('#kota').val()) {
+          return false;
+        }
+
+        return true;
+      })
 
       $('#foto').filepond({
         name: 'foto',
@@ -106,6 +114,7 @@
           })
           .then((res) => res.json())
           .then((data) => {
+            $('#btnSubmit').prop('disabled', true);
             var kotas = data.kotas;
             $('#kota').prop('disabled', false);
             $('#kota').html('<option selected disabled>Pilih kota</option>');
@@ -115,6 +124,10 @@
               $('#kota').append(opt);
             });
           })
+      });
+
+      $('#kota').change(function() {
+        $('#btnSubmit').prop('disabled', true);
       });
     });
   </script>

@@ -7,6 +7,8 @@ use App\Models\Penarikan;
 use App\Models\Rekening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class PenarikanController extends Controller
 {
@@ -50,15 +52,26 @@ class PenarikanController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $user->penarikans()
-            ->create([
-                'rekening_id' => $request->rekening,
-                'nominal' => $request->nominal,
-                'asal_penarikan' => 'user'
+
+        DB::beginTransaction();
+
+        try {
+            $user->penarikans()
+                ->create([
+                    'rekening_id' => $request->rekening,
+                    'nominal' => $request->nominal,
+                    'asal_penarikan' => 'user'
+                ]);
+            $user->update([
+                'saldo' => $user->saldo - $request->nominal
             ]);
-        $user->update([
-            'saldo' => $user->saldo - $request->nominal
-        ]);
+
+            DB::commit();
+            alert()->success('Sukses', 'Data penarikan berhasil ditambah');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menambahkan data penarikan');
+        }
 
         return redirect()->back();
     }

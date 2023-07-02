@@ -20,12 +20,12 @@
                 <div class="form-group">
                   <label for="nama">Nama</label>
                   <input id="nama" type="text" class="form-control @error('nama') is-invalid @enderror"
-                    name="nama" value="{{ old('nama') }}" autofocus>
+                    name="nama" value="{{ old('nama') }}" autofocus required>
                 </div>
                 <div class="form-group">
                   <label for="username">Username</label>
                   <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
-                    name="username" value="{{ old('username') }}" autofocus>
+                    name="username" value="{{ old('username') }}" required>
                   @error('username')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -37,7 +37,7 @@
                     <label for="password" class="d-block">Password</label>
                     <input id="password" type="password"
                       class="form-control pwstrength @error('password') is-invalid @enderror" data-indicator="pwindicator"
-                      name="password">
+                      name="password" minlength="8" required>
                     @error('password')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -50,14 +50,15 @@
                   </div>
                   <div class="form-group col-6">
                     <label for="password_confirmation" class="d-block">Password Confirmation</label>
-                    <input id="password_confirmation" type="password" class="form-control" name="password_confirmation">
+                    <input id="password_confirmation" minlength="8" type="password" class="form-control"
+                      name="password_confirmation" required>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="email">Email</label>
                   <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                    name="email" value="{{ old('email') }}">
+                    name="email" value="{{ old('email') }}" required>
                   @error('email')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -68,8 +69,8 @@
                 </div>
                 <div class="form-group">
                   <label for="no_hp">No HP</label>
-                  <input id="no_hp" type="text" class="form-control @error('no_hp') is-invalid @enderror"
-                    name="no_hp" value="{{ old('no_hp') }}">
+                  <input id="no_hp" type="tel" class="form-control @error('no_hp') is-invalid @enderror"
+                    name="no_hp" minlength="10" value="{{ old('no_hp') }}" required>
                   @error('no_hp')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>

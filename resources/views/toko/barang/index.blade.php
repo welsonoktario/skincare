@@ -68,7 +68,7 @@
                   <td style="vertical-align: middle;">
                     <div class="d-flex justify-content-center align-items-center">
                       <button data-id="{{ $b->id }}"
-                        class="btn btnEditBarang btn-sm btn-secondary ms-1 text-white">Edit</button>
+                        class="btn btnEditBarang btn-sm btn-secondary ms-1 text-white">Ubah</button>
                       <form class="ms-1" action="{{ route('toko.barang.destroy', $b->id) }}" method="POST">
                         @csrf
                         @method('DELETE')

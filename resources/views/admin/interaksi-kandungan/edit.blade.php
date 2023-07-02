@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title">Ubah Interaksi Kandungan</h5>
+  <h5 class="modal-title">Ubah Interaksi Zat Aktif</h5>
   <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#modalInteraksi"
     aria-label="Close"></button>
 </div>
@@ -11,9 +11,9 @@
   @method('PUT')
 
   <div class="mb-3">
-    <label for="k1" class="form-label">Kandungan 1</label>
+    <label for="k1" class="form-label">Zat Aktif 1</label>
     <select class="form-select" name="k1" required>
-      <option value="0" selected disabled>Pilih kandungan 1</option>
+      <option value="0" selected disabled>Pilih zat aktif 1</option>
       @foreach ($kandungans as $kandungan)
         <option value="{{ $kandungan->id }}" @if ($kandungan->id == $interaksi->k1_id) selected @endif>
           {{ $kandungan->nama }}
@@ -23,9 +23,9 @@
   </div>
 
   <div class="mb-3">
-    <label for="k2" class="form-label">Kandungan 2</label>
+    <label for="k2" class="form-label">Zat Aktif 2</label>
     <select class="form-select" name="k2" required>
-      <option value="0" selected disabled>Pilih kandungan 2</option>
+      <option value="0" selected disabled>Pilih zat aktif 2</option>
       @foreach ($kandungans as $kandungan)
         <option value="{{ $kandungan->id }}" @if ($kandungan->id == $interaksi->k2_id) selected @endif>{{ $kandungan->nama }}
         </option>

@@ -28,6 +28,10 @@ class CekKandunganController extends Controller
             $namaBarangs->add($barangCek[0]->nama);
             $namaBarangs->add($barangCek[1]->nama);
             $hasilInteraksis = self::cekInteraksi($barangCek);
+
+            if (!count($hasilInteraksis)) {
+                alert()->warning('Peringatan', 'Hasil interaksi tidak diketahui atau tidak ada interaksi');
+            }
         }
 
         return view('user.cek-kandungan.index', compact('barangs', 'hasilInteraksis', 'namaBarangs'));

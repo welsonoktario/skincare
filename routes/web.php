@@ -27,7 +27,6 @@ use App\Http\Controllers\Toko\ProfilController as TokoProfilController;
 use App\Http\Controllers\Toko\RekeningController as TokoRekeningController;
 
 use App\Http\Controllers\Admin\BarangPengecekanController as AdminBarangPengecekanController;
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\InteraksiKandunganController as AdminInteraksiKandunganController;
 use App\Http\Controllers\Admin\KandunganController as AdminKandunganController;
 use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Throwable;
 
 class WishlistController extends Controller
 {
@@ -19,7 +20,6 @@ class WishlistController extends Controller
         $wishlists = Auth::user()
             ->wishlists()
             ->get();
-        // dd($wishlists);
 
         return view('user.wishlist.index', compact('wishlists'));
     }
@@ -43,9 +43,15 @@ class WishlistController extends Controller
     public function store(Request $request)
     {
         $wishlists = Auth::user()->wishlists();
-        $wishlists->attach([$request->barang]);
 
-        return Redirect::back()->with('msg', 'Barang berhasil ditambahkan ke wishlist');
+        try {
+            $wishlists->attach([$request->barang]);
+            alert()->success('Sukses', 'Barang berhasil ditambahkan ke wishlist');
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah barang ke wishist');
+        }
+
+        return Redirect::back();
     }
 
     /**
@@ -91,8 +97,14 @@ class WishlistController extends Controller
     public function destroy($id)
     {
         $wishlists = Auth::user()->wishlists();
-        $wishlists->detach($id);
 
-        return Redirect::back()->with('msg', 'Barang berhasil dihapus dari wishlist');
+        try {
+            $wishlists->detach($id);
+            alert()->success('Sukses', 'Barang berhasil dihapus dari wishlist');
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus barang dari wishist');
+        }
+
+        return Redirect::back();
     }
 }

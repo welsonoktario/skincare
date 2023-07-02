@@ -43,13 +43,19 @@ class RekeningController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()
+        $create = Auth::user()
             ->rekenings()
             ->create([
                 'bank_id' => $request->bank,
                 'nomor_rekening' => $request->rekening,
                 'nama_penerima' => $request->penerima
             ]);
+
+        if ($create) {
+            alert()->success('Sukses', 'Berhasil menambah rekening baru');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambah rekening baru');
+        }
 
         return redirect()->route('user.profil.rekening.index');
     }
@@ -80,12 +86,17 @@ class RekeningController extends Controller
     public function update(Request $request, $id)
     {
         $rekening = Rekening::query()->find($id);
-
-        $rekening->update([
+        $update = $rekening->update([
             'bank_id' => $request->bank,
             'nomor_rekening' => $request->rekening,
             'nama_penerima' => $request->penerima,
         ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Berhasil mengubah rekening');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah rekening');
+        }
 
         return redirect()->back();
     }
@@ -98,7 +109,13 @@ class RekeningController extends Controller
      */
     public function destroy($id)
     {
-        Rekening::query()->find($id)->delete();
+        $delete = Rekening::query()->find($id)->delete();
+
+        if ($delete) {
+            alert()->success('Sukses', 'Berhasil menghapus rekening');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus rekening');
+        }
 
         return redirect()->route('user.profil.rekening.index');
     }

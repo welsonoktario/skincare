@@ -3,9 +3,9 @@
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
       <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
-        Interaksi Kandungan
+        Interaksi Zat Aktif
       </h1>
-      <button type="button" class="btn btn-primary btn-tambah">Tambah Interaksi</button>
+      <button type="button" class="btn btn-primary btn-tambah">Tambah Interaksi Zat Aktif</button>
     </div>
     <div class="card shadow mb-3">
       <div class="card-body">
@@ -14,8 +14,8 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th>Nama Kandungan 1</th>
-                <th>Nama Kandungan 2</th>
+                <th>Nama Zat Aktif 1</th>
+                <th>Nama Zat Aktif 2</th>
                 <th>Hasil Interaksi</th>
                 <th>Deskripsi Interaksi</th>
                 <th>Sumber</th>

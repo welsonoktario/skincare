@@ -53,25 +53,38 @@ class KeranjangController extends Controller
         $keranjangs = Auth::user()->keranjangs();
         $exist = $keranjangs->firstWhere('barang_id', $request->barang);
 
-        if ($exist) {
-            $newSubTotal = (($exist->pivot->jumlah + $request->jumlah) * $request->harga);
-            $keranjangs->updateExistingPivot($request->barang, [
-                'sub_total' => $newSubTotal,
-                'jumlah' => $exist->pivot->jumlah + $request->jumlah,
-                'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
-            ]);
-        } else {
-            $keranjangs->attach($request->barang, [
-                'sub_total' => $request->harga * $request->jumlah,
-                'jumlah' => $request->jumlah,
-                'created_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
-            ]);
+        // Start transaksi
+        DB::beginTransaction();
+        try {
+            if ($exist) {
+                $newSubTotal = (($exist->pivot->jumlah + $request->jumlah) * $request->harga);
+                $keranjangs->updateExistingPivot($request->barang, [
+                    'sub_total' => $newSubTotal,
+                    'jumlah' => $exist->pivot->jumlah + $request->jumlah,
+                    'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
+                ]);
+            } else {
+                $keranjangs->attach($request->barang, [
+                    'sub_total' => $request->harga * $request->jumlah,
+                    'jumlah' => $request->jumlah,
+                    'created_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s')
+                ]);
+            }
+            // throw "a"; // untuk munculin error manual
+
+            // kalau proses diatas gaada error sama sekali, transaksi atau hasil
+            // query disimp/andiubah/dijalankan ke db
+            DB::commit();
+            alert()->success('Sukses', 'Barang berhasi ditambahkan ke keranjang');
+        } catch (Throwable $e) {
+            // tapi kalo ada error, dikembalikan sepertti semula
+            // sebelum transaksi mulai
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan menambahkan barang ke keranjang');
         }
 
-        return redirect()
-            ->back()
-            ->with('success', 'Barang berhasil ditambahkan ke keranjang');
+        return redirect()->back();
     }
 
     /**

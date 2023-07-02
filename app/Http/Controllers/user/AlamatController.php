@@ -58,7 +58,17 @@ class AlamatController extends Controller
                 ->update(['is_utama' => false]);
         }
 
-        Auth::user()->alamats()
+        try {
+            $this->validate($request, [
+                'kontak' => ['regex:/(08)[0-9]{10}/'],
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Kontak penerima tidak valid');
+
+            return Redirect::back();
+        }
+
+        $create = Auth::user()->alamats()
             ->create([
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
@@ -68,6 +78,12 @@ class AlamatController extends Controller
                 'kontak' => $request->kontak,
                 'is_utama' => $request->has('isUtama') ? true : false
             ]);
+
+        if ($create) {
+            alert()->success('Sukses', 'Alamat berhasil ditambahkan');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menambahkan alamat');
+        }
 
         return Redirect::back();
     }
@@ -94,12 +110,22 @@ class AlamatController extends Controller
      */
     public function update(Request $request, $id)
     {
+        try {
+            $this->validate($request, [
+                'kontak' => ['regex:/(08)[0-9]{10}/'],
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Kontak penerima tidak valid');
+
+            return Redirect::back();
+        }
+
         if ($request->has('isUtama')) {
             Auth::user()->alamats()
                 ->update(['is_utama' => false]);
         }
 
-        Alamat::query()
+        $update = Alamat::query()
             ->find($id)
             ->update([
                 'nama' => $request->nama,
@@ -110,6 +136,12 @@ class AlamatController extends Controller
                 'kontak' => $request->kontak,
                 'is_utama' => $request->has('isUtama') ? true : false
             ]);
+
+        if ($update) {
+            alert()->success('Sukses', 'Alamat berhasil diubah');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah alamat');
+        }
 
         return redirect()->back();
     }
@@ -122,7 +154,13 @@ class AlamatController extends Controller
      */
     public function destroy(Alamat $alamat)
     {
-        $alamat->delete();
+        $delete = $alamat->delete();
+
+        if ($delete) {
+            alert()->success('Sukses', 'Alamat berhasil dihapus');
+        } else {
+            alert()->error('Gagal', 'Terjadi kesalahan menghapus alamat');
+        }
 
         return Redirect::back();
     }
@@ -138,12 +176,12 @@ class AlamatController extends Controller
             $alamat->update(['is_utama' => true]);
 
             DB::commit();
-
-            return Redirect()->back();
+            alert()->success('Sukses', 'Berhasil mengubah alamat utama');
         } catch (Throwable $e) {
             DB::rollBack();
-
-            return Redirect::back()->withErrors(['setUtama' => $e->getMessage()]);
+            alert()->erorr('Gagal', 'Terjadi kesalahan mengubah alamat utama');
         }
+
+        return Redirect()->back();
     }
 }

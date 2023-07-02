@@ -8,7 +8,6 @@ use App\Models\Provinsi;
 use Illuminate\Http\Request;
 use App\Models\Toko;
 use Carbon\CarbonPeriod;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -27,20 +26,23 @@ class HomeController extends Controller
 
         // barang toko yang paling laris, berdasarkan jumlah transaksi_details terbanyak
         // yang status transaksi nya 'selesai' atau status pengembalian nya 'ditolak'
-        $terlaris = $toko->barangs()
-            ->withCount('transaksiDetails as jumlah_transaksi')
-            ->whereHas('transaksiDetails.transaksi', function (Builder $q) {
-                return $q->where('status', 'selesai');
-            })
-            ->orWhereHas('transaksiDetails.transaksi.pengembalian', function (Builder $q) {
+        $terlaris = $toko->barangsTrashed()
+            ->select([
+                DB::raw('barangs.*'),
+                DB::raw('SUM(`transaksi_details`.`jumlah`) as terjual')
+            ])
+            ->join('transaksi_details', 'transaksi_details.barang_id', '=', 'barangs.id')
+            ->join('transaksis', 'transaksis.id', '=', 'transaksi_details.transaksi_id')
+            ->where('transaksis.status', 'selesai')
+            ->orWhereHas('transaksiDetails.transaksi.pengembalian', function ($q) {
                 return $q->where('status', 'ditolak');
             })
-            ->having('jumlah_transaksi', '>', 0)
-            ->limit(5)
+            ->groupBy('barangs.id')
+            ->orderBy('terjual', 'DESC')
             ->get();
 
         // pendapatan sebulan terakhir
-        $period = collect(CarbonPeriod::create(now()->subdays(30), now()->subday())->toArray());
+        $period = collect(CarbonPeriod::create(now()->subdays(30), now())->toArray());
         $pendapatan = $toko->transaksis()
             ->select([
                 DB::raw('SUM(total_harga) as total'),
@@ -50,7 +52,7 @@ class HomeController extends Controller
                 DB::raw('EXTRACT(MONTH FROM created_at) as month'),
             ])
             ->where('status', 'selesai')
-            ->whereBetween('created_at', [now()->subdays(30), now()->subday()])
+            ->whereBetween('created_at', [now()->subdays(30), now()])
             ->groupBy(['date', 'day', 'month'])
             ->get();
 
@@ -117,6 +119,16 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $this->validate($request, [
+                'no_telepon' => ['regex:/(08)[0-9]{10}/'],
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Kontak tidak valid');
+
+            return redirect()->back();
+        }
+
         $foto = $request->file('foto');
         $path = $foto->store('img/toko', 'public');
 
@@ -142,6 +154,7 @@ class HomeController extends Controller
 
             alert()->success('Sukses', 'Pengajuan toko berhasil ditambahkan');
         } catch(Throwable $e) {
+            DB::rollBack();
             alert()->error('Gagal', 'Terjadi kesalahan menyimpan data pengajuan toko');
         }
 

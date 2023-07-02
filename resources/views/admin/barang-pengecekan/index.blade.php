@@ -19,16 +19,16 @@
           <table id="tableKandungan" class="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No.</th>
                 <th>Nama</th>
-                <th>Kandungan</th>
+                <th>Zat Aktif</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @foreach ($barangPengecekans as $b)
                 <tr class="listKandungan">
-                  <td>{{ $b->id }}</td>
+                  <td>{{ $loop->iteration }}</td>
                   <td>{{ $b->nama }}</td>
                   <td>{{ $b->kandungans }}</td>
                   <td class="d-inline-flex justify-content-center w-100">

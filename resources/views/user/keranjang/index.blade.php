@@ -40,7 +40,7 @@
                       </p>
 
                       <div class="text-small text-dark">
-                        <p class="mb-0">Kandungan:</p>
+                        <p class="mb-0">Zat Aktif:</p>
                         <ul>
                           @foreach ($barang->kandungans as $k)
                             <li class="my-0">{{ $k->nama }}</li>
@@ -171,7 +171,7 @@
         <div class="col-4">
           <div class="card">
             <div class="card-header">
-              <h6 class="card-title mb-0">Hasil Interaksi Kandungan</h6>
+              <h6 class="card-title mb-0">Hasil Interaksi Zat Aktif</h6>
             </div>
             <div class="card-body">
               @foreach ($kandungans as $pasangan => $hasil)
@@ -198,7 +198,7 @@
                       ])>
                         {{ $k->barang_satu }}
                       </span>
-                      dengan kandungan
+                      dengan zat aktif
                       <span @class([
                           'fw-semibold',
                           'text-success' => $k->jenis_interaksi == 'baik',
@@ -214,7 +214,7 @@
                       ])>
                         {{ $k->barang_dua }}
                       </span>
-                      dengan kandungan
+                      dengan zat aktif
                       <span @class([
                           'fw-semibold',
                           'text-success' => $k->jenis_interaksi == 'baik',

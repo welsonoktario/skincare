@@ -39,7 +39,7 @@
                 <td> {{ $r->nama_penerima }}</td>
                 <td>
                   <button class="btn btnEditRekening btn-sm btn-secondary ms-1 text-white" data-id="{{ $r->id }}">
-                    Edit
+                    Ubah
                   </button>
                   <form action="{{ route('toko.rekening.destroy', $r->id) }}" method="POST" class="w-auto d-inline-block">
                     @csrf

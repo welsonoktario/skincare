@@ -36,7 +36,7 @@
             @endphp
             <li>
               <a href="{{ route('user.cek-kandungan.index') }}" class="dropdown-item has-icon">
-                <i class="fas fa-tasks"></i> Cek Kandungan
+                <i class="fas fa-tasks"></i> Cek Interaksi
               </a>
             </li>
             <li>
@@ -85,7 +85,7 @@
             </li>
             <li>
               <a href="{{ route('user.cek-kandungan.index') }}" class="dropdown-item has-icon">
-                <i class="fas fa-tasks"></i> Cek Kandungan
+                <i class="fas fa-tasks"></i> Cek Interaksi
               </a>
             </li>
           @endguest

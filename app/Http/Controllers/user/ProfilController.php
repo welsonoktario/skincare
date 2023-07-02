@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
 
 class ProfilController extends Controller
 {
@@ -81,52 +83,84 @@ class ProfilController extends Controller
         $user = User::query()->find($id);
         $aksi = $request->aksi;
 
-        if ($aksi == 'password') {
-            if (!Hash::check($request->currentPassword, $user->password)) {
-                return redirect()->back()->withErrors('Password saat ini tidak cocok');
+        try {
+            $this->validate($request, [
+                'email' => 'email:rfc,dns'
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Email tidak valid');
+            return redirect()->back()->withErrors('Emai tidak valid');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            if ($aksi == 'password') {
+                try {
+                    if (!Hash::check($request->currentPassword, $user->password)) {
+                        alert()->error('Gagal', 'Password saat ini tidak cocok');
+                        return redirect()->back()->withErrors('Password saat ini tidak cocok');
+                    }
+
+                    if ($request->password != $request->confirm) {
+                        alert()->error('Gagal', 'Password baru tidak cocok');
+                        return redirect()->back()->withErrors('Password baru tidak cocok');
+                    }
+
+                    $user->update([
+                        'password' => bcrypt($request->password)
+                    ]);
+
+                    DB::commit();
+                    alert()->success('Sukses', 'Password berhasil diubah');
+                } catch (Throwable $e) {
+                    DB::rollBack();
+                    alert()->error('Gagal', 'Terjadi kesalahan mengubah password');
+                }
+
+                return redirect()->route('user.profil.index');
             }
 
-            if ($request->password != $request->confirm) {
-                return redirect()->back()->withErrors('Password baru tidak cocok');
+            if ($user->username != $request->username) {
+                $exists = User::query()->firstWhere('username', $request->username);
+
+                if ($exists) {
+                    alert()->error('Gagal', 'Username telah digunakan');
+                    return redirect()->back()->withErrors('Username telah digunakan');
+                }
+            }
+
+            if ($user->email != $request->email) {
+                $exists = User::query()->firstWhere('email', $request->email);
+
+                if ($exists) {
+                    alert()->error('Gagal', 'Email telah digunakan');
+                    return redirect()->back()->withErrors('Email telah digunakan');
+                }
+            }
+
+            if ($user->no_hp != $request->hp) {
+                $exists = User::query()->firstWhere('no_hp', $request->hp);
+
+                if ($exists) {
+                    alert()->error('Gagal', 'Nomor HP telah digunakan');
+                    return redirect()->back()->withErrors('Nomor HP telah digunakan');
+                }
             }
 
             $user->update([
-                'password' => bcrypt($request->password)
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'email' => $request->email,
+                'no_hp' => $request->hp,
             ]);
 
-            return redirect()->route('user.profil.index');
+            DB::commit();
+            alert()->success('Sukses', 'Profil berhasil diubah');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            alert()->error('Gagal', 'Terjadi kesalahan mengubah profil');
         }
-
-        if ($user->username != $request->username) {
-            $exists = User::query()->firstWhere('username', $request->username);
-
-            if ($exists) {
-                return redirect()->back()->withErrors('Username telah digunakan');
-            }
-        }
-
-        if ($user->email != $request->email) {
-            $exists = User::query()->firstWhere('email', $request->email);
-
-            if ($exists) {
-                return redirect()->back()->withErrors('Email telah digunakan');
-            }
-        }
-
-        if ($user->no_hp != $request->hp) {
-            $exists = User::query()->firstWhere('no_hp', $request->hp);
-
-            if ($exists) {
-                return redirect()->back()->withErrors('Nomor HP telah digunakan');
-            }
-        }
-
-        $user->update([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'email' => $request->email,
-            'no_hp' => $request->hp,
-        ]);
 
         return redirect()->back();
     }

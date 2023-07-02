@@ -3,9 +3,9 @@
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between my-4">
       <h1 class="h3 mb-0 text-gray-800 d-none d-md-inline-block d-lg-inline-block d-xl-inline-block">
-        Kandungan
+        Zat Aktif
       </h1>
-      <button type="button" class="btn btn-primary btn-tambah">Tambah Kandungan</button>
+      <button type="button" class="btn btn-primary btn-tambah">Tambah Zat Aktif</button>
     </div>
     <div class="card shadow mb-3">
       <div class="card-body">
@@ -13,7 +13,7 @@
           <table id="tableKandungan" class="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No.</th>
                 <th>Nama</th>
                 <th></th>
               </tr>
@@ -21,7 +21,7 @@
             <tbody>
               @foreach ($kandungans as $k)
                 <tr class="listKandungan">
-                  <td>{{ $k->id }}</td>
+                  <td>{{ $loop->iteration }}</td>
                   <td>{{ $k->nama }}</td>
                   <td class="d-inline-flex justify-content-center w-100">
                     <button class="btn-edit my-auto btn btn-sm btn-primary text-white mx-2"

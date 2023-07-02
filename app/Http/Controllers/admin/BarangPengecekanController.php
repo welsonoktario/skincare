@@ -122,7 +122,7 @@ class BarangPengecekanController extends Controller
             $barangPengecekan->save();
         }
         DB::commit();
-        alert()->success('Sukses', 'Data barang pengecekan berhasil ditambahkan');
+        alert()->success('Sukses', 'Data barang pengecekan berhasil diubah');
 
         return redirect()->back();
     }
@@ -146,7 +146,7 @@ class BarangPengecekanController extends Controller
             $barangPengecekan->delete();
 
             DB::commit();
-            alert()->success('Sukses', 'Data barang pengecekan berhasil ditambahkan');
+            alert()->success('Sukses', 'Data barang pengecekan berhasil dihapus');
         } catch (\Throwable $th) {
             DB::rollBack();
             alert()->error('Gagal', 'Terjadi kesalahan menghapus data barang pengecekan');

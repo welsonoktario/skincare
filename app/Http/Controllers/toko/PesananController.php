@@ -102,17 +102,26 @@ class PesananController extends Controller
 
         DB::beginTransaction();
         try {
-
             if ($request->has('pengembalian')) {
-                $transaksi->pengembalian()
-                    ->update([
-                        'status' => $request->aksi
-                    ]);
+                if ($request->aksi == 'diterima') {
+                    $transaksi->pengembalian()
+                        ->update([
+                            'status' => 'diterima'
+                        ]);
+                    alert()->success('Sukses', 'Pengembalian berhasil diterima');
+                }
 
                 if ($request->aksi == 'ditolak') {
+                    $transaksi->pengembalian()
+                        ->update([
+                            'status' => 'ditolak'
+                        ]);
+
                     $transaksi->toko()->update([
                         'saldo' => $transaksi->toko->saldo + $transaksi->total_harga + $transaksi->ongkos_pengiriman
                     ]);
+
+                    alert()->success('Sukses', 'Pengembalian berhasil diterima');
                 }
             } elseif ($request->aksi == 'pengembalian-selesai') {
                 $transaksi->pengembalian()
@@ -129,8 +138,11 @@ class PesananController extends Controller
                         'stok' => $td->barang->stok + $td->jumlah,
                     ]);
                 }
+
+                alert()->success('Sukses', 'Pengembalian telah selesai');
             } else {
                 $status = ['diproses', 'dikirim', 'batal'];
+
                 if (in_array($request->aksi, $status)) {
                     if ($request->aksi == 'batal') {
                         $user = $transaksi->user;
@@ -143,14 +155,23 @@ class PesananController extends Controller
                                 'stok' => $td->barang->stok + $td->jumlah,
                             ]);
                         }
+
+                        alert()->success('Sukses', 'Pesanan berhasil ditolak');
+                    } else {
+                        $transaksi->update(['status' => $request->aksi]);
+
+                        if ($request->aksi == 'diproses') {
+                            alert()->success('Sukses', 'Pesanan berhasil dikonfirmasi');
+                        } else if ($request->aksi == 'dikirim') {
+                            alert()->success('Sukses', 'Pesanan berhasil dikirim. Mohon kirim barang sesuai dengan detail pesanan');
+                        }
                     }
-                    $transaksi->update(['status' => $request->aksi]);
                 }
             }
             DB::commit();
         } catch (Throwable $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            alert()->error('Gagal', 'Terjadi kesalahan memproses transaksi');
         }
 
         return redirect()->back();

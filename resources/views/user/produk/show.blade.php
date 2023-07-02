@@ -15,20 +15,6 @@
     </ol>
   </nav>
 
-  @if (session()->has('success'))
-    <div id="alertContainer">
-      <div class="alert alert-primary alert-has-icon alert-dismissible show fade">
-        <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
-        <div class="alert-body">
-          <div class="alert-title">Sukses</div>
-          <span>{{ session()->get('success') }}.</span>
-          <a href="{{ route('user.keranjang.index') }}" class="alert-link">Lihat keranjang</a>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      </div>
-    </div>
-  @endif
-
   <div class="grid">
     <div class="row">
       {{-- Foto --}}

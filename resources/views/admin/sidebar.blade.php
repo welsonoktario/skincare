@@ -14,13 +14,13 @@
       <li>
         <a href="{{ route('admin.kandungan.index') }}" class="nav-link">
           <i class="fas fa-tint"></i>
-          <span>Kandungan</span>
+          <span>Zat Aktif</span>
         </a>
       </li>
       <li>
         <a href="{{ route('admin.interaksi-kandungan.index') }}" class="nav-link">
           <i class="fas fa-exchange-alt"></i>
-          <span>Interaksi Kandungan</span>
+          <span>Interaksi Zat Aktif</span>
         </a>
       </li>
       <li>

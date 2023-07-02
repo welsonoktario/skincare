@@ -101,14 +101,16 @@ class PenarikanController extends Controller
                         $toko = Toko::query()->firstWhere('user_id', $penarikan->rekeningWithTrashed->user_id);
                         $toko->update(['saldo' => $toko->saldo + $penarikan->nominal]);
                     }
+                    alert()->success('Sukses', 'Penarikan berhasil ditolak');
+                } elseif($aksi == 'diterima') {
+                    alert()->success('Sukses', 'Penarikan berhasil diproses');
                 }
+
                 DB::commit();
-                alert()->success('Sukses', 'Data penarikan berhasil diubah');
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            dd($th);
-            alert()->error('Gagal', 'Terjadi kesalahan mengubah data penarikan');
+            alert()->error('Gagal', 'Terjadi kesalahan memproses penarikan');
         }
 
         return redirect()->back();

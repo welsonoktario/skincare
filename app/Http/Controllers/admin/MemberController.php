@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Alamat;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Auth;
 
 class MemberController extends Controller
 {
@@ -63,8 +61,7 @@ class MemberController extends Controller
      */
     public function edit($id)
     {
-        $members = User::find($id);
-        return view('admin.member.edit', compact('members'));
+        //
     }
 
     /**
@@ -76,17 +73,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $members = User::find($id);
-
-        $update = $members->update([
-            'nama' => $request->nama,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
-
-        return $update
-            ? redirect()->route('admin.member.index')->with('errors', 'Terjadi kesalahan mengubah data member')
-            : redirect()->route('admin.member.index')->with('success', 'Data member berhasil diubah');
+        //
     }
 
     /**

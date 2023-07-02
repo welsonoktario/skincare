@@ -4,9 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Toko;
-use App\Models\Ulasan;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller

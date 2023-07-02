@@ -79,7 +79,7 @@
   </div>
 
   <div class="mb-3">
-    <label for="nama" class="form-label">Kandungan Barang</label>
+    <label for="nama" class="form-label">Zat Aktif Barang</label>
     <input class="form-control" type="text" value="{{ $barang->kandungans->pluck('nama')->implode(', ') }}" readonly>
   </div>
 
