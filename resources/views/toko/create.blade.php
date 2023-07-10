@@ -89,7 +89,7 @@
   <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
   <script>
     $(function() {
-      $.fn.filepond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+      $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
 
       $('#formToko').submit(function() {
         if (!$('#provinsi').val() || !$('#kota').val()) {

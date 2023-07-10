@@ -28,19 +28,16 @@ class HomeController extends Controller
         // yang status transaksi nya 'selesai' atau status pengembalian nya 'ditolak'
         $terlaris = $toko->barangsTrashed()
             ->select([
-                DB::raw('barangs.id'),
-                DB::raw('barangs.nama'),
+                DB::raw('barangs.*'),
                 DB::raw('SUM(`transaksi_details`.`jumlah`) as terjual')
             ])
             ->join('transaksi_details', 'transaksi_details.barang_id', '=', 'barangs.id')
             ->join('transaksis', 'transaksis.id', '=', 'transaksi_details.transaksi_id')
             ->where('transaksis.status', 'selesai')
-            ->orWhereHas('transaksiDetails.transaksi', function ($q) use($toko) {
-                return $q->whereHas('pengembalian', function($q) {
-                    return $q->where('status', 'ditolak');
-                })->where('toko_id', $toko->id);
+            ->orWhereHas('transaksiDetails.transaksi.pengembalian', function ($q) {
+                return $q->where('status', 'ditolak');
             })
-            ->groupBy('barangs.id', 'barangs.nama')
+            ->groupBy('barangs.id')
             ->orderBy('terjual', 'DESC')
             ->get();
 
@@ -124,7 +121,7 @@ class HomeController extends Controller
     {
         try {
             $this->validate($request, [
-                'no_telepon' => ['regex:/^08\d{8,11}$/'],
+                'no_telepon' => ['regex:/^08\d{8,11}$//'],
             ]);
         } catch (Throwable $e) {
             alert()->error('Gagal', 'Kontak tidak valid');
