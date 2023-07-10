@@ -24,12 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
-        Blade::directive('rupiah', function (string|int $text) {
+
+        Blade::directive('rupiah', function ($text) {
             return "Rp <?= number_format($text, 0, ',' , '.') ?>";
         });
 
-        Blade::directive('berat', function (string|int $berat) {
+        Blade::directive('berat', function ($berat) {
             if ($berat < 1000) {
                 return "<?= $berat ?> gr";
             } else {

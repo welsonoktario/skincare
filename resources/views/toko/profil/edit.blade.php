@@ -44,7 +44,7 @@
 
   <div class="mb-3">
     <label for="telepon" class="form-label">Nomor Telepon</label>
-    <input type="tel" class="form-control" value="{{ $toko->no_telepon }}" required />
+    <input name="telepon" type="tel" class="form-control" minlength="10" maxlength="13" value="{{ $toko->no_telepon }}" required />
   </div>
 
   <div id="imgPreview" class="d-inline-flex flex-column align-items-center w-100">

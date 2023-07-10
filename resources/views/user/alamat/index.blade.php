@@ -100,7 +100,7 @@
           </div>
           <div class="form-group">
             <label for="kontak">Kontak Penerima</label>
-            <input name="kontak" type="tel" class="form-control" required>
+            <input name="kontak" type="tel" minlength="10" maxlength="13" class="form-control" required>
           </div>
           <div class="form-group">
             <input type="checkbox" name="isUtama" class="form-check-input">
@@ -113,7 +113,7 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
             Batal
           </button>
-          <button id="btnSubmit" type="submit" form="formAlamat" disabled="true" class="btn btn-primary">
+          <button id="btnSubmit" type="submit" form="formAlamat" class="btn btn-primary">
             Simpan
           </button>
         </div>
@@ -150,6 +150,10 @@
       let selectProvinsi = $('select[name="provinsi"]');
       let selectKota = $('select[name="kota"]');
       let formDelete = $('#formDelete');
+
+      if (!selectKota.val()) {
+        $('#btnSubmit').prop('disabled', true);
+      }
 
       $('#formAlamat').submit(function() {
         if (!selectProvinsi.val() || !selectKota.val()) {
@@ -256,7 +260,10 @@
               selectKota.append(opt);
             });
           })
-          .finally(() => selectKota.prop('disabled', false));
+          .finally(() => {
+            selectKota.prop('disabled', false);
+            selectKota.trigger('change');
+          });
       }
     });
   </script>

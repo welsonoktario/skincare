@@ -22,7 +22,8 @@
   </div>
   <div class="mb-3">
     <label class="form-label" for="hp">No. HP</label>
-    <input type="tel" class="form-control" name="hp" placeholder="No. HP" value="{{ $user->no_hp }}" required>
+    <input type="tel" class="form-control" name="hp" placeholder="No. HP" minlength="10" maxlength="13"
+      value="{{ $user->no_hp }}" required>
   </div>
 </form>
 

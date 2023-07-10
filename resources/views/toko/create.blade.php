@@ -34,8 +34,8 @@
             <label for="no_telepon" class="mb-0 form-label">No. Telepon</label>
           </div>
           <div class="col-md-9 pe-5">
-            <input type="tel" name="no_telepon" class="form-control" placeholder="No Telepon"
-              value="{{ old('no_telepon') }}" required />
+            <input type="tel" name="no_telepon" class="form-control" placeholder="No Telepon" minlength="10"
+              maxlength="13" value="{{ old('no_telepon') }}" required />
           </div>
         </div>
         <div class="row align-items-center py-3">

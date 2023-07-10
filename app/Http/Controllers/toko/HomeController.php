@@ -121,7 +121,7 @@ class HomeController extends Controller
     {
         try {
             $this->validate($request, [
-                'no_telepon' => ['regex:/(08)[0-9]{10}/'],
+                'no_telepon' => ['regex:/^08\d{8,11}$//'],
             ]);
         } catch (Throwable $e) {
             alert()->error('Gagal', 'Kontak tidak valid');

@@ -87,12 +87,23 @@ class ProfilController extends Controller
     {
         $toko = Toko::query()->find($id);
 
+        try {
+            $this->validate($request, [
+                'telepon' => ['regex:/^08\d{8,11}$/'],
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Nomor telepon tidak valid');
+
+            return redirect()->back();
+        }
+
         DB::beginTransaction();
         try {
             $toko->update([
                 'nama' => $request->nama,
                 'deskripsi' => $request->deskripsi,
                 'kota_id' => $request->kota,
+                'no_telepon' => $request->telepon
             ]);
 
             if ($request->hasFile('foto')) {
@@ -108,7 +119,7 @@ class ProfilController extends Controller
             }
 
             DB::commit();
-            alert()->success('Sukses', 'Profil toko berhasl diubah');
+            alert()->success('Sukses', 'Profil toko berhasil diubah');
         } catch (Throwable $e) {
             DB::rollBack();
             alert()->error('Gagal', 'Terjadi kesalahan mengubah profil toko');

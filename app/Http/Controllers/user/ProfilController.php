@@ -85,11 +85,20 @@ class ProfilController extends Controller
 
         try {
             $this->validate($request, [
-                'email' => 'email:rfc,dns'
+                'email' => ['required', 'email:rfc,dns'],
             ]);
         } catch (Throwable $e) {
             alert()->error('Gagal', 'Email tidak valid');
-            return redirect()->back()->withErrors('Emai tidak valid');
+            return redirect()->back()->withErrors('Email tidak valid');
+        }
+
+        try {
+            $this->validate($request, [
+                'hp' => ['required', 'regex:/^08\d{8,11}$/', 'max:13'],
+            ]);
+        } catch (Throwable $e) {
+            alert()->error('Gagal', 'Nomor HP tidak valid');
+            return redirect()->back()->withErrors('Nomor HP tidak valid');
         }
 
         DB::beginTransaction();
