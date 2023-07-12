@@ -60,7 +60,7 @@ class AlamatController extends Controller
 
         try {
             $this->validate($request, [
-                'kontak' => ['regex:/^08\d{8,11}$//'],
+                'kontak' => ['regex:/^08\d{8,11}$/'],
             ]);
         } catch (Throwable $e) {
             alert()->error('Gagal', 'Kontak penerima tidak valid');
